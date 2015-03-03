@@ -1,0 +1,210 @@
+/* Ax */
+$ax-main-focus: #fff;
+$ax-main-bgrnd: #fff;
+
+$ax-lite-bgrnd: #f0f0f0;
+
+$ax-dark-color: #fff;
+$ax-dark-bgrnd: #6b6b6b;
+
+/* Valo */
+/*$v-font-family: "Source Sans Pro", sans-serif;*/
+$v-font-family: "Lato", sans-serif;
+$v-app-background-color: $ax-main-bgrnd;
+$v-background-color: #eee;
+$v-focus-color: $ax-main-focus;
+$v-focus-style: 0 0 0 1px $v-focus-color;
+$v-bevel: false;
+
+@mixin valo-animate-in-fade($duration: 100ms, $delay: null) {
+  @include animation(valo-animate-in-fade $duration $delay backwards);
+}
+
+@mixin valo-animate-in-slide-down($duration: 400ms, $delay: null) {
+  @include animation(valo-animate-in-slide-down $duration $delay backwards);
+}
+
+@mixin valo-animate-in-slide-up($duration: 400ms, $delay: null) {
+  @include animation(valo-animate-in-slide-up $duration $delay backwards);
+}
+
+@mixin valo-animate-in-slide-left($duration: 400ms, $delay: null) {
+  @include animation(valo-animate-in-slide-left $duration $delay backwards);
+}
+
+@mixin valo-animate-in-slide-right($duration: 400ms, $delay: null) {
+  @include animation(valo-animate-in-slide-right $duration $delay backwards);
+}
+
+@mixin ax {
+
+  @include valo;
+
+  .clear {
+    clear: both;
+  }
+  .margin {
+    padding: 10px;
+  }
+  .padding {
+    padding: 10px;
+  }
+
+  /* Layout */
+  .menu-bar {
+    position: absolute;
+    height: 40px;
+    font-size: 20px;
+    line-height: 40px;
+    border: none;
+    border-radius: 0;
+    color: $ax-dark-color;
+    background: $ax-dark-bgrnd none;
+    > .v-menubar-menuitem {
+      > .v-menubar-menuitem-caption > .v-icon {
+        margin: 0 8px 0 0;
+
+      }
+      border: none !important;
+      border-radius: 0 !important;
+    }
+    > .v-menubar-menuitem-primary {
+      background: #197de1;
+      //      color: #197de1;
+      //      background: #f0f0f0;
+    }
+    > .v-menubar-menuitem-right {
+      float: right;
+    }
+  }
+
+  .main-panel {
+    box-sizing: border-box;
+    padding-top: 40px;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Components */
+  .tiler {
+    @extend .padding;
+    .tile {
+      height: 50px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      border: 1px solid $ax-lite-bgrnd;
+      font-size: 18px;
+      font-weight: 300;
+    }
+  }
+
+  /* Modifications */
+  .v-formlayout {
+    padding: 20px;
+  }
+  .v-checkbox {
+    margin: 10px 20px 10px 0;
+  }
+
+  .v-table {
+    font-size: 18px;
+    font-weight: 300;
+    .v-table-cell-content {
+      height: 30px;
+      padding-top: 2px;
+      .v-table-cell-wrapper {
+        padding: 0 5px;
+      }
+    }
+    .v-table-cell-content:first-child {
+      .v-table-cell-wrapper {
+        padding: 0 5px 0 10px;
+      }
+    }
+    .v-table-cell-content:last-child {
+      //TODO Hack table overflow http://dev.vaadin.com/ticket/15164
+      .v-table-cell-wrapper {
+        padding: 0 10px 0 5px;
+      }
+    }
+  }
+  .v-tabsheet-tabitemcell:first-child {
+    .v-caption {
+      margin-left: 10px !important;
+    }
+  }
+
+  .window-headerless .v-window-outerheader {
+    display: none;
+  }
+
+  .window-confirm {
+    .v-label, .v-button {
+      margin: 15px;
+    }
+    .v-button {
+      float: right;
+    }
+  }
+
+  .v-scrollable {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .v-scrollable > .v-widget {
+    width: 100%;
+  }
+  //TODO Hack table overflow http://dev.vaadin.com/ticket/15164
+  .hack-noscroll {
+    overflow: hidden;
+  }
+  .hack-noscroll .v-scrollable {
+    overflow: hidden;
+  }
+  .v-window-contents > .v-scrollable:before {
+    border: none;
+  }
+  .v-tabsheet-tabsheetpanel > .v-scrollable {
+    overflow: hidden;
+  }
+
+  /* Barvy */
+  .Clouds {
+    background-color: #ecf0f1;
+  }
+  .Turquoise {
+    background-color: #1abc9c;
+  }
+  .Emerald {
+    background-color: #2ecc71;
+  }
+  .River {
+    background-color: #3498db;
+  }
+  .Amethyst {
+    background-color: #9b59b6;
+  }
+  .Asphalt {
+    background-color: #34495e;
+  }
+  .Saddle {
+    background-color: #8b4513;
+  }
+  .Sunflower {
+    background-color: #f1c40f;
+  }
+  .Carrot {
+    background-color: #e67e22;
+  }
+  .Alizarin {
+    background-color: #e74c3c;
+  }
+  .Deeppink {
+    background-color: #ff1493;
+  }
+  .Concrete {
+    background-color: #95a5a6;
+  }
+
+}

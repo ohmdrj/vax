@@ -4,8 +4,6 @@
  */
 package cz.req.ax;
 
-import cz.thickset.utils.IdObject;
-import cz.thickset.utils.reflect.PrivateClassUtils;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.PersistenceProvider;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
@@ -14,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import javax.persistence.EntityManager;
+import java.lang.reflect.Field;
 
 /**
  * @author ondrej
@@ -35,11 +34,21 @@ public class AxRepositoryImpl<T extends IdObject<Integer>>
     }
 
     EntityManager getEntityManager() {
-        return (EntityManager) PrivateClassUtils.readField(this, SimpleJpaRepository.class, "em");
+        return (EntityManager) readPrivateField("em");
     }
 
     PersistenceProvider getPersistenceProvider() {
-        return (PersistenceProvider) PrivateClassUtils.readField(this, SimpleJpaRepository.class, "provider");
+        return (PersistenceProvider) readPrivateField("provider");
+    }
+
+    private Object readPrivateField(String declaredField) {
+        try {
+            Field field = SimpleJpaRepository.class.getDeclaredField(declaredField);
+            field.setAccessible(true);
+            return field.get(this);
+        } catch (Exception ex) {
+            throw new RuntimeException("Cannot read field " + declaredField + " from SimpleJpaRepository");
+        }
     }
 
     @Override

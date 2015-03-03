@@ -1,0 +1,45 @@
+# Java classes
+*.class
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# VM crash logs
+hs_err_pid*
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# IntelliJ IDEA
+*.iml
+.idea
+atlassian-ide-plugin.xml
+
+# NetBeans
+nbproject/
+build/
+dist/
+nbactions.xml
+nb-configuration.xml
+
+# Android built,dalvik
+*.apk
+*.ap_
+*.dex
+
+# Generated files
+bin/
+gen/
+
+# Gradle files
+.gradle/
+build/
+local.properties
+

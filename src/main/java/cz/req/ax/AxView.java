@@ -1,98 +1,59 @@
 package cz.req.ax;
 
 import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Resource;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.TabSheet;
 
-public abstract class AxView extends CssLayout implements View {
+public abstract class AxView extends CssLayout implements View, Container, Navigation {
 
-    AxMenuBar menuBar;
+    ContainerRoot containerRoot;
     TabSheet tabSheet;
 
     protected AxView() {
+        containerRoot = new ContainerRoot(this);
         String name = getClass().getSimpleName();
-        name = name.replaceAll("View", "").toLowerCase();
-        setStyleName(name);
-        setSizeFull();
+        name = name.replaceAll("View", "-view").toLowerCase();
+        addStyleName(name);
+        setSizeUndefined();
+//        setSizeFull();
     }
 
-    public void addComponent(Component component, String styleName) {
-        component.setStyleName(styleName);
-        super.addComponent(component);
+    @Override
+    public Object getNavigationParameter() {
+        return null;
     }
 
-    public void addComponentFull(Component component, String styleName) {
-        component.setSizeFull();
-        addComponent(component, styleName);
+    @Override
+    public ContainerRoot getRoot() {
+        return containerRoot;
     }
 
-    //TODO move to component factory
-    public Button button(Resource icon, Button.ClickListener listener) {
-        Button button = new Button();
-        button.setIcon(icon);
-        button.addClickListener(listener);
-        return button;
+    @Override
+    public void enter(ViewChangeListener.ViewChangeEvent event) {
+        //TODO Parse navigation parameter??
     }
 
-    public HorizontalLayout horizontalLayout(Component... comps) {
-        HorizontalLayout layout = new HorizontalLayout(comps);
-        addComponent(layout);
-        return layout;
-    }
-
-    public AxMenuBar menuBar() {
-        if (menuBar == null) {
-            menuBar = new AxMenuBar();
-            menuBar.setStyleName("menuBar");
-            menuBar.setWidth(100, Unit.PERCENTAGE);
-            addComponent(menuBar);
-        }
-        return menuBar;
+    @Override
+    public AxView components(Component... components) {
+        Container.super.components(components);
+        return this;
     }
 
     public TabSheet tabSheet() {
         if (tabSheet == null) {
             tabSheet = new TabSheet();
-            menuBar.setStyleName("addTabSheet");
             tabSheet.setSizeFull();
-            tabSheet.addSelectedTabChangeListener(new TabSheet.SelectedTabChangeListener() {
-                @Override
-                public void selectedTabChange(TabSheet.SelectedTabChangeEvent event) {
-                    if (event.getComponent() instanceof RefreshListener) {
-                        final RefreshListener listener = (RefreshListener) event.getComponent();
-                        event.getComponent();
-                        listener.refresh();
-                    }
-                }
-            });
-            addComponent(tabSheet);
+            tabSheet.addSelectedTabChangeListener(event -> Refresh.tryRefresh(event.getComponent()));
+            components(tabSheet);
         }
         return tabSheet;
     }
 
-    protected void navigateTo(String view) {
-        getUI().getNavigator().navigateTo(view);
-    }
-
-    protected void navigateTo(String view, Object param) {
-        getUI().getNavigator().navigateTo(view + "/" + param.toString());
-    }
-
-    public TabSheet.Tab addTabSheet(String caption, FontAwesome awesome, final Component component) {
+    public TabSheet.Tab addTabSheet(String caption, FontAwesome awesome, Component component) {
         return tabSheet().addTab(component, caption, awesome);
-    }
-
-    public MenuBar.MenuItem addMenuNavigate(String caption, FontAwesome awesome, String view) {
-        return menuBar().addNavigate(caption, awesome, view);
-    }
-
-    public MenuBar.MenuItem addMenuCommand(MenuButton action) {
-        return menuBar().addCommand(action);
-    }
-
-    public MenuBar.MenuItem addMenuCommand(String caption, FontAwesome awesome, MenuBar.Command command) {
-        return menuBar().addCommand(caption, awesome, command);
     }
 
 }

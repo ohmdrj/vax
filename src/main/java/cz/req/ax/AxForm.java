@@ -1,19 +1,20 @@
 package cz.req.ax;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.util.AbstractBeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.EnumSet;
 import java.util.Locale;
 
-public class ItemForm<T> extends FormLayout {
+//TODO Refactor flow API
+public class AxForm<T> extends CustomComponent {
 
-    public static <T> ItemForm<T> init(Class<T> beanType) {
+    public static <T> AxForm<T> init(Class<T> beanType) {
         try {
             return init(beanType.newInstance());
         } catch (Exception e) {
@@ -21,24 +22,46 @@ public class ItemForm<T> extends FormLayout {
         }
     }
 
-    public static <T> ItemForm<T> init(T beanValue) {
-        return new ItemForm<T>(new BeanItem<T>(beanValue));
+    public static <T> AxForm<T> init(T beanValue) {
+        return new AxForm<T>(new BeanItem<T>(beanValue));
     }
 
-    public static <T> ItemForm<T> init(BeanItem<T> beanItem) {
-        return new ItemForm<T>(beanItem);
+    public static <T> AxForm<T> init(BeanItem<T> beanItem) {
+        return new AxForm<T>(beanItem);
     }
 
-    FieldGroup fieldGroup;
+    BeanFieldGroup<T> fieldGroup;
+
     HorizontalLayout buttonBar;
 
-    private ItemForm(Item itemData) {
-        fieldGroup = new FieldGroup(itemData);
+    private AxForm(BeanItem<T> beanItem) {
+        Class<T> beanClass = (Class<T>) beanItem.getBean().getClass();
+        fieldGroup = new BeanFieldGroup<T>(beanClass);
+        fieldGroup.setItemDataSource(beanItem);
         fieldGroup.setBuffered(true);
-        addStyleName("itemform");
-        setMargin(true);
+        addStyleName("item-form");
     }
 
+    public AxForm<T> layoutCss() {
+        CssLayout layout = new CssLayout();
+        setCompositionRoot(layout);
+        return this;
+    }
+
+    public AbstractLayout getRootLayout() {
+        if (getCompositionRoot() instanceof AbstractLayout) {
+            return (AbstractLayout) getCompositionRoot();
+        }
+        FormLayout layout = new FormLayout();
+        layout.setMargin(false);
+//        layoutRoot.setSpacing(false);
+        setCompositionRoot(layout);
+        return layout;
+    }
+
+    public void addComponent(Component component) {
+        getRootLayout().addComponent(component);
+    }
 
     public Item getItem() {
         return fieldGroup.getItemDataSource();
@@ -65,13 +88,19 @@ public class ItemForm<T> extends FormLayout {
 
     public void setValue(T itemValue) {
         if (itemValue == null) {
-            fieldGroup.setItemDataSource(null);
+            fieldGroup.setItemDataSource((T) null);
         } else {
             fieldGroup.setItemDataSource(new BeanItem<T>((T) itemValue));
         }
     }
 
-    public ItemForm<T> addCaption(String caption) {
+    protected void checkItemNest(String property) {
+        /*if (fieldGroup.getItemDataSource().getItemProperty(property) == null) {
+            ((BeanItem) fieldGroup.getItemDataSource()).addNestedProperty(property);
+        }*/
+    }
+
+    public AxForm<T> addCaption(String caption) {
         Label section = new Label(caption);
         section.addStyleName("colored");
         //section.setSizeFull();
@@ -80,9 +109,30 @@ public class ItemForm<T> extends FormLayout {
         return this;
     }
 
-    public ItemForm<T> addButton(String caption, Button.ClickListener listener) {
+    //TODO Review
+    @Deprecated
+    public AxForm<T> addButton(String caption, Button.ClickListener listener) {
         getButtonBar().addComponent(new Button(caption, listener));
         return this;
+    }
+
+    public AbstractField<String> addLabel(String property) {
+        return addLabel(null, property);
+    }
+
+    public AbstractField<String> addLabel(String caption, String property) {
+        checkItemNest(property);
+        LabelField field = new LabelField();
+        field.setConverter(new StringToConverter());
+        fieldGroup.bind(field, property);
+        if (caption != null) {
+            Label label = new Label(caption);
+            label.addStyleName("caption");
+            label.setSizeUndefined();
+            addComponent(label);
+        }
+        addComponent(field);
+        return field;
     }
 
     public Field<?> addField(String caption, String property) {
@@ -132,14 +182,10 @@ public class ItemForm<T> extends FormLayout {
         return window;
     }
 
-    public ComboBox addCombo(String caption, String property, AxContainer container, String display) {
-        /*ComboBox field = fieldGroup.buildAndBind(caption, property, ComboBox.class);
-        field.setItemCaptionPropertyId(display);
-        addComponent(field);
-        return field;*/
+    public ComboBox addCombo(String caption, String property, AbstractBeanContainer container, String display) {
         ComboBox combo = new ComboBox(caption, container);
         combo.setItemCaptionPropertyId(display);
-        combo.setConverter(new AxConverter(container));
+        combo.setConverter(display == null ? null : new AxConverter(container));
         combo.setTextInputAllowed(false);
         combo.setImmediate(true);
         fieldGroup.bind(combo, property);
@@ -147,8 +193,8 @@ public class ItemForm<T> extends FormLayout {
         return combo;
     }
 
-    public <T extends Enum> ComboBox addCombo(String caption, String property, Class<T> enumClass) {
-        BeanItemContainer<T> container = new BeanItemContainer<T>(enumClass);
+    public <T extends Enum<T>> ComboBox addCombo(String caption, String property, Class<T> enumClass) {
+        BeanItemContainer<T> container = new BeanItemContainer<>(enumClass);
         container.addAll(EnumSet.allOf(enumClass));
         ComboBox combo = new ComboBox(caption, container);
         //combo.setItemCaptionPropertyId(display);
@@ -157,11 +203,12 @@ public class ItemForm<T> extends FormLayout {
         addComponent(combo);
         return combo;
     }
+
     static class AxConverter<T extends IdEntity> implements Converter<Integer, T> {
 
-        AxContainer<T> container;
+        AbstractBeanContainer<?, T> container;
 
-        public AxConverter(AxContainer<T> container) {
+        public AxConverter(AbstractBeanContainer<?, T> container) {
             this.container = container;
         }
 

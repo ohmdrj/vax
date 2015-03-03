@@ -3,9 +3,8 @@ package cz.req.ax;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
-import cz.thickset.utils.IdObject;
 
-public abstract class BeanFilter<T extends IdObject<Integer>> implements Container.Filter {
+public abstract class BeanFilter<T> implements Container.Filter {
 
     public abstract boolean passFilter(T bean);
 

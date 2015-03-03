@@ -1,59 +1,147 @@
 package cz.req.ax;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.Container;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Table;
-import cz.thickset.utils.IdObject;
 
-//@Component("AxTable")
-//@Scope("prototype")
-public class AxTable<T extends IdObject<Integer>> implements RefreshListener {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 
-    AxBeanContainer<T> container;
+public abstract class AxTable<T> implements Refresh {
+
+    List<String> visibleColumns = new ArrayList<>();
+    Container.Filter containerFilter;
     BeanEventListener<T> selectListener;
+    BeanEventListener<T> selectPredicate;
+    Refresh refreshListener;
     Table table;
 
-    public AxTable(final AxBeanContainer<T> container) {
-        this.container = container;
+    public abstract Container getContainer();
 
-        table = new Table(null, container);
-        table.addStyleName("hack-noscroll");
-        table.setWidth(100, Sizeable.Unit.PERCENTAGE);
-        table.setPageLength(0);
-        table.setSelectable(true);
-        table.setColumnHeaderMode(Table.ColumnHeaderMode.HIDDEN);
-        table.addValueChangeListener(new Property.ValueChangeListener() {
+    public Table getTable() {
+        if (table == null) {
+            table = new Table(null, getContainer());
+            table.addStyleName("hack-noscroll");
+            table.setWidth(100, Sizeable.Unit.PERCENTAGE);
+            table.setPageLength(0);
+            table.setSelectable(true);
+            table.setColumnHeaderMode(Table.ColumnHeaderMode.HIDDEN);
+        }
+        return table;
+    }
+
+    public AxTable<T> style(String... styleClasses) {
+        for (String styleClass : styleClasses) {
+            getTable().addStyleName(styleClass);
+        }
+        return this;
+    }
+
+    //TODO Refreshable FunctionInterface???
+    public AxTable<T> refresh(Refresh listener) {
+        refreshListener = listener;
+        return this;
+    }
+
+    public AxTable<T> select(BeanEventListener<T> listener) {
+        selectListener = listener;
+        return this;
+    }
+
+    public AxTable<T> filter(final Predicate<T> filter) {
+        return filter(new BeanFilter<T>() {
+
             @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                if (selectListener == null) return;
-                BeanItem<T> item = container.getItem(event);
-                selectListener.beanEvent(item == null ? null : item.getBean());
+            public boolean passFilter(T bean) {
+                return filter.test(bean);
             }
         });
     }
 
-    public AxTable<T> selectListener(BeanEventListener<T> beanListener) {
-        selectListener = beanListener;
+    public AxTable<T> filter(Container.Filter filter) {
+        this.containerFilter = filter;
         return this;
     }
 
-    public Table getTable() {
-        return table;
+    public AxTable<T> columns(String... propertyIds) {
+        if (propertyIds == null) {
+            visibleColumns.clear();
+            table.setVisibleColumns(new Object[0]);
+        } else {
+            for (String propertyId : propertyIds) {
+                visibleColumns.add(propertyId);
+            }
+            table.setVisibleColumns((Object[]) propertyIds);
+        }
+        return this;
     }
 
-    public Table getTableFull() {
-        table.setSizeFull();
-        return table;
+    public ColumnFactory<T> column(String propertyId) {
+        return new ColumnFactory<T>(this, propertyId);
     }
 
-    public AxBeanContainer<T> getContainer() {
-        return container;
+    public ColumnFactory<T> column(String propertyId, Table.ColumnGenerator columnGenerator) {
+        table.addGeneratedColumn(propertyId, columnGenerator);
+        return column(propertyId);
+    }
+
+    public AxTable<T> done() {
+        table.setVisibleColumns(visibleColumns.toArray());
+        return this;
+    }
+
+    public static class ColumnFactory<T> {
+
+        private AxTable<T> table;
+        private String property;
+
+        public ColumnFactory(AxTable<T> table, String property) {
+            this.table = table;
+            this.table.visibleColumns.add(property);
+            this.property = property;
+            //TODO Check nested??
+            //this.table.getContainer().pro
+        }
+
+        public ColumnFactory<T> width(int pixels) {
+            table.getTable().setColumnWidth(property, pixels);
+            return this;
+        }
+
+        public ColumnFactory<T> expand(float ratio) {
+            table.getTable().setColumnExpandRatio(property, ratio);
+            return this;
+        }
+
+        public ColumnFactory<T> converter(Converter<String, ?> converter) {
+            table.getTable().setConverter(property, converter);
+            return this;
+        }
+
+        public ColumnFactory<T> alignRight() {
+            table.getTable().setColumnAlignment(property, Table.Align.RIGHT);
+            return this;
+        }
+
+        public ColumnFactory<T> column(String propertyId) {
+            return new ColumnFactory(table, propertyId);
+        }
+
+        public ColumnFactory<T> column(String propertyId, Table.ColumnGenerator columnGenerator) {
+            table.getTable().addGeneratedColumn(propertyId, columnGenerator);
+            return column(propertyId);
+        }
+
+        public AxTable<T> done() {
+            return table.done();
+        }
     }
 
     public void refresh() {
-        //TODO
-        //container.refresh();
         table.refreshRowCache();
+        if (refreshListener != null)
+            refreshListener.refresh();
     }
 }

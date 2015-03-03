@@ -1,63 +1,82 @@
 package cz.req.ax;
 
 import com.vaadin.server.FontAwesome;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
-public class AxWindow extends Window {
+public class AxWindow extends Window implements Container, Navigation {
 
-    AxMenuBar menuBar;
+    ContainerRoot containerRoot;
     VerticalLayout layout;
 
     public AxWindow() {
-
+        layout = new VerticalLayout();
+        containerRoot = new ContainerRoot(layout);
         addStyleName("window-headerless");
         setClosable(false);
         setResizable(false);
-        layout = new VerticalLayout();
-        layout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
         setContent(layout);
     }
 
-    public MenuButton getCloseButton() {
-        return new MenuButton("Zavřít", FontAwesome.TIMES) {
-            @Override
-            public void menuSelected(MenuBar.MenuItem selectedItem) {
-                close();
-            }
-        };
+    @Override
+    public ContainerRoot getRoot() {
+        return containerRoot;
     }
 
-    public MenuBar.MenuItem addCloseButton() {
-        MenuBar.MenuItem menuItem = addMenuCommand(getCloseButton());
-        menuItem.setStyleName("right");
-        return menuItem;
+    @Override
+    public Object getNavigationParameter() {
+        return null;
     }
 
-    public void addComponent(Component c) {
-        layout.addComponent(c);
+    public AxWindow show() {
+        center();
+        UI.getCurrent().addWindow(this);
+        return this;
     }
 
-
-    public AxMenuBar menuBar() {
-        if (menuBar == null) {
-            menuBar = new AxMenuBar();
-//                menuBar.setStyleName("menuBar");
-            menuBar.setWidth(100, Unit.PERCENTAGE);
-            layout.addComponent(menuBar);
-        }
-        return menuBar;
+    public AxWindow modal() {
+        setModal(true);
+        return this;
     }
 
-    public MenuBar.MenuItem addMenuNavigate(String caption, FontAwesome awesome, String view) {
-        return menuBar().addNavigate(caption, awesome, view);
+    public AxWindow size(Integer width, Integer height) {
+        if (width != null) setWidth(width, Unit.PIXELS);
+        if (height != null) setHeight(height, Unit.PIXELS);
+        return this;
     }
 
-    public MenuBar.MenuItem addMenuCommand(MenuButton action) {
-        return menuBar().addCommand(action);
+    public AxWindow style(String styleName) {
+        addStyleName(styleName);
+        return this;
     }
 
-    public MenuBar.MenuItem addMenuCommand(String caption, FontAwesome awesome, MenuBar.Command command) {
-        return menuBar().addCommand(caption, awesome, command);
+    @Override
+    public AxWindow components(Component... components) {
+        Container.super.components(components);
+        return this;
     }
 
+    @Override
+    public AxWindow layoutCss() {
+        Container.super.layoutCss();
+        return this;
+    }
+
+    public AxWindow buttonClose() {
+        return buttonClose("Zavřít");
+    }
+
+    public AxWindow buttonClose(String caption) {
+        menuBar().actions(new AxAction().caption(caption).icon(FontAwesome.TIMES)
+                .right().run(this::close));
+        return this;
+    }
+
+    public AxWindow buttonAndClose(AxAction action) {
+        action.runAfter(this::close);
+        menuBar().actions(action);
+        return this;
+    }
 }

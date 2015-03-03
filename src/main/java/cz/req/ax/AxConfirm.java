@@ -1,44 +1,19 @@
 package cz.req.ax;
 
-import com.vaadin.ui.*;
+import com.vaadin.ui.Label;
 
-public abstract class AxConfirm extends Window implements MenuBar.Command {
+public class AxConfirm extends AxWindow {
 
-    protected AxConfirm() {
-        this("Chcete pokračovat?");
+    protected AxConfirm(String message, Runnable confirm) {
+        Label confirmLabel = new Label(message);
+        confirmLabel.addStyleName("h2");
+        modal().style("window-confirm").layoutCss();
+        components(
+                confirmLabel,
+                new AxAction().caption("Budiž").style("primary")
+                        .run(confirm).runAfter(this::close).button(),
+                new AxAction().caption("Storno")
+                        .runAfter(this::close).button());
     }
 
-    protected AxConfirm(String message) {
-        super("Potvrzení");
-        Label label = new Label(message);
-        Button buttonOk = new Button("Budiž", new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                close();
-                onConfirm();
-            }
-        });
-        buttonOk.addStyleName("primary");
-        Button buttonCancel = new Button("Storno", new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                close();
-                onCancel();
-            }
-        });
-        addStyleName("window-confirm");
-        setContent(new CssLayout(label, buttonOk, buttonCancel));
-        center();
-    }
-
-    public abstract void onConfirm();
-
-    public void onCancel() {
-    }
-
-    @Override
-    public void menuSelected(MenuBar.MenuItem selectedItem) {
-        //TODO predat event? selected?
-        UI.getCurrent().addWindow(this);
-    }
 }

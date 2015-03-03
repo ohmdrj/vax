@@ -1,7 +1,6 @@
 package cz.req.ax;
 
 import com.vaadin.data.util.BeanItem;
-import cz.thickset.utils.IdObject;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +13,9 @@ public class AxContainer<T extends IdObject<Integer>> extends AxBeanContainer<T>
     public AxContainer(AxRepository<T> repository) throws IllegalArgumentException {
         super(repository.entityClass());
         this.repository = repository;
-        setBeanIdResolver(new BeanIdResolver<Integer, T>() {
-            @Override
-            public Integer getIdForBean(T bean) {
-                if (bean == null) return null;
-                return bean.getId();
-            }
+        setBeanIdResolver(bean -> {
+            if (bean == null) return null;
+            return bean.getId();
         });
         refresh();
     }

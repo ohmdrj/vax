@@ -1,7 +1,5 @@
 package cz.req.ax;
 
-import cz.thickset.utils.IdObject;
-
 import javax.persistence.*;
 
 @MappedSuperclass
@@ -15,6 +13,10 @@ public class IdEntity implements IdObject<Integer> {
 
     public Integer getId() {
         return id;
+    }
+
+    public String getClassAndId() {
+        return getClass().getSimpleName() + "#" + getId();
     }
 
     public void setId(Integer id) {

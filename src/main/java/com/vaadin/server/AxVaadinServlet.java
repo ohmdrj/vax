@@ -3,6 +3,7 @@ package com.vaadin.server;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.io.ByteStreams;
 import com.vaadin.sass.internal.ScssStylesheet;
 import com.vaadin.util.CurrentInstance;
 import ru.xpoft.vaadin.SpringVaadinServlet;
@@ -17,6 +18,7 @@ import java.util.concurrent.Semaphore;
 
 public class AxVaadinServlet extends SpringVaadinServlet {
 
+    boolean compile = false;
     File resourcesDir;
     Semaphore semaphore = new Semaphore(1);
     Map<String, CssCacheItem> cache = new ConcurrentHashMap<>();
@@ -29,17 +31,29 @@ public class AxVaadinServlet extends SpringVaadinServlet {
             }
     );
 
+    public AxVaadinServlet() {
+    }
 
     public AxVaadinServlet(File resourcesDir) {
-        if (!resourcesDir.exists())
-            throw new RuntimeException("Missing resources directory " + resourcesDir);
         this.resourcesDir = resourcesDir;
+        compile = resourcesDir != null && resourcesDir.exists();
+        if (!compile) {
+            System.err.print("Dynamic SASS compile missing resources directory: " + resourcesDir);
+        }
     }
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-            // SASS compile on fly
-        if (request.getServletPath().equals("/VAADIN")
+        if (request.getPathInfo() != null && request.getPathInfo().startsWith("/APP/PUBLISHED")) {
+            response.setHeader("Cache-Control", "no-cache");
+            try {
+                String path = request.getPathInfo().replace("..", "");
+                InputStream stream = getClass().getResourceAsStream(path);
+                ByteStreams.copy(stream, response.getOutputStream());
+            } catch (Exception e) {
+                log("Error serving static resource " + request.getPathInfo(), e);
+            }
+        } else if (compile && request.getServletPath().equals("/VAADIN")
                 && request.getPathInfo().startsWith("/themes")
                 && request.getPathInfo().endsWith(".css")) {
             CurrentInstance.clearAll();
@@ -60,7 +74,6 @@ public class AxVaadinServlet extends SpringVaadinServlet {
                         new OutputStreamWriter(response.getOutputStream(), "UTF-8")));
                 writer.print(cacheItem.getContent());
                 writer.flush();
-                writer.close();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {

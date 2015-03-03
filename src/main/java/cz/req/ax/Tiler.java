@@ -1,78 +1,88 @@
 package cz.req.ax;
 
+import com.vaadin.data.util.AbstractBeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
+import org.springframework.util.Assert;
 
-public class Tiler<T extends IdEntity> extends CssLayout
-        implements RefreshListener, Button.ClickListener {
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-    String entityName;
-    AxContainer<T> container;
+public class Tiler<T> extends CssLayout {
+
+    //    String entityName;
     String propertyId;
+    AbstractBeanContainer<?, T> container;
+    Consumer<T> action;
+    Function<BeanItem<T>, AbstractComponent> factory;
+    BiFunction<BeanItem<T>, AbstractComponent, AbstractComponent> modifier;
 
-    public Tiler(AxContainer<T> container, String propertyId) {
-        setStyleName("tiler");
-        setPropertyId(propertyId);
-        setContainer(container);
+    public Tiler() {
+        addStyleName("tiler");
+        factory = (bean) -> {
+            Assert.notNull(bean);
+            Object caption = bean.getItemProperty(propertyId).getValue();
+            AbstractComponent button = new Button(caption.toString(), event -> {
+                if (action == null) return;
+                T data = (T) event.getButton().getData();
+                action.accept(data);
+            });
+            if (modifier != null) {
+                button = modifier.apply(bean, button);
+            }
+            button.addStyleName("tile");
+            button.setData(bean.getBean());
+            return button;
+        };
     }
 
-    public void setPropertyId(String propertyId) {
-        this.propertyId = propertyId;
-    }
-
-    public AxContainer<T> getContainer() {
-        return container;
-    }
-
-    public void setContainer(AxContainer<T> container) {
+    public Tiler<T> container(AbstractBeanContainer<?, T> container) {
+        Assert.notNull(propertyId, "Set propertyId before container!");
         this.container = container;
-        entityName = container.getRepository().entityClass().getSimpleName();
         refresh();
+        return this;
+//        entityName = container.getRepository().entityClass().getSimpleName();
+    }
+
+    public Tiler<T> action(Consumer<T> action) {
+        this.action = action;
+        return this;
+    }
+
+    public Tiler<T> factory(Function<BeanItem<T>, AbstractComponent> factory) {
+        this.factory = factory;
+        return this;
+    }
+
+    public Tiler<T> modifier(BiFunction<BeanItem<T>, AbstractComponent, AbstractComponent> modifier) {
+        this.modifier = modifier;
+        return this;
+    }
+
+    public Tiler<T> style(String style) {
+        addStyleName(style);
+        return this;
+    }
+
+    public Tiler<T> propertyId(String propertyId) {
+        this.propertyId = propertyId;
+        return this;
+    }
+
+    public AbstractBeanContainer<?, T> getContainer() {
+        return container;
     }
 
     public void refresh() {
         removeAllComponents();
-        for (Integer itemId : container.getItemIds()) {
-            BeanItem<T> beanItem = container.getItem(itemId);
-            addComponent(addTileComponent(beanItem));
+        if (container == null) return;
+        for (Object id : container.getItemIds()) {
+            BeanItem<T> bean = container.getItem(id);
+            addComponent(factory.apply(bean));
         }
-    }
-
-    public AbstractComponent addTileComponent(BeanItem<T> beanItem) {
-        Object caption = beanItem.getItemProperty(propertyId).getValue();
-        Object identity = beanItem.getItemProperty("id").getValue();
-        AbstractComponent component = addTileComponent(
-                caption.toString(), identity);
-
-        component.setId(entityName + "_" + identity.toString());
-        if (beanItem.getBean() instanceof StyleAware) {
-            component.addStyleName(((StyleAware) beanItem.getBean()).getStyleName());
-        }
-        onAddTile(beanItem, component);
-        return component;
-    }
-
-    public AbstractComponent addTileComponent(String caption, Object identity) {
-        Button button = new Button(caption, this);
-        button.setStyleName("tile");
-        button.setData(identity);
-        return button;
-
-    }
-
-    @Override
-    public void buttonClick(Button.ClickEvent event) {
-        Object data = event.getButton().getData();
-        BeanItem<T> beanItem = container.getItem(data);
-        onClick(beanItem);
-    }
-
-    public void onAddTile(BeanItem<T> beanItem, AbstractComponent component) {
-    }
-
-    public void onClick(BeanItem<T> beanItem) {
     }
 
 }
