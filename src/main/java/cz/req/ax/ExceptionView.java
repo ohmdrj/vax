@@ -2,10 +2,7 @@ package cz.req.ax;
 
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.Accordion;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextArea;
+import com.vaadin.ui.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.xpoft.vaadin.VaadinView;
@@ -27,6 +24,7 @@ public class ExceptionView extends AxView {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
+        AxUtils.closeWindows();
         AbstractComponent component;
         Throwable exception = getSession().getAttribute(Throwable.class);
         if (exception != null) {
@@ -56,9 +54,15 @@ public class ExceptionView extends AxView {
             component = new Label("Neznámá chyba :(");
         }
 
-        Label label = new Label("Ale toto je nepříjemné...");
+        Label label = new Label("Ale toto je nepříjemné ...");
         label.addStyleName("h2");
         label.addStyleName("primary");
-        layoutCss().components(label, component);
+        Button button = new Button("Pokračovat", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                navigate("Main");
+            }
+        });
+        layoutCss().components(label,button, component);
     }
 }

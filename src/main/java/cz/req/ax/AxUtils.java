@@ -1,14 +1,17 @@
 package cz.req.ax;
 
-import com.vaadin.data.Property;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
+
+import java.util.ArrayList;
 
 public class AxUtils {
 
     /*public static <T> T getDataValue(Class<T> type, Property.ValueChangeEvent event) {
 
     }*/
+    public static Integer getTabPosition(TabSheet tabSheet) {
+        return tabSheet.getTabPosition(tabSheet.getTab(tabSheet.getSelectedTab()));
+    }
 
     public static <T> T getDataValue(Button.ClickEvent event) {
         Object source = event.getSource();
@@ -19,4 +22,9 @@ public class AxUtils {
         throw new IllegalArgumentException();
     }
 
+    public static void closeWindows() {
+        for (Window window : new ArrayList<>(UI.getCurrent().getWindows())) {
+            UI.getCurrent().removeWindow(window);
+        }
+    }
 }

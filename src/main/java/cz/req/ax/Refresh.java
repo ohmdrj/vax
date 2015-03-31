@@ -8,6 +8,8 @@ public interface Refresh {
     static void tryRefresh(Object o) {
         if (o instanceof Refresh) {
             ((Refresh) o).refresh();
+//        } else {
+//            System.err.println("Object " + o + " does not support refresh");
         }
     }
 }

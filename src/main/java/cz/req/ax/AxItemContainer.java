@@ -2,6 +2,8 @@ package cz.req.ax;
 
 import com.vaadin.data.util.BeanItemContainer;
 
+import java.util.List;
+
 public class AxItemContainer<T> extends BeanItemContainer<T> {
 
     public static <T> AxItemContainer<T> init(Class<T> type) {
@@ -12,4 +14,8 @@ public class AxItemContainer<T> extends BeanItemContainer<T> {
         super(type);
     }
 
+    public void replaceAllItems(List<T> items) {
+        removeAllItems();
+        if (items != null) addAll(items);
+    }
 }

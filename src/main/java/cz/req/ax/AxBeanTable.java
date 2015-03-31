@@ -2,6 +2,10 @@ package cz.req.ax;
 
 import com.vaadin.data.util.BeanItem;
 
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 public class AxBeanTable<T extends IdObject<Integer>> extends AxTable<T> {
 
     AxBeanContainer<T> container;
@@ -28,11 +32,29 @@ public class AxBeanTable<T extends IdObject<Integer>> extends AxTable<T> {
         return container;
     }
 
+    public AxBeanTable<T> supplier(Supplier<List<T>> supplier) {
+        if (container instanceof AxContainer) {
+            ((AxContainer) container).supplier(supplier);
+        }
+        return this;
+    }
+
+    public AxBeanTable<T> supplier(Function<? extends AxRepository<T>, List<T>> supplier) {
+        if (container instanceof AxContainer) {
+            ((AxContainer) container).supplier(supplier);
+        }
+        return this;
+    }
+
     public void refresh() {
         //TODO Advocate?
         container.removeAllContainerFilters();
-        if (containerFilter != null)
+        if (containerFilter != null) {
             container.addContainerFilter(containerFilter);
+        }
+        if (container instanceof AxContainer) {
+            ((AxContainer) container).refresh();
+        }
         super.refresh();
     }
 }

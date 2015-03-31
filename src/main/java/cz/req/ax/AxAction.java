@@ -1,5 +1,6 @@
 package cz.req.ax;
 
+import com.google.common.base.Joiner;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.UI;
@@ -15,6 +16,7 @@ public class AxAction<T> {
 
     private T value;
     private String caption, style;
+    private Boolean right = Boolean.FALSE;
     private Supplier<String> confirm;
     private FontAwesome icon;
     private Runnable run, runBefore, runAfter;
@@ -36,13 +38,29 @@ public class AxAction<T> {
         return confirm(() -> message);
     }
 
+    public AxAction<T> danger() {
+        this.style = "danger";
+        return this;
+    }
+
+    public AxAction<T> primary() {
+        this.style = "primary";
+        return this;
+    }
+
+    public AxAction<T> friendly() {
+        this.style = "friendly";
+        return this;
+    }
+
     public AxAction<T> style(String style) {
         this.style = style;
         return this;
     }
 
     public AxAction<T> right() {
-        return style("right");
+        this.right = Boolean.TRUE;
+        return this;
     }
 
     //TODO DescribedFunctionInterface
@@ -129,7 +147,7 @@ public class AxAction<T> {
     }
 
     public String getStyle() {
-        return style;
+        return Joiner.on("-").skipNulls().join(style, right ? "right" : null);
     }
 
     public Runnable getRun() {
@@ -154,6 +172,7 @@ public class AxAction<T> {
         //TODO Review lazy??
         Button button = new Button(caption, icon);
         if (style != null) button.addStyleName(style);
+        if (right) button.addStyleName("right");
         button.addClickListener(event -> onAction());
         return button;
     }

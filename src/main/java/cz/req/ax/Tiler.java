@@ -79,6 +79,9 @@ public class Tiler<T> extends CssLayout {
     public void refresh() {
         removeAllComponents();
         if (container == null) return;
+        if (container instanceof AxContainer) {
+            ((AxContainer) container).refresh();
+        }
         for (Object id : container.getItemIds()) {
             BeanItem<T> bean = container.getItem(id);
             addComponent(factory.apply(bean));

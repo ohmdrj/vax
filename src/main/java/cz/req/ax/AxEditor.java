@@ -1,67 +1,72 @@
 package cz.req.ax;
 
 import com.vaadin.server.Sizeable;
-import com.vaadin.ui.*;
+import com.vaadin.ui.AbstractComponentContainer;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.VerticalLayout;
 
 public class AxEditor<T extends IdObject<Integer>> implements Refresh {
 
     AxContainer<T> container;
     AxForm<T> form;
-    Table table;
+    AxTable<T> table;
 
-    public AxEditor(final AxContainer<T> cont) {
+    public static <T extends IdObject<Integer>> AxEditor<T> init(AxContainer<T> cont) {
+        return new AxEditor<T>(cont);
+    }
+
+    private AxEditor(final AxContainer<T> cont) {
         container = cont;
 
         form = AxForm.init(container.getRepository().entityClass());
         form.setSizeUndefined();
-        form.addButton("Uložit", event -> {
-            T entity = form.commit();
-            if (entity.getId() == null) {
-                form.setItem(container.create(entity));
-            } else {
-                form.setItem(container.update(entity));
-            }
-            Notification.show("Uloženo");
-            table.refreshRowCache();
-            table.select(form.getValue().getId());
-        });
-        //TODO Rozhodne lip.... +delete?
-        form.addButton("Nový", event -> {
+        form.getButtonBar().addComponent(new AxAction<T>().caption("Uložit").primary()
+                .run(() -> {
+                    //TODO fix value??? .value(form.commit()).action(entity -> {
+                    T entity = form.commit();
+                    if (entity.getId() == null) {
+                        form.setItem(container.create(entity));
+                    } else {
+                        form.setItem(container.update(entity));
+                    }
+                    Notification.show("Uloženo");
+                    table.refresh();
+                    table.getTable().select(form.getValue().getId());
+                }).button());
+        form.getButtonBar().addComponent(new AxAction<T>().caption("Nový").action(entity -> {
             form.setValue(container.getRepository().entityInstance());
-        });
+        }).button());
+        //TODO delete action
 
-        table = new Table(null, container);
-        table.setColumnHeaderMode(Table.ColumnHeaderMode.HIDDEN);
-        table.setSelectable(true);
-        table.addValueChangeListener(event -> {
+        table = new AxBeanTable<>(container);
+        table.getTable().addValueChangeListener(event -> {
             Object value = event.getProperty().getValue();
             form.setItem(value == null ? null : container.getItem(value));
         });
 
+        table.refresh();
     }
 
-    public AbstractComponentContainer initHorizontal(Init init) {
+    public AbstractComponentContainer initHorizontal(InitContainerTableForm<T> init) {
         init.init(container, table, form);
-        table.setSizeFull();
-        HorizontalLayout layout = new HorizontalLayout(table, form);
+        table.getTable().setSizeFull();
+        HorizontalLayout layout = new HorizontalLayout(table.getTable(), form);
         layout.setSizeFull();
         return layout;
     }
 
-    public AbstractComponentContainer initVertical(Init init) {
+    public AbstractComponentContainer initVertical(InitContainerTableForm<T> init) {
         init.init(container, table, form);
-        table.setPageLength(0);
-        table.setWidth(100, Sizeable.Unit.PERCENTAGE);
-        VerticalLayout layout = new VerticalLayout(table, form);
+        table.getTable().setPageLength(0);
+        table.getTable().setWidth(100, Sizeable.Unit.PERCENTAGE);
+        VerticalLayout layout = new VerticalLayout(table.getTable(), form);
         layout.setSizeFull();
         return layout;
     }
 
     public void refresh() {
-        table.refreshRowCache();
+        table.refresh();
     }
 
-    public static interface Init<S> {
-        void init(AxContainer container, Table table, AxForm<S> form);
-    }
 }

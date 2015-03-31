@@ -11,7 +11,7 @@ $ax-dark-bgrnd: #6b6b6b;
 /*$v-font-family: "Source Sans Pro", sans-serif;*/
 $v-font-family: "Lato", sans-serif;
 $v-app-background-color: $ax-main-bgrnd;
-$v-background-color: #eee;
+$v-background-color: #ccc;
 $v-focus-color: $ax-main-focus;
 $v-focus-style: 0 0 0 1px $v-focus-color;
 $v-bevel: false;
@@ -58,23 +58,34 @@ $v-bevel: false;
     line-height: 40px;
     border: none;
     border-radius: 0;
-    color: $ax-dark-color;
-    background: $ax-dark-bgrnd none;
     > .v-menubar-menuitem {
       > .v-menubar-menuitem-caption > .v-icon {
         margin: 0 8px 0 0;
-
       }
       border: none !important;
       border-radius: 0 !important;
     }
-    > .v-menubar-menuitem-primary {
+  }
+  .v-menubar {
+    color: $ax-dark-color;
+    background: $ax-dark-bgrnd none;
+    > .v-menubar-menuitem-primary, .v-menubar-menuitem-primary-right {
       background: #197de1;
-      //      color: #197de1;
-      //      background: #f0f0f0;
     }
-    > .v-menubar-menuitem-right {
+    > .v-menubar-menuitem-danger, .v-menubar-menuitem-danger-right {
+      background: #ed473b;
+    }
+    > .v-menubar-menuitem-friendly, .v-menubar-menuitem-friendly-right {
+      background: #2c9720;
+    }
+    > .v-menubar-menuitem-right, .v-menubar-menuitem-normal-right, .v-menubar-menuitem-primary-right,
+    .v-menubar-menuitem-danger-right, .v-menubar-menuitem-friendly-right {
       float: right;
+    }
+  }
+  .v-menubar-popup {
+    .v-menubar-menuitem {
+      line-height: 40px;
     }
   }
 
@@ -129,10 +140,14 @@ $v-bevel: false;
       }
     }
   }
-  .v-tabsheet-tabitemcell:first-child {
+  .v-tabsheet-tabcontainer {
     .v-caption {
+      font-size: 18px;
+    }
+    .v-tabsheet-tabitemcell:first-child .v-caption {
       margin-left: 10px !important;
     }
+
   }
 
   .window-headerless .v-window-outerheader {
@@ -167,6 +182,34 @@ $v-bevel: false;
   }
   .v-tabsheet-tabsheetpanel > .v-scrollable {
     overflow: hidden;
+  }
+
+  .exception-view {
+    .main-panel {
+      padding: 0;
+    }
+    .h2, .v-button {
+      margin: 16px;
+    }
+  }
+
+  .Aqua {
+    background-color: #4FC1E9;
+  }
+  .Vender {
+    background-color: #AC92EC;
+  }
+  .Jeans {
+    background-color: #5D9CEC;
+  }
+  .Grass {
+    background-color: #A0D468;
+  }
+  .Sunny {
+    background-color: #FFCE54;
+  }
+  .Grape {
+    background-color: #ED5565;
   }
 
   /* Barvy */

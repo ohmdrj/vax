@@ -34,6 +34,7 @@ public abstract class AxView extends CssLayout implements View, Container, Navig
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         //TODO Parse navigation parameter??
+        System.out.println("enter " + getClass().getSimpleName());
     }
 
     @Override
@@ -46,10 +47,22 @@ public abstract class AxView extends CssLayout implements View, Container, Navig
         if (tabSheet == null) {
             tabSheet = new TabSheet();
             tabSheet.setSizeFull();
-            tabSheet.addSelectedTabChangeListener(event -> Refresh.tryRefresh(event.getComponent()));
+            tabSheet.addSelectedTabChangeListener(event -> Refresh.tryRefresh(tabSheet.getSelectedTab()));
             components(tabSheet);
         }
         return tabSheet;
+    }
+
+    public TabSheet.Tab addTabSheet(String caption, FontAwesome awesome, final ComponentWrapper component) {
+        tabSheet().addSelectedTabChangeListener(new TabSheet.SelectedTabChangeListener() {
+            @Override
+            public void selectedTabChange(TabSheet.SelectedTabChangeEvent event) {
+                if (tabSheet().getSelectedTab().equals(component.getComponent())) {
+                    Refresh.tryRefresh(component);
+                }
+            }
+        });
+        return tabSheet().addTab(component.getComponent(), caption, awesome);
     }
 
     public TabSheet.Tab addTabSheet(String caption, FontAwesome awesome, Component component) {

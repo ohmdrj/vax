@@ -47,7 +47,7 @@ public class AxVaadinServlet extends SpringVaadinServlet {
         if (request.getPathInfo() != null && request.getPathInfo().startsWith("/APP/PUBLISHED")) {
             response.setHeader("Cache-Control", "no-cache");
             try {
-                String path = request.getPathInfo().replace("..", "");
+                String path = request.getPathInfo();//.replace("..", "");
                 InputStream stream = getClass().getResourceAsStream(path);
                 ByteStreams.copy(stream, response.getOutputStream());
             } catch (Exception e) {

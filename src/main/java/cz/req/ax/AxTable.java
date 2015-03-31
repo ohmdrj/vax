@@ -1,15 +1,18 @@
 package cz.req.ax;
 
 import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.server.Sizeable;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public abstract class AxTable<T> implements Refresh {
+public abstract class AxTable<T> implements ComponentWrapper, Refresh {
 
     List<String> visibleColumns = new ArrayList<>();
     Container.Filter containerFilter;
@@ -19,6 +22,11 @@ public abstract class AxTable<T> implements Refresh {
     Table table;
 
     public abstract Container getContainer();
+
+    @Override
+    public Component getComponent() {
+        return getTable();
+    }
 
     public Table getTable() {
         if (table == null) {
@@ -30,6 +38,29 @@ public abstract class AxTable<T> implements Refresh {
             table.setColumnHeaderMode(Table.ColumnHeaderMode.HIDDEN);
         }
         return table;
+    }
+
+    public T getValue() {
+        try {
+            Object value = table.getValue();
+            if (value == null) return null;
+            if (value instanceof Integer) {
+                Item item = getContainer().getItem(value);
+                if (item instanceof BeanItem) {
+                    return (T) ((BeanItem) item).getBean();
+                } else {
+                    throw new UnsupportedOperationException();
+                }
+            } else {
+                return (T) value;
+            }
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public void setValue(T value) {
+        table.setValue(value);
     }
 
     public AxTable<T> style(String... styleClasses) {
@@ -74,6 +105,7 @@ public abstract class AxTable<T> implements Refresh {
                 visibleColumns.add(propertyId);
             }
             table.setVisibleColumns((Object[]) propertyIds);
+            table.setColumnExpandRatio(propertyIds[0], 1f);
         }
         return this;
     }
@@ -89,6 +121,7 @@ public abstract class AxTable<T> implements Refresh {
 
     public AxTable<T> done() {
         table.setVisibleColumns(visibleColumns.toArray());
+        refresh();
         return this;
     }
 

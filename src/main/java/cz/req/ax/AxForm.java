@@ -2,19 +2,25 @@ package cz.req.ax;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.AbstractBeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.*;
+import org.springframework.util.Assert;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.EnumSet;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 //TODO Refactor flow API
 public class AxForm<T> extends CustomComponent {
 
     public static <T> AxForm<T> init(Class<T> beanType) {
+        Assert.notNull(beanType);
         try {
             return init(beanType.newInstance());
         } catch (Exception e) {
@@ -23,19 +29,22 @@ public class AxForm<T> extends CustomComponent {
     }
 
     public static <T> AxForm<T> init(T beanValue) {
-        return new AxForm<T>(new BeanItem<T>(beanValue));
+        Assert.notNull(beanValue);
+        return new AxForm<>(new BeanItem<>(beanValue));
     }
 
     public static <T> AxForm<T> init(BeanItem<T> beanItem) {
-        return new AxForm<T>(beanItem);
+        Assert.notNull(beanItem);
+        return new AxForm<>(beanItem);
     }
 
+    Class<T> beanClass;
     BeanFieldGroup<T> fieldGroup;
 
     HorizontalLayout buttonBar;
 
     private AxForm(BeanItem<T> beanItem) {
-        Class<T> beanClass = (Class<T>) beanItem.getBean().getClass();
+        beanClass = (Class<T>) beanItem.getBean().getClass();
         fieldGroup = new BeanFieldGroup<T>(beanClass);
         fieldGroup.setItemDataSource(beanItem);
         fieldGroup.setBuffered(true);
@@ -48,6 +57,10 @@ public class AxForm<T> extends CustomComponent {
         return this;
     }
 
+    public BeanFieldGroup<T> getFieldGroup() {
+        return fieldGroup;
+    }
+
     public AbstractLayout getRootLayout() {
         if (getCompositionRoot() instanceof AbstractLayout) {
             return (AbstractLayout) getCompositionRoot();
@@ -57,6 +70,19 @@ public class AxForm<T> extends CustomComponent {
 //        layoutRoot.setSpacing(false);
         setCompositionRoot(layout);
         return layout;
+    }
+
+    public void addCommitHandler(Consumer<FieldGroup.CommitEvent> handler) {
+        fieldGroup.addCommitHandler(new FieldGroup.CommitHandler() {
+            @Override
+            public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+            }
+
+            @Override
+            public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+                handler.accept(commitEvent);
+            }
+        });
     }
 
     public void addComponent(Component component) {
@@ -79,7 +105,12 @@ public class AxForm<T> extends CustomComponent {
     }
 
     public void setItem(BeanItem<T> beanItem) {
-        fieldGroup.setItemDataSource(beanItem);
+        if (beanItem instanceof BeanItem) {
+            fieldGroup.setItemDataSource(beanItem);
+            if (!fieldGroup.isEnabled()) fieldGroup.setEnabled(true);
+        } else {
+            fieldGroup.setEnabled(false);
+        }
     }
 
     /*public void setItem(EntityItem<T> beanItyem) {
@@ -113,6 +144,11 @@ public class AxForm<T> extends CustomComponent {
     @Deprecated
     public AxForm<T> addButton(String caption, Button.ClickListener listener) {
         getButtonBar().addComponent(new Button(caption, listener));
+        return this;
+    }
+
+    public AxForm<T> addAction(String caption, Runnable run) {
+        addComponent(new AxAction().caption(caption).run(run).button());
         return this;
     }
 
@@ -204,25 +240,42 @@ public class AxForm<T> extends CustomComponent {
         return combo;
     }
 
+    public AxTableField addTable(String property, InitTableForm init) {
+        try {
+            Type genericType = beanClass.getDeclaredField(property).getGenericType();
+            Type[] arguments = ((ParameterizedType) genericType).getActualTypeArguments();
+            Class clazz = Class.forName(arguments[0].getTypeName());
+
+            AxTableField field = new AxTableField(clazz, init);
+            return field;
+        } catch (Exception ex) {
+            throw new RuntimeException("Cannot read class from generic type for property " + property, ex);
+        }
+//        fieldGroup.bind(field, property);
+//        addComponent(field);
+    }
+
     static class AxConverter<T extends IdEntity> implements Converter<Integer, T> {
 
         AbstractBeanContainer<?, T> container;
 
         public AxConverter(AbstractBeanContainer<?, T> container) {
             this.container = container;
+            if (container instanceof Refresh) {
+                ((Refresh)container).refresh();
+            }
         }
 
         @Override
         public T convertToModel(Integer value, Class<? extends T> targetType, Locale locale) throws ConversionException {
             if (value == null) return null;
             BeanItem<T> item = container.getItem(value);
-            return item.getBean();
+            return item == null ? null : item.getBean();
         }
 
         @Override
         public Integer convertToPresentation(T value, Class<? extends Integer> targetType, Locale locale) throws ConversionException {
-            if (value == null) return null;
-            return value.getId();
+            return value == null ? null : value.getId();
         }
 
         @Override
