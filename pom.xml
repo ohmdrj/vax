@@ -12,6 +12,16 @@
     <name>Vaadin AX</name>
     <description>Vaadin Another eXtension project</description>
 
+    <developers>
+        <developer>
+            <id>burianek</id>
+            <name>Ondrej Burianek</name>
+            <email>burianek@req.cz</email>
+            <organization>Request</organization>
+            <organizationUrl>http://req.cz</organizationUrl>
+        </developer>
+    </developers>
+
     <properties>
         <spring-boot.version>1.2.3.RELEASE</spring-boot.version>
         <spring-vaadin.version>3.1</spring-vaadin.version>
