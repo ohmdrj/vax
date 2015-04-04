@@ -2,6 +2,6 @@ package cz.req.ax;
 
 public interface BeanEventListener<T> {
 
-    public void beanEvent(T bean);
+    void beanEvent(T bean);
 
 }

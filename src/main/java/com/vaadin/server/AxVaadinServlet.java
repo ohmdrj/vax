@@ -18,8 +18,8 @@ import java.util.concurrent.Semaphore;
 
 public class AxVaadinServlet extends SpringVaadinServlet {
 
-    boolean compile = false;
-    File resourcesDir;
+    File themeDir;
+    boolean themeCompile = false;
     Semaphore semaphore = new Semaphore(1);
     Map<String, CssCacheItem> cache = new ConcurrentHashMap<>();
     LoadingCache<String, CssCacheItem> graphs = CacheBuilder.newBuilder().build(
@@ -32,13 +32,17 @@ public class AxVaadinServlet extends SpringVaadinServlet {
     );
 
     public AxVaadinServlet() {
+        setThemeDir(new File(System.getProperty("user.dir") + "/src/main/resources"));
     }
 
-    public AxVaadinServlet(File resourcesDir) {
-        this.resourcesDir = resourcesDir;
-        compile = resourcesDir != null && resourcesDir.exists();
-        if (!compile) {
-            System.err.print("Dynamic SASS compile missing resources directory: " + resourcesDir);
+    public void setThemeDir(File resourcesDir) {
+        this.themeDir = resourcesDir;
+        themeCompile = resourcesDir != null && resourcesDir.exists();
+        //TODO Logger
+        if (themeCompile) {
+            System.out.println("Dynamic SASS compile resources directory: " + resourcesDir);
+        } else {
+            System.err.println("Dynamic SASS compile missing resources directory: " + resourcesDir);
         }
     }
 
@@ -53,7 +57,7 @@ public class AxVaadinServlet extends SpringVaadinServlet {
             } catch (Exception e) {
                 log("Error serving static resource " + request.getPathInfo(), e);
             }
-        } else if (compile && request.getServletPath().equals("/VAADIN")
+        } else if (themeCompile && request.getServletPath().equals("/VAADIN")
                 && request.getPathInfo().startsWith("/themes")
                 && request.getPathInfo().endsWith(".css")) {
             CurrentInstance.clearAll();
@@ -65,7 +69,7 @@ public class AxVaadinServlet extends SpringVaadinServlet {
                 String scssName = request.getPathInfo().substring(0, request.getPathInfo().length() - 4);
                 CssCacheItem cacheItem = cache.get(scssName);
                 if (cacheItem == null) {
-                    cacheItem = new CssCacheItem(new File(resourcesDir, "VAADIN" + scssName + ".scss"));
+                    cacheItem = new CssCacheItem(new File(themeDir, "VAADIN" + scssName + ".scss"));
                     cache.put(scssName, cacheItem);
                 }
 

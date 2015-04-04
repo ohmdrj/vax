@@ -66,54 +66,13 @@ public class AxRepositoryImpl<T extends IdObject<Integer>>
         }
     }
 
-    @Override
+    /*@Override
     public T saveMerge(T entity) {
         Assert.notNull(entity);
         if (!getEntityManager().contains(entity)) {
             entity = getEntityManager().merge(entity);
         }
         return save(entity);
-    }
-
-    /*@Transactional
-    public T create(T source, MappingContext mappingContext) {
-        if (source == null || source.getId() == null) {
-            return entityInstance();
-        }
-        T find = findOne(source.getId());
-        if (find == null) {
-            throw new IllegalArgumentException("Neni v databazi");
-        }
-        return find;
     }*/
-   /* @Transactional
-    @Override
-    public T eagerize(T entity) {
-        return (T) eagerizeImpl(entity);
-    }
 
-    public IdObject eagerizeImpl(IdObject entity) {
-        if (entity == null || entity.getId() == null) {
-            return entity;
-        }
-        try {
-            entity = getEntityManager().getReference(entity.getClass(), entity.getId());
-            for (Method method : entity.getClass().getMethods()) {
-                if (IdObject.class.isAssignableFrom(method.getReturnType())) {
-                    eagerizeImpl((IdObject) method.invoke(entity));
-                }
-                if (Collection.class.isAssignableFrom(method.getReturnType())) {
-                    Collection collect = (Collection) method.invoke(entity);
-                    if (collect != null)
-                        for (Object object : collect) {
-                            if (object instanceof IdObject)
-                                eagerizeImpl((IdObject) object);
-                        }
-                }
-            }
-        } catch (Throwable ex) {
-            ex.printStackTrace();
-        }
-        return entity;
-    }*/
 }

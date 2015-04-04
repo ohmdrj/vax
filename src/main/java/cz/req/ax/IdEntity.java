@@ -35,4 +35,5 @@ public class IdEntity implements IdObject<Integer> {
         }
         return false;
     }
+
 }

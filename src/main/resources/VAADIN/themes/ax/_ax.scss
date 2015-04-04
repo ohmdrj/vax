@@ -1,20 +1,30 @@
 /* Ax */
-$ax-main-focus: #fff;
+$ax-main-focus: #197de1;
 $ax-main-bgrnd: #fff;
-
+$ax-lite-color: #252525;
 $ax-lite-bgrnd: #f0f0f0;
-
 $ax-dark-color: #fff;
 $ax-dark-bgrnd: #6b6b6b;
 
-/* Valo */
-/*$v-font-family: "Source Sans Pro", sans-serif;*/
-$v-font-family: "Lato", sans-serif;
+/* Valo Metro */
+$v-font-family: "Source Sans Pro", "Lato", sans-serif;
+$v-app-loading-text: "";
 $v-app-background-color: $ax-main-bgrnd;
-$v-background-color: #ccc;
+$v-background-color: $ax-lite-bgrnd;
 $v-focus-color: $ax-main-focus;
 $v-focus-style: 0 0 0 1px $v-focus-color;
 $v-bevel: false;
+$v-shadow: false;
+$v-gradient: false;
+$v-border: 0 solid v-shade;
+$v-border-radius: 0px;
+$v-textfield-bevel: false;
+$v-textfield-shadow: false;
+$v-textfield-border: 1px solid v-shade;
+$v-link-text-decoration: none;
+$v-overlay-shadow: 0 0 0 2px #000;
+$v-overlay-border-width: 2px;
+$valo-menu-background-color: darken($v-focus-color, 10%);
 
 @mixin valo-animate-in-fade($duration: 100ms, $delay: null) {
   @include animation(valo-animate-in-fade $duration $delay backwards);
@@ -36,9 +46,37 @@ $v-bevel: false;
   @include animation(valo-animate-in-slide-right $duration $delay backwards);
 }
 
+@mixin master-detail {
+  > .page-body {
+    > .main-panel {
+      width: 100%;
+      box-sizing: border-box;
+      padding-right: 40%;
+    }
+    > .right-panel {
+      top: 90px;
+      right: 0;
+      width: 40%;
+      position: fixed;
+      box-sizing: border-box;
+      padding: 0 15px;
+      > .v-widget {
+        display: block;
+        position: relative;
+        box-sizing: border-box;
+        width: 100%;
+      }
+    }
+  }
+}
+
 @mixin ax {
 
   @include valo;
+
+  .v-ui {
+    overflow: hidden !important;
+  }
 
   .clear {
     clear: both;
@@ -50,25 +88,121 @@ $v-bevel: false;
     padding: 10px;
   }
 
-  /* Layout */
-  .menu-bar {
-    position: absolute;
-    height: 40px;
-    font-size: 20px;
-    line-height: 40px;
-    border: none;
-    border-radius: 0;
-    > .v-menubar-menuitem {
-      > .v-menubar-menuitem-caption > .v-icon {
-        margin: 0 8px 0 0;
+  .page-root, .page-body, .main-panel {
+    width: 100%;
+  }
+
+  //TODO Rly?
+  .fullscreen, .fullscreen .page-body, .fullscreen .main-panel {
+    display: block;
+    height: 100%;
+  }
+
+  .page-root {
+    > .menu-bar {
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      z-index: 900;
+      position: fixed;
+      background-color: #252525;
+      font-size: 20px;
+      > .v-menubar-menuitem {
+        padding: 2px 15px 0px 15px;
+        border: none !important;
+        border-radius: 0 !important;
+        > .v-menubar-menuitem-caption > .v-icon {
+          margin: 0 8px 0 0;
+        }
       }
-      border: none !important;
-      border-radius: 0 !important;
+    }
+    > .menu-bar::after {
+      display: none;
+    }
+
+    > .page-body {
+      > .main-panel {
+        padding-top: 40px;
+      }
+      > .tabs-panel + .main-panel {
+        padding-top: 90px;
+      }
+
+      > .tabs-panel {
+        top: 40px;
+        left: 0;
+        right: 0;
+        z-index: 900;
+        position: fixed;
+        background-color: #fff;
+      }
     }
   }
+
+  /*
+  //TODO Move footer to
+  .page-root:after {
+    //SPACER
+    content: " ";
+    display: block;
+    position: relative;
+    height: 50px;
+    //background: yellowgreen;
+    //z-index: 910;
+  }
+  .page-footer {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    position: fixed;
+  }
+  .page-footer {
+    display: block;
+    position: relative;
+    margin: 10px auto;
+    max-width: 800px;
+    min-height: 50px;
+    font-size: 20px;
+    .logo {
+      left: 0;
+      bottom: 0;
+      width: 119px;
+      height: 30px;
+      display: block;
+      position: absolute;
+      background-image: url('logo-marbes-black.png');
+    }
+    .info {
+      right: 0;
+      bottom: 0;
+      display: block;
+      position: absolute;
+    }
+  }9*/
+
+  .v-button-primary {
+    background: #197de1;
+    padding: 0 15px;
+    font-weight: normal;
+  }
+  .v-button-danger {
+    background: #ed473b;
+  }
+  .v-button-friendly {
+    background: #2c9720;
+  }
+  .v-button:focus:after {
+    border: 0;
+    box-shadow: none;
+  }
+
   .v-menubar {
     color: $ax-dark-color;
     background: $ax-dark-bgrnd none;
+    > .v-menubar-menuitem {
+      margin-right: 0;
+    }
     > .v-menubar-menuitem-primary, .v-menubar-menuitem-primary-right {
       background: #197de1;
     }
@@ -83,22 +217,36 @@ $v-bevel: false;
       float: right;
     }
   }
+  .v-window .v-menubar {
+    width: 100%;
+  }
   .v-menubar-popup {
     .v-menubar-menuitem {
       line-height: 40px;
     }
   }
 
-  .main-panel {
-    box-sizing: border-box;
-    padding-top: 40px;
-    width: 100%;
-    height: 100%;
+  /* Components */
+  .editor-horizontal {
+    display: block;
+    width: 60%;
+    > .item-form {
+      top: 90px;
+      right: 0;
+      width: 40%;
+      position: fixed;
+      box-sizing: border-box;
+      > .v-widget {
+        display: block;
+        position: relative;
+        box-sizing: border-box;
+        width: 100%;
+      }
+    }
   }
 
-  /* Components */
   .tiler {
-    @extend .padding;
+    //@extend .padding;
     .tile {
       height: 50px;
       overflow: hidden;
@@ -110,12 +258,36 @@ $v-bevel: false;
     }
   }
 
+  .item-form {
+    padding: 10px;
+    line-height: 1em;
+    .caption {
+      margin-top: 5px;
+      margin-right: 5px;
+      text-align: right;
+      color: #6b6b6b;
+    }
+    .label-field {
+      margin-top: 3px;
+      margin-right: 10px;
+      .v-label {
+        font-size: 24px;
+      }
+    }
+    .v-button {
+      margin-top: 10px;
+    }
+  }
+
   /* Modifications */
   .v-formlayout {
-    padding: 20px;
+    margin: 0 20px 10px;
   }
   .v-checkbox {
     margin: 10px 20px 10px 0;
+  }
+  .v-datefield-popup .v-datefield-calendarpanel-day {
+    background: w;
   }
 
   .v-table {
@@ -166,9 +338,6 @@ $v-bevel: false;
   .v-scrollable {
     overflow-x: hidden;
     overflow-y: auto;
-  }
-  .v-scrollable > .v-widget {
-    width: 100%;
   }
   //TODO Hack table overflow http://dev.vaadin.com/ticket/15164
   .hack-noscroll {

@@ -1,5 +1,8 @@
 package cz.req.ax;
 
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
+
 @FunctionalInterface
 public interface Refresh {
 
@@ -8,8 +11,23 @@ public interface Refresh {
     static void tryRefresh(Object o) {
         if (o instanceof Refresh) {
             ((Refresh) o).refresh();
-//        } else {
-//            System.err.println("Object " + o + " does not support refresh");
         }
     }
+
+    default void pushRefresh() {
+        System.err.println("Refresh TicketChange");
+        UI.getCurrent().access(new Runnable() {
+            @Override
+            public void run() {
+                try {
+//                    refresh();
+                    Notification.show("Refresh");
+//                UI.getCurrent().push();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 }

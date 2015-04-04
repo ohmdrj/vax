@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class Tiler<T> extends CssLayout {
+public class AxTiler<T> extends CssLayout {
 
     //    String entityName;
     String propertyId;
@@ -20,8 +20,9 @@ public class Tiler<T> extends CssLayout {
     Function<BeanItem<T>, AbstractComponent> factory;
     BiFunction<BeanItem<T>, AbstractComponent, AbstractComponent> modifier;
 
-    public Tiler() {
+    public AxTiler() {
         addStyleName("tiler");
+        setSizeFull();
         factory = (bean) -> {
             Assert.notNull(bean);
             Object caption = bean.getItemProperty(propertyId).getValue();
@@ -39,7 +40,7 @@ public class Tiler<T> extends CssLayout {
         };
     }
 
-    public Tiler<T> container(AbstractBeanContainer<?, T> container) {
+    public AxTiler<T> container(AbstractBeanContainer<?, T> container) {
         Assert.notNull(propertyId, "Set propertyId before container!");
         this.container = container;
         refresh();
@@ -47,27 +48,27 @@ public class Tiler<T> extends CssLayout {
 //        entityName = container.getRepository().entityClass().getSimpleName();
     }
 
-    public Tiler<T> action(Consumer<T> action) {
+    public AxTiler<T> action(Consumer<T> action) {
         this.action = action;
         return this;
     }
 
-    public Tiler<T> factory(Function<BeanItem<T>, AbstractComponent> factory) {
+    public AxTiler<T> factory(Function<BeanItem<T>, AbstractComponent> factory) {
         this.factory = factory;
         return this;
     }
 
-    public Tiler<T> modifier(BiFunction<BeanItem<T>, AbstractComponent, AbstractComponent> modifier) {
+    public AxTiler<T> modifier(BiFunction<BeanItem<T>, AbstractComponent, AbstractComponent> modifier) {
         this.modifier = modifier;
         return this;
     }
 
-    public Tiler<T> style(String style) {
+    public AxTiler<T> style(String style) {
         addStyleName(style);
         return this;
     }
 
-    public Tiler<T> propertyId(String propertyId) {
+    public AxTiler<T> propertyId(String propertyId) {
         this.propertyId = propertyId;
         return this;
     }

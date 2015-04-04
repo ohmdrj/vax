@@ -1,9 +1,8 @@
 package cz.req.ax;
 
-import com.vaadin.server.Sizeable;
-import com.vaadin.ui.*;
-
-import java.util.function.Supplier;
+import com.vaadin.ui.AbstractLayout;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 
 /**
  * @author by Ondřej Buriánek, burianek@marbes.cz.
@@ -12,80 +11,105 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface Container {
 
+    String PAGE_MENU = "page-menu";
+    String PAGE_FOOT = "page-footer";
+    String PAGE_BODY = "page-body";
+    String MAIN_PANEL = "main-panel";
+
     ContainerRoot getRoot();
 
-    //TODO Rename add
-    default public Container components(Component... components) {
-        AbstractLayout layout = layoutMain();
-        for (Component component : components) {
-            layout.addComponent(component);
-        }
+    default Container mainComponents(Component... components) {
+        mainPanel().addComponents(components);
         return this;
     }
 
-    default public Container actions(AxAction... actions) {
+    default Container menuActions(AxAction... actions) {
         menuBar().actions(actions);
         return this;
     }
 
-    default public AxMenuBar menuBar() {
-        return getRoot().getVariable(AxMenuBar.class, () -> {
-            if (getRoot().getVariable(AbstractLayout.class, null) != null) {
-                throw new IllegalStateException("Layout initialized before menuBar");
-            }
+    default AxMenuBar menuBar() {
+        return getRoot().getVariable(PAGE_MENU, () -> {
             AxMenuBar menuBar = new AxMenuBar();
             menuBar.addStyleName("menu-bar");
-            menuBar.setWidth(100, Sizeable.Unit.PERCENTAGE);
-            getRoot().addComponent(menuBar);
+//            menuBar.setWidth(100, Sizeable.Unit.PERCENTAGE);
+            getRoot().addComponentWrapped(menuBar);
             return menuBar;
         });
     }
 
-    default public AbstractLayout layoutMain() {
-        return getRoot().getVariable(AbstractLayout.class, () -> {
-            layoutVertical();
-            return getRoot().getVariable(AbstractLayout.class, null);
-        });
-    }
-
-    default AbstractLayout layoutMain(Supplier<AbstractLayout> supplier) {
-        return getRoot().getVariable(AbstractLayout.class, () -> {
-            AbstractLayout layout = supplier.get();
-            layout.addStyleName("main-panel");
-            getRoot().addComponent(layout);
-            return layout;
-        });
-    }
-
-    //TODO Rename rootLayout
-    default public Container layoutVertical() {
-        getRoot().setVariable(AbstractLayout.class, layoutMain(() -> {
-            VerticalLayout layout = new VerticalLayout();
-//            layout.setSizeUndefined();
-            getRoot().addComponent(layout);
-            return layout;
-        }));
-        return this;
-    }
-
-    default public Container layoutHorizontal() {
-        getRoot().setVariable(AbstractLayout.class, layoutMain(() -> {
-            HorizontalLayout layout = new HorizontalLayout();
-//            layout.setSizeUndefined();
-            getRoot().addComponent(layout);
-            return layout;
-        }));
-        return this;
-    }
-
-    default public Container layoutCss() {
-        getRoot().setVariable(AbstractLayout.class, layoutMain(() -> {
+    default AbstractLayout pageBody() {
+        return getRoot().getVariable(PAGE_BODY, () -> {
             CssLayout layout = new CssLayout();
-//            layout.setSizeUndefined();
+            layout.addStyleName(PAGE_BODY);
+            layout.setSizeUndefined();
             getRoot().addComponent(layout);
             return layout;
-        }));
-        return this;
+        });
+    }
+
+    default AbstractLayout pageFooter() {
+        return getRoot().getVariable(PAGE_FOOT, () -> {
+            CssLayout layout = new CssLayout();
+            layout.addStyleName(PAGE_FOOT);
+            layout.setSizeUndefined();
+            getRoot().addComponentWrapped(layout);
+            return layout;
+        });
+    }
+
+    //TODO Redesign, Suffix for inner
+    @Deprecated
+    default <T extends AbstractLayout> T bodyLayout(String layoutName, Class<T> layoutClass) {
+        return getRoot().getVariable(layoutName, () -> {
+            try {
+                T layout = layoutClass.newInstance();
+                layout.setSizeUndefined();
+                layout.addStyleName(layoutName);
+                pageBody().addComponent(layout);
+
+                /*CssLayout wrap = new CssLayout(layout);
+                wrap.setStyleName(layoutName + "-wrap");
+                pageBody().addComponent(wrap);*/
+                return layout;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    default CssLayout bodyLayout(String layoutName) {
+        return getRoot().getVariable(layoutName, () -> {
+            try {
+                CssLayout layout = new CssLayout();
+                layout.setSizeUndefined();
+                layout.addStyleName(layoutName);
+                pageBody().addComponent(layout);
+                return layout;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    default CssLayout bodyLayoutWrap(String layoutName) {
+        return getRoot().getVariable(layoutName, () -> {
+            try {
+                CssLayout layout = new CssLayout();
+                layout.setSizeUndefined();
+                layout.addStyleName(layoutName);
+                CssLayout wrap = new CssLayout(layout);
+                wrap.setStyleName(layoutName + "-wrap");
+                pageBody().addComponent(wrap);
+                return layout;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    default AbstractLayout mainPanel() {
+        return bodyLayoutWrap(MAIN_PANEL);
     }
 
 }

@@ -1,12 +1,9 @@
 package cz.req.ax;
 
-import com.vaadin.server.Sizeable;
-import com.vaadin.ui.AbstractComponentContainer;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.VerticalLayout;
 
-public class AxEditor<T extends IdObject<Integer>> implements Refresh {
+public class AxEditor<T extends IdObject<Integer>> extends CssLayout implements Refresh {
 
     AxContainer<T> container;
     AxForm<T> form;
@@ -44,26 +41,29 @@ public class AxEditor<T extends IdObject<Integer>> implements Refresh {
             Object value = event.getProperty().getValue();
             form.setItem(value == null ? null : container.getItem(value));
         });
-
-        table.refresh();
     }
 
-    public AbstractComponentContainer initHorizontal(InitContainerTableForm<T> init) {
+    public AxEditor<T> initHorizontal(InitContainerTableForm<T> init) {
         init.init(container, table, form);
-        table.getTable().setSizeFull();
-        HorizontalLayout layout = new HorizontalLayout(table.getTable(), form);
-        layout.setSizeFull();
-        return layout;
+        table.done();
+        table.getTable();//.setSizeFull();
+        setStyleName("editor-horizontal");
+        setSizeUndefined();
+        addComponents(table.getTable(), form);
+        return this;
     }
 
+    /*@Deprecated //TODO Replace with CssLayout
     public AbstractComponentContainer initVertical(InitContainerTableForm<T> init) {
         init.init(container, table, form);
+        table.done();
         table.getTable().setPageLength(0);
         table.getTable().setWidth(100, Sizeable.Unit.PERCENTAGE);
         VerticalLayout layout = new VerticalLayout(table.getTable(), form);
+        layout.setStyleName("editor-vertical");
         layout.setSizeFull();
         return layout;
-    }
+    }*/
 
     public void refresh() {
         table.refresh();

@@ -11,7 +11,7 @@ public class AxMenuBar extends MenuBar {
 
     public AxMenuBar actions(AxAction... actions) {
         for (AxAction action : actions) {
-            action(action);
+            if (action != null) action(action);
         }
         return this;
     }

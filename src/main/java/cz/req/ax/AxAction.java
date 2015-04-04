@@ -1,7 +1,7 @@
 package cz.req.ax;
 
 import com.google.common.base.Joiner;
-import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Resource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.UI;
 import org.slf4j.Logger;
@@ -16,9 +16,10 @@ public class AxAction<T> {
 
     private T value;
     private String caption, style;
+    private Boolean enabled = Boolean.TRUE;
     private Boolean right = Boolean.FALSE;
     private Supplier<String> confirm;
-    private FontAwesome icon;
+    private Resource icon;
     private Runnable run, runBefore, runAfter;
     private Consumer<T> action; //TODO Action Before/After?
     private Supplier<T> variable;
@@ -63,8 +64,18 @@ public class AxAction<T> {
         return this;
     }
 
+    public AxAction<T> enabled() {
+        this.enabled = Boolean.TRUE;
+        return this;
+    }
+
+    public AxAction<T> disabled() {
+        this.enabled = Boolean.FALSE;
+        return this;
+    }
+
     //TODO DescribedFunctionInterface
-    public AxAction<T> icon(FontAwesome icon) {
+    public AxAction<T> icon(Resource icon) {
         this.icon = icon;
         return this;
     }
@@ -110,9 +121,10 @@ public class AxAction<T> {
                 new AxConfirm(message, this::doActionAndAfter).show();
             }
         } catch (Throwable th) {
-            logger.error("Action error caption:" + caption + " action:" + action, th);
-            UI.getCurrent().getSession().setAttribute(Throwable.class, th);
-            UI.getCurrent().getNavigator().navigateTo(ExceptionView.NAME);
+            logger.error("Action error run:" + run + " action:" + action, th);
+            AxUI ui = (AxUI) UI.getCurrent();
+            ui.getSession().setAttribute(Throwable.class, th);
+            ui.getNavigator().navigateTo(ui.errorView);
         }
     }
 
@@ -142,7 +154,7 @@ public class AxAction<T> {
         return caption;
     }
 
-    public FontAwesome getIcon() {
+    public Resource getIcon() {
         return icon;
     }
 

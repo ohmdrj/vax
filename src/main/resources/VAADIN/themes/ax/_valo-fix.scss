@@ -1,0 +1,21 @@
+//Fix valo flickering animations
+
+@mixin valo-animate-in-fade($duration: 100ms, $delay: null) {
+  @include animation(valo-animate-in-fade $duration $delay backwards);
+}
+
+@mixin valo-animate-in-slide-down($duration: 400ms, $delay: null) {
+  @include animation(valo-animate-in-slide-down $duration $delay backwards);
+}
+
+@mixin valo-animate-in-slide-up($duration: 400ms, $delay: null) {
+  @include animation(valo-animate-in-slide-up $duration $delay backwards);
+}
+
+@mixin valo-animate-in-slide-left($duration: 400ms, $delay: null) {
+  @include animation(valo-animate-in-slide-left $duration $delay backwards);
+}
+
+@mixin valo-animate-in-slide-right($duration: 400ms, $delay: null) {
+  @include animation(valo-animate-in-slide-right $duration $delay backwards);
+}

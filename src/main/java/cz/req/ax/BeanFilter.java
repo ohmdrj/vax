@@ -25,4 +25,5 @@ public abstract class BeanFilter<T> implements Container.Filter {
     public boolean appliesToProperty(Object propertyId) {
         return true;
     }
+
 }

@@ -2,6 +2,7 @@ package cz.req.ax;
 
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 
 import java.util.function.Supplier;
 
@@ -11,23 +12,41 @@ import java.util.function.Supplier;
  */
 public class ContainerRoot {
 
+    boolean wrap = false;
     AbstractLayout root;
-    VarMap childs;
+    InitMap childs = new InitMap();
 
     public ContainerRoot(AbstractLayout root) {
         this.root = root;
-        childs = new VarMap();
     }
 
-    public void addComponent(Component c) {
-        root.addComponent(c);
+    public ContainerRoot(AbstractLayout root, boolean wrap) {
+        this.root = root;
+        this.wrap = wrap;
     }
 
-    public <T> T getVariable(Class<T> key, Supplier<T> sup) {
+    //TODO Redesign, Suffix for inner
+    public void addComponentWrapped(Component comp) {
+        if (wrap) {
+            CssLayout wrap = new CssLayout(comp);
+            wrap.setStyleName(comp.getStyleName() + "-wrap");
+//            wrap.setStyleName(comp.getStyleName());
+//            comp.setStyleName(comp.getStyleName() + "-inner");
+            root.addComponent(wrap);
+        } else {
+            root.addComponent(comp);
+        }
+    }
+
+    public void addComponent(Component comp) {
+        root.addComponent(comp);
+    }
+
+    public <T> T getVariable(String key, Supplier<T> sup) {
         return childs.get(key, sup);
     }
 
-    public <T> T setVariable(Class<T> key, T var) {
+    public <T> T setVariable(String key, T var) {
         return childs.set(key, var);
     }
 }

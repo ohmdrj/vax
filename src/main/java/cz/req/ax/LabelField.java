@@ -29,4 +29,5 @@ public class LabelField extends CustomField<String> {
         super.setInternalValue(newValue);
         label.setValue(newValue);
     }
+
 }

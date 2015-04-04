@@ -1,33 +1,28 @@
 package cz.req.ax;
 
-import com.vaadin.server.FontAwesome;
+import com.vaadin.server.ErrorHandler;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 public class AxWindow extends Window implements Container, Navigation {
 
     ContainerRoot containerRoot;
-    VerticalLayout layout;
 
     public AxWindow() {
-        layout = new VerticalLayout();
-        containerRoot = new ContainerRoot(layout);
+        CssLayout layout = new CssLayout();
+        layout.setStyleName("window-root");
         addStyleName("window-headerless");
         setClosable(false);
         setResizable(false);
         setContent(layout);
+        containerRoot = new ContainerRoot(layout, false);
     }
 
     @Override
     public ContainerRoot getRoot() {
         return containerRoot;
-    }
-
-    @Override
-    public Object getNavigationParameter() {
-        return null;
     }
 
     public AxWindow show() {
@@ -52,24 +47,28 @@ public class AxWindow extends Window implements Container, Navigation {
         return this;
     }
 
-    @Override
     public AxWindow components(Component... components) {
-        Container.super.components(components);
+        Container.super.mainComponents(components);
         return this;
     }
 
-    @Override
-    public AxWindow layoutCss() {
-        Container.super.layoutCss();
+    public AxWindow errorHandler(ErrorHandler errorHandler) {
+        setErrorHandler(errorHandler);
         return this;
     }
+
+    /*@Override
+    public AxWindow mainPanel() {
+        Container.super.mainPanel();
+        return this;
+    }*/
 
     public AxWindow buttonClose() {
         return buttonClose("Zavřít");
     }
 
     public AxWindow buttonClose(String caption) {
-        menuBar().actions(new AxAction().caption(caption).icon(FontAwesome.TIMES)
+        menuBar().actions(new AxAction().caption(caption)//.icon(FontAwesome.TIMES)
                 .right().run(this::close));
         return this;
     }

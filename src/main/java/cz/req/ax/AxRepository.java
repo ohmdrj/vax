@@ -13,13 +13,5 @@ public interface AxRepository<T extends IdObject<Integer>> extends JpaRepository
 
     T entityInstance();
 
-    T saveMerge(T entity);
-
-    /*AxContainer<T> newContainer();
-
-    AxEditor<T> newEditor();*/
-
-    /* @Deprecated
-    T eagerize(T entity);
-    */
+    /*AxContainer<T> newContainer();*/
 }

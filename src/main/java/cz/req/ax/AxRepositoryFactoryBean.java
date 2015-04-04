@@ -35,7 +35,7 @@ public class AxRepositoryFactoryBean<R extends JpaRepository<T, I>, T extends Id
 
         @Override
         protected Object getTargetRepository(RepositoryMetadata metadata) {
-            return new AxRepositoryImpl((Class<T>) metadata.getDomainType(), entityManager);
+            return new AxRepositoryImpl(metadata.getDomainType(), entityManager);
         }
 
         @Override

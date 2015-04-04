@@ -45,7 +45,7 @@ public class AxForm<T> extends CustomComponent {
 
     private AxForm(BeanItem<T> beanItem) {
         beanClass = (Class<T>) beanItem.getBean().getClass();
-        fieldGroup = new BeanFieldGroup<T>(beanClass);
+        fieldGroup = new BeanFieldGroup<>(beanClass);
         fieldGroup.setItemDataSource(beanItem);
         fieldGroup.setBuffered(true);
         addStyleName("item-form");
@@ -86,6 +86,9 @@ public class AxForm<T> extends CustomComponent {
     }
 
     public void addComponent(Component component) {
+//        if (component instanceof Field) {
+//            ((Field)component).getCaption()
+//        }
         getRootLayout().addComponent(component);
     }
 
@@ -171,19 +174,28 @@ public class AxForm<T> extends CustomComponent {
         return field;
     }
 
-    public Field<?> addField(String caption, String property) {
+    public AxField<? extends Field> addField(String caption, String property) {
         Field<?> field = fieldGroup.buildAndBind(caption, property);
         if (field instanceof TextField) {
             ((TextField) field).setNullRepresentation("");
         }
         addComponent(field);
-        return field;
+        return new AxField<>(field);
     }
 
-    public <T extends Field> Field<T> addField(String caption, String property, Class<T> type) {
+    public AxField<? extends Field> addDate(String caption, String property) {
+        Field<?> field = fieldGroup.buildAndBind(caption, property);
+        if (field instanceof TextField) {
+            ((TextField) field).setNullRepresentation("");
+        }
+        addComponent(field);
+        return new AxField<>(field);
+    }
+
+    public <T extends AbstractField> AxField<T> addField(String caption, String property, Class<T> type) {
         T field = fieldGroup.buildAndBind(caption, property, type);
         addComponent(field);
-        return field;
+        return new AxField<>(field);
     }
 
     public T commit() {
@@ -218,11 +230,17 @@ public class AxForm<T> extends CustomComponent {
         return window;
     }
 
+    public PasswordField addPassword(String caption, String property) {
+        PasswordField field = new PasswordField(caption, "");
+        fieldGroup.bind(field, property);
+        addComponent(field);
+        return field;
+    }
+
     public ComboBox addCombo(String caption, String property, AbstractBeanContainer container, String display) {
         ComboBox combo = new ComboBox(caption, container);
         combo.setItemCaptionPropertyId(display);
         combo.setConverter(display == null ? null : new AxConverter(container));
-        combo.setTextInputAllowed(false);
         combo.setImmediate(true);
         fieldGroup.bind(combo, property);
         addComponent(combo);
@@ -255,6 +273,41 @@ public class AxForm<T> extends CustomComponent {
 //        addComponent(field);
     }
 
+    public class AxField<T extends Field> {
+
+        private T field;
+
+        public AxField(T field) {
+            this.field = field;
+        }
+
+        public AxField<T> required() {
+            required(true);
+            return this;
+        }
+
+        public AxField<T> required(boolean required) {
+            field.setRequired(required);
+            field.setRequiredError("Není vyplněno!");
+            return this;
+        }
+
+        public AxField<T> enabled(boolean enabled) {
+            field.setEnabled(enabled);
+            return this;
+        }
+
+        public AxField<T> visible(boolean visible) {
+            field.setVisible(visible);
+            return this;
+        }
+
+        public AxField<T> style(String style) {
+            field.setStyleName(style);
+            return this;
+        }
+    }
+
     static class AxConverter<T extends IdEntity> implements Converter<Integer, T> {
 
         AbstractBeanContainer<?, T> container;
@@ -262,7 +315,7 @@ public class AxForm<T> extends CustomComponent {
         public AxConverter(AbstractBeanContainer<?, T> container) {
             this.container = container;
             if (container instanceof Refresh) {
-                ((Refresh)container).refresh();
+                ((Refresh) container).refresh();
             }
         }
 

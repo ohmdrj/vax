@@ -4,6 +4,7 @@ import com.vaadin.ui.UI;
 import ru.xpoft.vaadin.VaadinView;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 
 /**
  * @author by Ondřej Buriánek, burianek@marbes.cz.
@@ -14,33 +15,51 @@ public interface Navigation {
 
     String string = null;
 
-    @Deprecated
-    public Object getNavigationParameter();
+    String getId();
 
-    default public String viewName(Class<? extends AxView> viewClass) {
-        Annotation annotation = viewClass.getAnnotation(VaadinView.class);
-        return ((VaadinView) annotation).value();
-
-    }
-
-    default public AxAction<String> action(Class<? extends AxView> viewClass) {
+    default AxAction<String> action(Class<? extends AxView> viewClass) {
         String viewName = viewName(viewClass);
         return new AxAction<String>().caption(viewName).value(viewName).action(this::navigate);
     }
 
-    default public void navigate(String viewName) {
-        navigate(viewName, getNavigationParameter());
+    default AxAction<String> action(Class<? extends AxView> viewClass, String userRole) {
+        RequireRole annotation = viewClass.getAnnotation(RequireRole.class);
+        AxAction<String> action = action(viewClass);
+        if (annotation != null && annotation.value() != null && annotation.value().length > 0) {
+            action.disabled();
+            if (Arrays.asList(annotation.value()).contains(userRole)) {
+                action.enabled();
+            }
+        }
+        return action;
     }
 
-    default public void navigate(Class<? extends AxView> viewClass, Object parameter) {
+    default void navigate(Class<? extends AxView> viewClass) {
+        navigate(viewName(viewClass), null);
+    }
+
+    default void navigate(Class<? extends AxView> viewClass, Object parameter) {
         navigate(viewName(viewClass), parameter);
     }
 
-    default public void navigate(String viewName, Object parameter) {
+    default void navigate(String viewName) {
+        navigate(viewName, null);
+    }
+
+    default void navigate(String viewName, Object parameter) {
         StringBuffer viewState = new StringBuffer(viewName);
         if (parameter != null) {
             viewState.append("/").append(parameter.toString());
         }
         UI.getCurrent().getNavigator().navigateTo(viewState.toString());
     }
+
+    default String viewName(Class<? extends AxView> viewClass) {
+        Annotation annotation = viewClass.getAnnotation(VaadinView.class);
+        if (annotation == null)
+            throw new RuntimeException("View class " + viewClass + " missing annotation VaadinView");
+        return ((VaadinView) annotation).value();
+
+    }
+
 }

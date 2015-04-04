@@ -6,15 +6,16 @@
         <artifactId>progressive-organization-pom</artifactId>
         <version>2.3.0</version>
     </parent>
-    <groupId>cz.req.ax</groupId>
-    <artifactId>ax-vaadin</artifactId>
+    <groupId>cz.req.vax</groupId>
+    <artifactId>vax</artifactId>
     <version>0.1-SNAPSHOT</version>
-    <name>AxVaadin</name>
+    <name>Vaadin AX</name>
+    <description>Vaadin Another eXtension project</description>
 
     <properties>
-        <spring-boot.version>1.1.8.RELEASE</spring-boot.version>
+        <spring-boot.version>1.2.3.RELEASE</spring-boot.version>
         <spring-vaadin.version>3.1</spring-vaadin.version>
-        <vaadin.version>7.3.5</vaadin.version>
+        <vaadin.version>7.3.10</vaadin.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -24,6 +25,11 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>cz.req.vax</groupId>
+                <artifactId>vax</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -64,11 +70,6 @@
             <version>${spring-vaadin.version}</version>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.32</version>
-        </dependency>
-        <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>1.1.0.Final</version>
@@ -85,12 +86,6 @@
             <artifactId>guava</artifactId>
             <version>17.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.google.auto.value</groupId>
-            <artifactId>auto-value</artifactId>
-            <version>1.0-rc2</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
 
@@ -106,32 +101,6 @@
             </plugin>
         </plugins>
     </build>
-
-    <!--<build>
-        <plugins>
-            <plugin>
-                <groupId>com.vaadin</groupId>
-                <artifactId>vaadin-maven-plugin</artifactId>
-                <version>${vaadin.version}</version>
-                <configuration>
-                    <warSourceDirectory>${basedir}/src/main/resources</warSourceDirectory>
-                    <hostedWebapp>${basedir}/target/classes</hostedWebapp>
-                    <noserver>true</noserver>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>resources</goal>
-                            <goal>update-theme</goal>
-                            <goal>update-widgetset</goal>
-                            <goal>compile-theme</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>-->
 
     <repositories>
         <repository>

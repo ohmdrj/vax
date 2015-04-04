@@ -7,7 +7,7 @@ public class AxConfirm extends AxWindow {
     protected AxConfirm(String message, Runnable confirm) {
         Label confirmLabel = new Label(message);
         confirmLabel.addStyleName("h2");
-        modal().style("window-confirm").layoutCss();
+        modal().style("window-confirm").mainPanel();
         components(
                 confirmLabel,
                 new AxAction().caption("Budiž").style("primary")

@@ -105,7 +105,7 @@ public abstract class AxTable<T> implements ComponentWrapper, Refresh {
                 visibleColumns.add(propertyId);
             }
             table.setVisibleColumns((Object[]) propertyIds);
-            table.setColumnExpandRatio(propertyIds[0], 1f);
+//            table.setColumnExpandRatio(propertyIds[0], 1f);
         }
         return this;
     }
