@@ -1,23 +1,31 @@
 package cz.req.ax;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.fieldgroup.FieldGroupFieldFactory;
 import com.vaadin.data.util.AbstractBeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
 //TODO Refactor flow API
 public class AxForm<T> extends CustomComponent {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public static <T> AxForm<T> init(Class<T> beanType) {
         Assert.notNull(beanType);
@@ -40,7 +48,8 @@ public class AxForm<T> extends CustomComponent {
 
     Class<T> beanClass;
     BeanFieldGroup<T> fieldGroup;
-
+    Consumer<T> error;
+    List<AxField> fields = new ArrayList<>();
     HorizontalLayout buttonBar;
 
     private AxForm(BeanItem<T> beanItem) {
@@ -48,7 +57,14 @@ public class AxForm<T> extends CustomComponent {
         fieldGroup = new BeanFieldGroup<>(beanClass);
         fieldGroup.setItemDataSource(beanItem);
         fieldGroup.setBuffered(true);
+        setSizeUndefined();
         addStyleName("item-form");
+        handlePreCommit(event -> fields.forEach(field -> field.field.setRequiredError(field.requiredMessage)));
+    }
+
+    public AxForm<T> error(Consumer<T> error) {
+        this.error = error;
+        return this;
     }
 
     public AxForm<T> layoutCss() {
@@ -66,13 +82,26 @@ public class AxForm<T> extends CustomComponent {
             return (AbstractLayout) getCompositionRoot();
         }
         FormLayout layout = new FormLayout();
+        layout.setSizeUndefined();
         layout.setMargin(false);
-//        layoutRoot.setSpacing(false);
         setCompositionRoot(layout);
         return layout;
     }
 
-    public void addCommitHandler(Consumer<FieldGroup.CommitEvent> handler) {
+    public void handlePreCommit(Consumer<FieldGroup.CommitEvent> handler) {
+        fieldGroup.addCommitHandler(new FieldGroup.CommitHandler() {
+            @Override
+            public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+                handler.accept(commitEvent);
+            }
+
+            @Override
+            public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+            }
+        });
+    }
+
+    public void handlePostCommit(Consumer<FieldGroup.CommitEvent> handler) {
         fieldGroup.addCommitHandler(new FieldGroup.CommitHandler() {
             @Override
             public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
@@ -134,6 +163,17 @@ public class AxForm<T> extends CustomComponent {
         }*/
     }
 
+    public AxForm<T> fieldFactory(FieldGroupFieldFactory fieldFactory) {
+        fieldGroup.setFieldFactory(fieldFactory);
+        return this;
+    }
+
+    private <F extends Field> AxField<F> addField(AxField<F> field) {
+        fields.add(field);
+        addComponent(field.field());
+        return field;
+    }
+
     public AxForm<T> addCaption(String caption) {
         Label section = new Label(caption);
         section.addStyleName("colored");
@@ -179,8 +219,7 @@ public class AxForm<T> extends CustomComponent {
         if (field instanceof TextField) {
             ((TextField) field).setNullRepresentation("");
         }
-        addComponent(field);
-        return new AxField<>(field);
+        return addField(new AxField<>(field));
     }
 
     public AxField<? extends Field> addDate(String caption, String property) {
@@ -188,14 +227,12 @@ public class AxForm<T> extends CustomComponent {
         if (field instanceof TextField) {
             ((TextField) field).setNullRepresentation("");
         }
-        addComponent(field);
-        return new AxField<>(field);
+        return addField(new AxField<>(field));
     }
 
     public <T extends AbstractField> AxField<T> addField(String caption, String property, Class<T> type) {
         T field = fieldGroup.buildAndBind(caption, property, type);
-        addComponent(field);
-        return new AxField<>(field);
+        return addField(new AxField<>(field));
     }
 
     public T commit() {
@@ -203,7 +240,7 @@ public class AxForm<T> extends CustomComponent {
             fieldGroup.commit();
             return getValue();
         } catch (Exception e) {
-            throw new RuntimeException("Formular nelze ulozit", e);
+            throw new RuntimeException("Chyba pri ukladani formulare", e);
         }
     }
 
@@ -230,32 +267,30 @@ public class AxForm<T> extends CustomComponent {
         return window;
     }
 
-    public PasswordField addPassword(String caption, String property) {
+    public AxField<PasswordField> addPassword(String caption, String property) {
         PasswordField field = new PasswordField(caption, "");
         fieldGroup.bind(field, property);
-        addComponent(field);
-        return field;
+        return addField(new AxField<>(field));
     }
 
-    public ComboBox addCombo(String caption, String property, AbstractBeanContainer container, String display) {
+    public AxField<ComboBox> addCombo(String caption, String property, AbstractBeanContainer container, String display) {
         ComboBox combo = new ComboBox(caption, container);
         combo.setItemCaptionPropertyId(display);
         combo.setConverter(display == null ? null : new AxConverter(container));
         combo.setImmediate(true);
         fieldGroup.bind(combo, property);
-        addComponent(combo);
-        return combo;
+        return addField(new AxField<>(combo));
     }
 
-    public <T extends Enum<T>> ComboBox addCombo(String caption, String property, Class<T> enumClass) {
+    public <T extends Enum<T>> AxField<ComboBox> addCombo(String caption, String property, Class<T> enumClass) {
         BeanItemContainer<T> container = new BeanItemContainer<>(enumClass);
         container.addAll(EnumSet.allOf(enumClass));
         ComboBox combo = new ComboBox(caption, container);
         //combo.setItemCaptionPropertyId(display);
         combo.setImmediate(true);
         fieldGroup.bind(combo, property);
-        addComponent(combo);
-        return combo;
+        fieldGroup.bind(combo, property);
+        return addField(new AxField<>(combo));
     }
 
     public AxTableField addTable(String property, InitTableForm init) {
@@ -276,21 +311,44 @@ public class AxForm<T> extends CustomComponent {
     public class AxField<T extends Field> {
 
         private T field;
+        private String requiredMessage;
 
         public AxField(T field) {
             this.field = field;
         }
 
-        public AxField<T> required() {
-            required(true);
+        public T field() {
+            return field;
+        }
+
+        public AxField<T> validator(AxValidator<T> validator) {
+            field.addValidator(value -> {
+                validator.validate(field, value);
+            });
             return this;
         }
 
-        public AxField<T> required(boolean required) {
-            field.setRequired(required);
-            field.setRequiredError("Není vyplněno!");
+        public AxField<T> validator(Validator validator) {
+            field.addValidator(validator);
             return this;
         }
+
+        public AxField<T> required() {
+            field.setRequired(true);
+            requiredMessage = "Povinné pole není vyplněno";
+            return this;
+        }
+
+        public AxField<T> required(String message) {
+            field.setRequired(true);
+            requiredMessage = message;
+            return this;
+        }
+
+        /*public AxField<T> required(boolean required) {
+            field.setRequired(required);
+            return this;
+        }*/
 
         public AxField<T> enabled(boolean enabled) {
             field.setEnabled(enabled);
@@ -306,6 +364,12 @@ public class AxForm<T> extends CustomComponent {
             field.setStyleName(style);
             return this;
         }
+    }
+
+    public interface AxValidator<T extends Field> {
+
+        void validate(T field, Object value) throws Validator.InvalidValueException;
+
     }
 
     static class AxConverter<T extends IdEntity> implements Converter<Integer, T> {

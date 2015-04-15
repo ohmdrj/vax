@@ -15,18 +15,28 @@ public class AxAction<T> {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     private T value;
-    private String caption, style;
+    private String caption, description, style;
     private Boolean enabled = Boolean.TRUE;
     private Boolean right = Boolean.FALSE;
     private Supplier<String> confirm;
     private Resource icon;
     private Runnable run, runBefore, runAfter;
-    private Consumer<T> action; //TODO Action Before/After?
+    private Consumer<T> action;
+    private Consumer<ActionException> exception;
     private Supplier<T> variable;
+
+    public static <T> AxAction<T> of(T value) {
+        return new AxAction<T>().value(value);
+    }
 
     //TODO DescribedFunctionInterface
     public AxAction<T> caption(String caption) {
         this.caption = caption;
+        return this;
+    }
+
+    public AxAction<T> description(String description) {
+        this.description = description;
         return this;
     }
 
@@ -40,18 +50,19 @@ public class AxAction<T> {
     }
 
     public AxAction<T> danger() {
-        this.style = "danger";
-        return this;
+        return style("danger");
     }
 
     public AxAction<T> primary() {
-        this.style = "primary";
-        return this;
+        return style("primary");
     }
 
     public AxAction<T> friendly() {
-        this.style = "friendly";
-        return this;
+        return style("friendly");
+    }
+
+    public AxAction<T> empty() {
+        return style("empty");
     }
 
     public AxAction<T> style(String style) {
@@ -64,14 +75,17 @@ public class AxAction<T> {
         return this;
     }
 
-    public AxAction<T> enabled() {
-        this.enabled = Boolean.TRUE;
+    public AxAction<T> enabled(boolean enabled) {
+        this.enabled = enabled;
         return this;
     }
 
+    public AxAction<T> enabled() {
+        return enabled(true);
+    }
+
     public AxAction<T> disabled() {
-        this.enabled = Boolean.FALSE;
-        return this;
+        return enabled(false);
     }
 
     //TODO DescribedFunctionInterface
@@ -95,6 +109,11 @@ public class AxAction<T> {
         return this;
     }
 
+    public AxAction<T> exception(Consumer<ActionException> exception) {
+        this.exception = exception;
+        return this;
+    }
+
     public AxAction<T> run(Runnable run) {
         this.run = run;
         return this;
@@ -112,34 +131,59 @@ public class AxAction<T> {
 
     protected void onAction() {
         try {
-            doExecute(runBefore);
+            doExecute(Phase.RunBefore, runBefore);
             if (confirm == null) {
                 doActionAndAfter();
             } else {
                 String message = confirm.get();
-                if (message == null) message = "Chcete pokračovate?";
+                if (message == null) message = "Chcete pokračovat?";
                 new AxConfirm(message, this::doActionAndAfter).show();
             }
+        } catch (ActionException ae) {
+            if (exception == null) {
+                logger.error("Missing exception handler");
+                navigate(ae);
+            } else {
+                exception.accept(ae);
+            }
         } catch (Throwable th) {
-            logger.error("Action error run:" + run + " action:" + action, th);
-            AxUI ui = (AxUI) UI.getCurrent();
-            ui.getSession().setAttribute(Throwable.class, th);
-            ui.getNavigator().navigateTo(ui.errorView);
+            navigate(th);
         }
     }
 
-    private void doActionAndAfter() {
-        doExecute(run);
-        doExecute(action);
-        //TODO Action validate predicate?
-        doExecute(runAfter);
+    public void navigate(Throwable th) {
+        AxUI ui = (AxUI) UI.getCurrent();
+        ui.getSession().setAttribute(Throwable.class, th);
+        ui.getNavigator().navigateTo(ui.errorView);
     }
 
-    private void doExecute(Object o) {
-        if (o == null) return;
-        if (o instanceof Runnable) ((Runnable) o).run();
-        if (o instanceof Consumer) ((Consumer<T>) o).accept(getValue());
-        if (o instanceof AxAction) ((AxAction) o).onAction();
+    private void doActionAndAfter() throws ActionException {
+        doExecute(Phase.Run, run);
+        doExecute(Phase.Value, action);
+        //TODO Action validate predicate?
+        doExecute(Phase.RunAfter, runAfter);
+    }
+
+    private void doExecute(Phase phase, Object exec) throws ActionException {
+        T tran = null;
+        try {
+            if (exec == null) return;
+            if (exec instanceof Runnable) ((Runnable) exec).run();
+            if (exec instanceof Consumer) {
+                tran = getValue();
+                phase = Phase.Action;
+                ((Consumer<T>) exec).accept(tran);
+            }
+            if (exec instanceof AxAction) ((AxAction) exec).onAction();
+
+        } catch (ActionException ae) {
+            ae.setPhase(phase);
+            throw ae;
+        } catch (Exception ex) {
+            throw new AxAction.ActionException(phase, ex);
+        } catch (Throwable th) {
+            throw th;
+        }
     }
 
     public T getValue() {
@@ -152,6 +196,10 @@ public class AxAction<T> {
 
     public String getCaption() {
         return caption;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public Resource getIcon() {
@@ -183,9 +231,57 @@ public class AxAction<T> {
         //TODO Caption/Icon by factory method
         //TODO Review lazy??
         Button button = new Button(caption, icon);
+        if (description != null) button.setDescription(description);
         if (style != null) button.addStyleName(style);
         if (right) button.addStyleName("right");
         button.addClickListener(event -> onAction());
+        button.setEnabled(enabled);
         return button;
     }
+
+    //TODO Checked exception
+    public static class ActionException extends RuntimeException {
+
+        //        Object value;
+        Phase phase;
+
+        public ActionException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public ActionException(Phase phase, Throwable cause) {
+            super("Chyba akce ve fazi " + phase, cause);
+            this.phase = phase;
+//            this.value = value;
+        }
+
+        public void setPhase(Phase phase) {
+            this.phase = phase;
+        }
+
+        public Phase getPhase() {
+            return phase;
+        }
+
+        /*public Object getValue() {
+            return value;
+        }*/
+    }
+
+    public enum Phase {
+        RunBefore, Run, Value, Action, RunAfter
+    }
+
+    public AxAction<T> copy(AxAction other) {
+        caption(other.getCaption());
+        description(other.getDescription());
+        icon(other.getIcon());
+        style(other.getStyle());
+        run(other.getRun());
+        runBefore(other.getRunBefore());
+        runAfter(other.getRunAfter());
+        action(other.getAction());
+        return this;
+    }
+
 }

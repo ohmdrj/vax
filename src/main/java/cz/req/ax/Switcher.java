@@ -1,30 +1,58 @@
 package cz.req.ax;
 
-import com.vaadin.server.Resource;
+import java.util.function.Supplier;
+
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import org.springframework.util.Assert;
+import com.vaadin.ui.SingleComponentContainer;
 
-import java.util.function.Consumer;
 
-public class Switcher<T> extends CssLayout {
+/**
+ * Panel s přepínaným obsahem dle nastavené hodnoty.
+ *
+ * @param <T> typ přepínané hodnoty
+ * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
+ *         Date: 14.4.2015
+ */
+public class Switcher<T> extends CssLayout implements SingleComponentContainer {
 
-    T value;
-    Consumer<T> action;
+    private Switch<T, Component> vswitch = new Switch<>();
+    private T value;
 
-    public Switcher(T value, Consumer<T> action) {
-        Assert.notNull(value);
-        Assert.notNull(action);
-        this.value = value;
-        this.action = action;
+    public Switcher() {
+        vswitch.action(this::setContent);
         setStyleName("switcher");
     }
 
-    public Switcher<T> button(String name, Resource icon, T value) {
-        Assert.notNull(value);
-        AxAction<T> action = new AxAction<T>().caption(name).icon(icon).value(value).action(this.action);
-        if (value.equals(this.value)) action.primary();
-        addComponent(action.button());
+    public Switcher<T> on(T value, Component component) {
+        vswitch.on(value, component);
         return this;
+    }
+
+    public Switcher<T> on(T value, Supplier<Component> factory) {
+        vswitch.on(value, factory);
+        return this;
+    }
+
+    public Switcher<T> setValue(T value) {
+        this.value = value;
+        vswitch.set(value);
+        return this;
+    }
+
+    public T getValue() {
+        return value;
+    }
+
+    @Override
+    public Component getContent() {
+        return getComponentCount() > 0 ? getComponent(0) : null;
+    }
+
+    @Override
+    public void setContent(Component content) {
+        removeAllComponents();
+        addComponent(content);
     }
 
 }

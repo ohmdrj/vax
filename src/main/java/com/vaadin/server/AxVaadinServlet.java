@@ -6,6 +6,8 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.io.ByteStreams;
 import com.vaadin.sass.internal.ScssStylesheet;
 import com.vaadin.util.CurrentInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.xpoft.vaadin.SpringVaadinServlet;
 
 import javax.servlet.ServletException;
@@ -18,6 +20,7 @@ import java.util.concurrent.Semaphore;
 
 public class AxVaadinServlet extends SpringVaadinServlet {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     File themeDir;
     boolean themeCompile = false;
     Semaphore semaphore = new Semaphore(1);
@@ -38,11 +41,10 @@ public class AxVaadinServlet extends SpringVaadinServlet {
     public void setThemeDir(File resourcesDir) {
         this.themeDir = resourcesDir;
         themeCompile = resourcesDir != null && resourcesDir.exists();
-        //TODO Logger
         if (themeCompile) {
-            System.out.println("Dynamic SASS compile resources directory: " + resourcesDir);
+            logger.info("Dynamic SASS compile resources directory: " + resourcesDir);
         } else {
-            System.err.println("Dynamic SASS compile missing resources directory: " + resourcesDir);
+            logger.info("Dynamic SASS compile missing resources directory: " + resourcesDir);
         }
     }
 
@@ -72,7 +74,8 @@ public class AxVaadinServlet extends SpringVaadinServlet {
                     cacheItem = new CssCacheItem(new File(themeDir, "VAADIN" + scssName + ".scss"));
                     cache.put(scssName, cacheItem);
                 }
-
+                response.setCharacterEncoding("UTF-8");
+                response.setContentType("text/css;charset=UTF-8");
                 response.setHeader("Cache-Control", "no-cache");
                 PrintWriter writer = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(response.getOutputStream(), "UTF-8")));
@@ -93,7 +96,6 @@ public class AxVaadinServlet extends SpringVaadinServlet {
             super.service(request, response);
         }
     }
-
 
     public static class CssCacheItem {
         private Long time;

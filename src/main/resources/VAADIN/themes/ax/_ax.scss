@@ -192,6 +192,28 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
   .v-button-friendly {
     background: #2c9720;
   }
+  .v-button-empty,
+  .v-button-empty:hover,
+  .v-button-empty:focus,
+  .v-button-empty:active,
+  .v-button-empty .v-button-wrap,
+  .v-button-empty:focus .v-button-wrap,
+  .v-button-empty:active .v-button-wrap,
+  .v-button-empty.v-disabled,
+  .v-button-empty.v-disabled:hover,
+  .v-button-empty.v-disabled .v-button-wrap,
+  .v-button-empty.v-disabled:hover .v-button-wrap,
+  .v-button-empty.v-disabled:hover .v-button-wrap:hover {
+    border: none;
+    background: transparent;
+    text-align: left;
+    padding: 0;
+    color: black;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ie-user-select: text;
+    user-select: text;
+  }
   .v-button:focus:after {
     border: 0;
     box-shadow: none;
