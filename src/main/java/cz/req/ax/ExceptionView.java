@@ -3,6 +3,8 @@ package cz.req.ax;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,8 @@ import java.io.StringWriter;
 @VaadinView("Exception")
 public class ExceptionView extends AxView {
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
     @Value("${vax.viewMain}")
     String viewMain;
 
@@ -30,7 +34,7 @@ public class ExceptionView extends AxView {
         AbstractComponent component;
         Throwable exception = getSession().getAttribute(Throwable.class);
         if (exception != null) {
-            exception.printStackTrace();
+            logException(exception);
             Accordion accordion = new Accordion();
             do {
                 StringWriter stringWriter = new StringWriter();
@@ -62,5 +66,17 @@ public class ExceptionView extends AxView {
         label.addStyleName("primary");
         Button button = new Button("Pokračovat", e -> navigate(viewMain));
         components(label, button, component);
+    }
+
+    /**
+     * Empiricky očistí výjimku a zaloguje do standardního logu.
+     *
+     * @param exception výjimka
+     */
+    private void logException(Throwable exception) {
+        if (exception instanceof AxAction.ActionException) {
+            exception = exception.getCause();
+        }
+        logger.error(exception.getMessage(), exception);
     }
 }

@@ -3,6 +3,9 @@ package cz.req.ax;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import com.vaadin.ui.Button;
 
@@ -18,9 +21,18 @@ public class ButtonGroup<T> implements Iterable<Button> {
 
     private List<Button> buttons = new ArrayList<>();
     private Switch<T, Button> vswitch = new Switch<>();
+    private Consumer<T> notifier;
+    private T value;
 
     public ButtonGroup() {
-        vswitch.action(this::setPrimaryButton);
+        this.vswitch.action(this::setPrimaryButton);
+    }
+
+    public <CS extends Consumer<T> & Supplier<T>> ButtonGroup<T> bindTo(CS target) {
+        notifier = null;
+        setValue(target.get());
+        notifier = target;
+        return this;
     }
 
     public ButtonGroup<T> button(AxAction<T> action) {
@@ -30,13 +42,20 @@ public class ButtonGroup<T> implements Iterable<Button> {
             action.action(this::setValue);
         }
         Button button = action.button();
-        vswitch.on(action.getValue(), button);
         buttons.add(button);
+        if (Objects.equals(action.getValue(), value)) {
+            setPrimaryButton(button);
+        }
+        vswitch.on(action.getValue(), button);
         return this;
     }
 
     public ButtonGroup<T> setValue(T value) {
+        this.value = value;
         vswitch.set(value);
+        if (notifier != null) {
+            notifier.accept(value);
+        }
         return this;
     }
 
@@ -44,7 +63,9 @@ public class ButtonGroup<T> implements Iterable<Button> {
         for (Button button: buttons) {
             button.removeStyleName("primary");
         }
-        primaryButton.addStyleName("primary");
+        if (primaryButton != null) {
+            primaryButton.addStyleName("primary");
+        }
     }
 
     @Override

@@ -28,9 +28,10 @@ public class AxMenuBar extends MenuBar {
     }
 
     public MenuItem action(AxAction action) {
-        MenuItem item = addItem(action.getCaption(), action.getIcon(), menuItem -> {
+        /*MenuItem item = addItem(action.getCaption(), action.getIcon(), menuItem -> {
             action.onAction();
-        });
+        });*/
+        MenuItem item = action.menuItem(this);
         if (action.getStyle() != null) item.setStyleName(action.getStyle());
         return item;
     }

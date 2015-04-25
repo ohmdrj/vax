@@ -7,7 +7,7 @@ $ax-dark-color: #fff;
 $ax-dark-bgrnd: #6b6b6b;
 
 /* Valo Metro */
-$v-font-family: "Source Sans Pro", "Lato", sans-serif;
+$v-font-family: "Source Sans Pro", sans-serif;
 $v-app-loading-text: "";
 $v-app-background-color: $ax-main-bgrnd;
 $v-background-color: $ax-lite-bgrnd;
@@ -99,7 +99,7 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
   }
 
   .page-root {
-    > .menu-bar {
+    > .menu-bar, > .menu-bar-wrap > .menu-bar {
       top: 0;
       left: 0;
       right: 0;
@@ -117,26 +117,26 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
         }
       }
     }
-    > .menu-bar::after {
-      display: none;
+  }
+  .menu-bar::after {
+    display: none;
+  }
+
+  > .page-body {
+    > .main-panel {
+      padding-top: 40px;
+    }
+    > .tabs-panel + .main-panel {
+      padding-top: 90px;
     }
 
-    > .page-body {
-      > .main-panel {
-        padding-top: 40px;
-      }
-      > .tabs-panel + .main-panel {
-        padding-top: 90px;
-      }
-
-      > .tabs-panel {
-        top: 40px;
-        left: 0;
-        right: 0;
-        z-index: 900;
-        position: fixed;
-        background-color: #fff;
-      }
+    > .tabs-panel {
+      top: 40px;
+      left: 0;
+      right: 0;
+      z-index: 900;
+      position: fixed;
+      background-color: #fff;
     }
   }
 
@@ -186,12 +186,15 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
     padding: 0 15px;
     font-weight: normal;
   }
+
   .v-button-danger {
     background: #ed473b;
   }
+
   .v-button-friendly {
     background: #2c9720;
   }
+
   .v-button-empty,
   .v-button-empty:hover,
   .v-button-empty:focus,
@@ -214,6 +217,7 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
     -ie-user-select: text;
     user-select: text;
   }
+
   .v-button:focus:after {
     border: 0;
     box-shadow: none;
@@ -239,9 +243,11 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
       float: right;
     }
   }
+
   .v-window .v-menubar {
     width: 100%;
   }
+
   .v-menubar-popup {
     .v-menubar-menuitem {
       line-height: 40px;
@@ -303,11 +309,14 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
 
   /* Modifications */
   .v-formlayout {
-    margin: 0 20px 10px;
+    box-sizing: border-box;
+    padding: 0 20px 10px;
   }
+
   .v-checkbox {
     margin: 10px 20px 10px 0;
   }
+
   .v-datefield-popup .v-datefield-calendarpanel-day {
     background: w;
   }
@@ -334,6 +343,7 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
       }
     }
   }
+
   .v-tabsheet-tabcontainer {
     .v-caption {
       font-size: 18px;
@@ -349,28 +359,31 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
   }
 
   .window-confirm {
-    .v-label, .v-button {
-      margin: 15px;
+    min-width: 200px;
+    .main-panel > .h2 {
+      margin: 40px 40px 20px;
+      white-space: normal;
     }
-    .v-button {
-      float: right;
-    }
+
   }
 
   .v-scrollable {
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
   }
+
   //TODO Hack table overflow http://dev.vaadin.com/ticket/15164
   .hack-noscroll {
     overflow: hidden;
   }
+
   .hack-noscroll .v-scrollable {
     overflow: hidden;
   }
+
   .v-window-contents > .v-scrollable:before {
     border: none;
   }
+
   .v-tabsheet-tabsheetpanel > .v-scrollable {
     overflow: hidden;
   }
@@ -387,18 +400,23 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
   .Aqua {
     background-color: #4FC1E9;
   }
+
   .Vender {
     background-color: #AC92EC;
   }
+
   .Jeans {
     background-color: #5D9CEC;
   }
+
   .Grass {
     background-color: #A0D468;
   }
+
   .Sunny {
     background-color: #FFCE54;
   }
+
   .Grape {
     background-color: #ED5565;
   }
@@ -407,36 +425,47 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
   .Clouds {
     background-color: #ecf0f1;
   }
+
   .Turquoise {
     background-color: #1abc9c;
   }
+
   .Emerald {
     background-color: #2ecc71;
   }
+
   .River {
     background-color: #3498db;
   }
+
   .Amethyst {
     background-color: #9b59b6;
   }
+
   .Asphalt {
     background-color: #34495e;
   }
+
   .Saddle {
     background-color: #8b4513;
   }
+
   .Sunflower {
     background-color: #f1c40f;
   }
+
   .Carrot {
     background-color: #e67e22;
   }
+
   .Alizarin {
     background-color: #e74c3c;
   }
+
   .Deeppink {
     background-color: #ff1493;
   }
+
   .Concrete {
     background-color: #95a5a6;
   }

@@ -16,7 +16,7 @@ public class AxEditor<T extends IdObject<Integer>> extends CssLayout implements 
     private AxEditor(final AxContainer<T> cont) {
         container = cont;
 
-        form = AxForm.init(container.getRepository().entityClass());
+        form = AxForm.init(container.getType());
         form.setSizeUndefined();
         form.getButtonBar().addComponent(new AxAction<T>().caption("Uložit").primary()
                 .run(() -> {
@@ -31,9 +31,8 @@ public class AxEditor<T extends IdObject<Integer>> extends CssLayout implements 
                     table.refresh();
                     table.getTable().select(form.getValue().getId());
                 }).button());
-        form.getButtonBar().addComponent(new AxAction<T>().caption("Nový").action(entity -> {
-            form.setValue(container.getRepository().entityInstance());
-        }).button());
+        form.getButtonBar().addComponent(new AxAction<T>().caption("Nový")
+                .action(entity -> form.setValue(container.newBean())).button());
         //TODO delete action
 
         table = new AxBeanTable<>(container);

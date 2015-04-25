@@ -30,8 +30,13 @@ public interface Components {
 
     default Label newLabel(String content, String style) {
         Label label = new Label(content);
+        label.setSizeUndefined();
         label.addStyleName(style);
         return label;
+    }
+
+    default Label newCaption(String content) {
+        return newLabel(content, "v-caption");
     }
 
     default Component undefine(Component component) {

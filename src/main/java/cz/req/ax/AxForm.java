@@ -6,6 +6,7 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroupFieldFactory;
 import com.vaadin.data.util.AbstractBeanContainer;
+import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.converter.Converter;
@@ -21,6 +22,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 //TODO Refactor flow API
 public class AxForm<T> extends CustomComponent {
@@ -169,15 +171,19 @@ public class AxForm<T> extends CustomComponent {
     }
 
     private <F extends Field> AxField<F> addField(AxField<F> field) {
+        F f = field.field();
+        f.setSizeUndefined();
+        if (f instanceof TextField) {
+            ((TextField) f).setNullRepresentation("");
+        }
         fields.add(field);
-        addComponent(field.field());
+        addComponent(f);
         return field;
     }
 
     public AxForm<T> addCaption(String caption) {
         Label section = new Label(caption);
         section.addStyleName("colored");
-        //section.setSizeFull();
         //section.addStyleName("h2");
         addComponent(section);
         return this;
@@ -216,17 +222,13 @@ public class AxForm<T> extends CustomComponent {
 
     public AxField<? extends Field> addField(String caption, String property) {
         Field<?> field = fieldGroup.buildAndBind(caption, property);
-        if (field instanceof TextField) {
-            ((TextField) field).setNullRepresentation("");
-        }
         return addField(new AxField<>(field));
     }
 
+    //TODO Burianek revize
+    @Deprecated
     public AxField<? extends Field> addDate(String caption, String property) {
         Field<?> field = fieldGroup.buildAndBind(caption, property);
-        if (field instanceof TextField) {
-            ((TextField) field).setNullRepresentation("");
-        }
         return addField(new AxField<>(field));
     }
 
@@ -268,15 +270,35 @@ public class AxForm<T> extends CustomComponent {
     }
 
     public AxField<PasswordField> addPassword(String caption, String property) {
-        PasswordField field = new PasswordField(caption, "");
+        PasswordField field = new PasswordField(caption);
         fieldGroup.bind(field, property);
         return addField(new AxField<>(field));
     }
 
-    public AxField<ComboBox> addCombo(String caption, String property, AbstractBeanContainer container, String display) {
+    public AxField<RichTextArea> addRichtext(String caption, String property) {
+        RichTextArea field = new RichTextArea(caption);
+        fieldGroup.bind(field, property);
+        return addField(new AxField<>(field));
+    }
+
+    public <X> AxField<AxComboBox> addCombo(String caption, String property, AbstractBeanContainer<?, X> container,
+                                            Function<X, String> display) {
+        AxComboBox<X> combo = new AxComboBox<>(caption, container, display);
+        if (container instanceof BeanContainer && display != null) {
+            combo.setConverter(new AxConverter(container));
+        }
+        combo.setImmediate(true);
+        fieldGroup.bind(combo, property);
+        return addField(new AxField<>(combo));
+    }
+
+    public AxField<ComboBox> addCombo(String caption, String property, AbstractBeanContainer container,
+                                      String display) {
         ComboBox combo = new ComboBox(caption, container);
         combo.setItemCaptionPropertyId(display);
-        combo.setConverter(display == null ? null : new AxConverter(container));
+        if (container instanceof BeanContainer && display != null) {
+            combo.setConverter(new AxConverter(container));
+        }
         combo.setImmediate(true);
         fieldGroup.bind(combo, property);
         return addField(new AxField<>(combo));
@@ -288,7 +310,6 @@ public class AxForm<T> extends CustomComponent {
         ComboBox combo = new ComboBox(caption, container);
         //combo.setItemCaptionPropertyId(display);
         combo.setImmediate(true);
-        fieldGroup.bind(combo, property);
         fieldGroup.bind(combo, property);
         return addField(new AxField<>(combo));
     }
@@ -372,7 +393,7 @@ public class AxForm<T> extends CustomComponent {
 
     }
 
-    static class AxConverter<T extends IdEntity> implements Converter<Integer, T> {
+    static class AxConverter<T extends IdObject> implements Converter<Integer, T> {
 
         AbstractBeanContainer<?, T> container;
 
@@ -392,7 +413,8 @@ public class AxForm<T> extends CustomComponent {
 
         @Override
         public Integer convertToPresentation(T value, Class<? extends Integer> targetType, Locale locale) throws ConversionException {
-            return value == null ? null : value.getId();
+            if (value == null) return null;
+            return (Integer) value.getId();
         }
 
         @Override

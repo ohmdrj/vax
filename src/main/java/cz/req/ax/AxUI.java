@@ -9,6 +9,8 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import ru.xpoft.vaadin.DiscoveryNavigator;
 
 import java.lang.reflect.Field;
@@ -24,6 +26,10 @@ public abstract class AxUI extends UI implements ViewChangeListener {
 
     @Autowired
     EventBus eventBus;
+
+    public AxUI() {
+        setSizeUndefined();
+    }
 
     public EventBus getEventBus() {
         return eventBus;
@@ -45,7 +51,9 @@ public abstract class AxUI extends UI implements ViewChangeListener {
         navigator.addViewChangeListener(this);
         setNavigator(navigator);
         try {
-            navigate();
+            if (StringUtils.isEmpty(navigator.getState())) {
+                navigate();
+            }
         } catch (Throwable th) {
             getSession().setAttribute(Throwable.class, th);
             getNavigator().navigateTo(errorView);
@@ -53,7 +61,12 @@ public abstract class AxUI extends UI implements ViewChangeListener {
     }
 
     protected void navigate() {
-        getNavigator().navigateTo(debugView == null ? mainView : debugView);
+        if (StringUtils.isEmpty(debugView)) {
+            Assert.notNull(mainView);
+            getNavigator().navigateTo(mainView);
+        } else {
+            getNavigator().navigateTo(debugView);
+        }
     }
 
     @Override

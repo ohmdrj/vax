@@ -6,7 +6,7 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
-public class AxWindow extends Window implements Container, Navigation {
+public class AxWindow extends Window implements Container, Navigation, Components {
 
     ContainerRoot containerRoot;
 
@@ -47,6 +47,11 @@ public class AxWindow extends Window implements Container, Navigation {
         return this;
     }
 
+    public AxWindow caption(String caption) {
+        getRoot().addComponent(newLabel(caption, "window-caption"));
+        return this;
+    }
+
     public AxWindow components(Component... components) {
         Container.super.mainComponents(components);
         return this;
@@ -64,17 +69,25 @@ public class AxWindow extends Window implements Container, Navigation {
     }*/
 
     public AxWindow buttonClose() {
-        return buttonClose("Zavřít");
+        menuBar().actions(new AxAction().caption("Zavřít").run(this::close).right());
+        return this;
     }
 
     public AxWindow buttonClose(String caption) {
-        menuBar().actions(new AxAction().caption(caption)//.icon(FontAwesome.TIMES)
-                .right().run(this::close));
+        menuBar().actions(new AxAction().caption(caption).run(this::close));
         return this;
     }
 
     public AxWindow buttonAndClose(AxAction action) {
-        action.runAfter(this::close);
+        Runnable runAfter = action.getRunAfter();
+        if (runAfter != null) {
+            action.runAfter(() -> {
+                runAfter.run();
+                close();
+            });
+        } else {
+            action.runAfter(this::close);
+        }
         menuBar().actions(action);
         return this;
     }

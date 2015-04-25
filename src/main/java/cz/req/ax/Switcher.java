@@ -1,5 +1,7 @@
 package cz.req.ax;
 
+import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.vaadin.ui.Component;
@@ -14,7 +16,7 @@ import com.vaadin.ui.SingleComponentContainer;
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
  *         Date: 14.4.2015
  */
-public class Switcher<T> extends CssLayout implements SingleComponentContainer {
+public class Switcher<T> extends CssLayout implements SingleComponentContainer, Supplier<T>, Consumer<T> {
 
     private Switch<T, Component> vswitch = new Switch<>();
     private T value;
@@ -34,14 +36,22 @@ public class Switcher<T> extends CssLayout implements SingleComponentContainer {
         return this;
     }
 
-    public Switcher<T> setValue(T value) {
-        this.value = value;
-        vswitch.set(value);
+    public Switcher<T> set(T value) {
+        if (!Objects.equals(this.value, value)) {
+            this.value = value;
+            vswitch.set(value);
+        }
         return this;
     }
 
-    public T getValue() {
+    @Override
+    public T get() {
         return value;
+    }
+
+    @Override
+    public void accept(T value) {
+        set(value);
     }
 
     @Override

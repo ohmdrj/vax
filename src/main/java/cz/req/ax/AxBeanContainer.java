@@ -4,12 +4,27 @@ import com.vaadin.data.util.BeanContainer;
 
 public class AxBeanContainer<T extends IdObject<Integer>> extends BeanContainer<Integer, T> {
 
+    Class<T> type;
+
     public static <T extends IdObject<Integer>> AxBeanContainer<T> init(Class<T> type) {
         return new AxBeanContainer<>(type);
     }
 
     protected AxBeanContainer(Class<T> type) {
         super(type);
+        this.type = type;
+    }
+
+    public Class<T> getType() {
+        return type;
+    }
+
+    public T newBean() {
+        try {
+            return type.newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException("Chyba newInstance typu "+type,e);
+        }
     }
 
     public Integer delete(Object object) {

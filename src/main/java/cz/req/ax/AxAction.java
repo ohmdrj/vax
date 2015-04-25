@@ -3,14 +3,18 @@ package cz.req.ax;
 import com.google.common.base.Joiner;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class AxAction<T> {
+public class AxAction<T> implements Cloneable {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -24,6 +28,7 @@ public class AxAction<T> {
     private Consumer<T> action;
     private Consumer<ActionException> exception;
     private Supplier<T> variable;
+    private List<AxAction> submenu;
 
     public static <T> AxAction<T> of(T value) {
         return new AxAction<T>().value(value);
@@ -63,6 +68,10 @@ public class AxAction<T> {
 
     public AxAction<T> empty() {
         return style("empty");
+    }
+
+    public AxAction<T> link() {
+        return style("link");
     }
 
     public AxAction<T> style(String style) {
@@ -129,6 +138,12 @@ public class AxAction<T> {
         return this;
     }
 
+    public AxAction<T> submenu(AxAction... actions) {
+        if (submenu == null) submenu = new ArrayList<>();
+        Collections.addAll(submenu, actions);
+        return this;
+    }
+
     protected void onAction() {
         try {
             doExecute(Phase.RunBefore, runBefore);
@@ -136,8 +151,11 @@ public class AxAction<T> {
                 doActionAndAfter();
             } else {
                 String message = confirm.get();
-                if (message == null) message = "Chcete pokračovat?";
-                new AxConfirm(message, this::doActionAndAfter).show();
+                if (message == null) {
+                    doActionAndAfter();
+                } else {
+                    new AxConfirm(message, this::doActionAndAfter).show();
+                }
             }
         } catch (ActionException ae) {
             if (exception == null) {
@@ -239,6 +257,31 @@ public class AxAction<T> {
         return button;
     }
 
+    public MenuBar.MenuItem menuItem(MenuBar menuBar) {
+        MenuBar.MenuItem menuItem = menuBar.addItem(caption, null);
+        if (icon != null) menuItem.setIcon(icon);
+        if (submenu == null) {
+            menuItem.setCommand((item) -> onAction());
+        } else {
+            for (AxAction action : submenu) {
+                if (action==null ) {
+                    //SPACER??
+                }else {
+                    action.menuItem(menuItem);
+                }
+            }
+        }
+        return menuItem;
+    }
+
+    public MenuBar.MenuItem menuItem(MenuBar.MenuItem parentMenuItem) {
+        if (icon != null) {
+            return parentMenuItem.addItem(caption, icon, (item) -> onAction());
+        } else {
+            return parentMenuItem.addItem(caption, (item) -> onAction());
+        }
+    }
+
     //TODO Checked exception
     public static class ActionException extends RuntimeException {
 
@@ -272,16 +315,17 @@ public class AxAction<T> {
         RunBefore, Run, Value, Action, RunAfter
     }
 
-    public AxAction<T> copy(AxAction other) {
-        caption(other.getCaption());
-        description(other.getDescription());
-        icon(other.getIcon());
-        style(other.getStyle());
-        run(other.getRun());
-        runBefore(other.getRunBefore());
-        runAfter(other.getRunAfter());
-        action(other.getAction());
-        return this;
+    @Override
+    public AxAction<T> clone() {
+        return new AxAction<T>()
+                .caption(caption)
+                .description(description)
+                .icon(icon)
+                .style(style)
+                .run(run)
+                .runBefore(runBefore)
+                .runAfter(runAfter)
+                .action(action);
     }
 
 }

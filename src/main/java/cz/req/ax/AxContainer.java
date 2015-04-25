@@ -1,34 +1,38 @@
 package cz.req.ax;
 
 import com.vaadin.data.util.BeanItem;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-@Component("AxContainer")
-@Scope("prototype")
+//@Component("AxContainer")
+//@Scope("prototype")
 public class AxContainer<T extends IdObject<Integer>> extends AxBeanContainer<T> implements Refresh {
 
-    private AxRepository<T> repository;
+    private JpaRepository<T, Integer> repository;
     private Supplier<List<T>> supplier;
-    private Function<AxRepository<T>, List<T>> function;
+    private Function<JpaRepository<T, Integer>, List<T>> function;
     private BeanIdResolver<Integer, T> resolver = bean -> bean == null ? null : bean.getId();
 
-    public AxContainer(AxRepository<T> repository) throws IllegalArgumentException {
-        super(repository.entityClass());
-        this.repository = repository;
+    public AxContainer(AxRepository<T> repository) {
+        this(repository.entityClass());
+        repository(repository);
+    }
+
+    public AxContainer(Class<T> entityClass) {
+        super(entityClass);
         setBeanIdResolver(this.resolver);
     }
 
-    public void repository(AxRepository<T> repository) {
-        this.repository = repository;
+    public JpaRepository<T, Integer> getRepository() {
+        return repository;
     }
 
-    public AxRepository<T> getRepository() {
-        return repository;
+    public AxContainer<T> repository(JpaRepository<T, Integer> repository) {
+        this.repository = repository;
+        return this;
     }
 
     public AxContainer<T> supplier(Supplier<List<T>> supplier) {
@@ -36,7 +40,7 @@ public class AxContainer<T extends IdObject<Integer>> extends AxBeanContainer<T>
         return this;
     }
 
-    public AxContainer<T> supplier(Function<AxRepository<T>, List<T>> function) {
+    public AxContainer<T> supplier(Function<JpaRepository<T, Integer>, List<T>> function) {
         this.function = function;
         return this;
     }
