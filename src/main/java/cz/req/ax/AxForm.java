@@ -366,10 +366,14 @@ public class AxForm<T> extends CustomComponent {
             return this;
         }
 
-        /*public AxField<T> required(boolean required) {
-            field.setRequired(required);
+        public AxField<T> readonly() {
+            return readonly(true);
+        }
+
+        public AxField<T> readonly(boolean readonly) {
+            field.setReadOnly(readonly);
             return this;
-        }*/
+        }
 
         public AxField<T> enabled(boolean enabled) {
             field.setEnabled(enabled);
