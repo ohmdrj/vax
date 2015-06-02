@@ -140,46 +140,6 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
     }
   }
 
-  /*
-  //TODO Move footer to
-  .page-root:after {
-    //SPACER
-    content: " ";
-    display: block;
-    position: relative;
-    height: 50px;
-    //background: yellowgreen;
-    //z-index: 910;
-  }
-  .page-footer {
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    position: fixed;
-  }
-  .page-footer {
-    display: block;
-    position: relative;
-    margin: 10px auto;
-    max-width: 800px;
-    min-height: 50px;
-    font-size: 20px;
-    .logo {
-      left: 0;
-      bottom: 0;
-      width: 119px;
-      height: 30px;
-      display: block;
-      position: absolute;
-      background-image: url('logo-marbes-black.png');
-    }
-    .info {
-      right: 0;
-      bottom: 0;
-      display: block;
-      position: absolute;
-    }
-  }9*/
 
   .v-button-primary {
     background: #197de1;
@@ -299,7 +259,7 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
       margin-top: 3px;
       margin-right: 10px;
       .v-label {
-        font-size: 24px;
+        font-size: 20px;
       }
     }
     .v-button {
@@ -318,7 +278,7 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
   }
 
   .v-datefield-popup .v-datefield-calendarpanel-day {
-    background: w;
+    background: white;
   }
 
   .v-table {
@@ -358,7 +318,8 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
     display: none;
   }
 
-  .window-confirm {
+  .window-confirm,
+  .window-info {
     min-width: 200px;
     .main-panel > .h2 {
       margin: 40px 40px 20px;

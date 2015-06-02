@@ -22,7 +22,7 @@ public class AxTiler<T> extends CssLayout {
 
     public AxTiler() {
         addStyleName("tiler");
-        setSizeFull();
+        setSizeUndefined();
         factory = (bean) -> {
             Assert.notNull(bean);
             Object caption = bean.getItemProperty(propertyId).getValue();
