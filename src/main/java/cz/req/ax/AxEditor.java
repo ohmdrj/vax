@@ -21,7 +21,13 @@ public class AxEditor<T extends IdObject<Integer>> extends CssLayout implements 
         form.getButtonBar().addComponent(new AxAction<T>().caption("Uložit").primary()
                 .run(() -> {
                     //TODO fix value??? .value(form.commit()).action(entity -> {
-                    T entity = form.commit();
+                    T entity = null;
+                    try {
+                        entity = form.commit();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return;
+                    }
                     if (entity.getId() == null) {
                         form.setItem(container.create(entity));
                     } else {
@@ -32,37 +38,48 @@ public class AxEditor<T extends IdObject<Integer>> extends CssLayout implements 
                     table.getTable().select(form.getValue().getId());
                 }).button());
         form.getButtonBar().addComponent(new AxAction<T>().caption("Nový")
-                .action(entity -> form.setValue(container.newBean())).button());
-        //TODO delete action
+                .action(entity -> form.setItem(container.newItem())).button());
+        form.getButtonBar().addComponent(new AxAction<T>().caption("Smazat")
+                .action(entity -> {
+                    if (form.getValue().getId() != null) {
+                        new AxConfirm("Smazat vybranou položku?", () -> {
+                            try {
+                                container.delete(form.getValue());
+                                form.setItem(container.newItem());
+                            } catch (Exception e) {
+                                new AxMessage("Nelze odstranit vybranou položku.").show();
+                            }
+                        }).show();
+                    }
+                }).button());
 
         table = new AxBeanTable<>(container);
         table.getTable().addValueChangeListener(event -> {
             Object value = event.getProperty().getValue();
-            form.setItem(value == null ? null : container.getItem(value));
+            form.setItem(value == null ? container.newItem() : container.getItem(value));
         });
     }
 
     public AxEditor<T> initHorizontal(InitContainerTableForm<T> init) {
         init.init(container, table, form);
         table.done();
-        table.getTable();//.setSizeFull();
+        table.getTable();
         setStyleName("editor-horizontal");
         setSizeUndefined();
         addComponents(table.getTable(), form);
         return this;
     }
 
-    /*@Deprecated //TODO Replace with CssLayout
-    public AbstractComponentContainer initVertical(InitContainerTableForm<T> init) {
+    public AxEditor<T> initVertical(InitContainerTableForm<T> init) {
         init.init(container, table, form);
         table.done();
-        table.getTable().setPageLength(0);
-        table.getTable().setWidth(100, Sizeable.Unit.PERCENTAGE);
-        VerticalLayout layout = new VerticalLayout(table.getTable(), form);
-        layout.setStyleName("editor-vertical");
-        layout.setSizeFull();
-        return layout;
-    }*/
+        table.getTable().setVisible(container.size() > 0);
+        container.addItemSetChangeListener(e -> table.getTable().setVisible(e.getContainer().size() > 0));
+        setStyleName("editor-vertical");
+        setSizeUndefined();
+        addComponents(table.getTable(), form);
+        return this;
+    }
 
     public void refresh() {
         table.refresh();

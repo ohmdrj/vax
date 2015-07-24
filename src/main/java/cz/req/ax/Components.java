@@ -3,13 +3,20 @@ package cz.req.ax;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Image;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 
 @FunctionalInterface
 public interface Components {
 
     String getId();
+
+    default CssLayout cssLayout(String name, Component... components) {
+        CssLayout layout = new CssLayout(components);
+        layout.setSizeUndefined();
+        layout.setStyleName(name);
+        return layout;
+    }
 
     default <T extends AbstractLayout> T newLayout(Class<T> type, String style, Component... components) {
         try {
@@ -23,9 +30,18 @@ public interface Components {
         }
     }
 
-    default Image newImage(Resource resource) {
-        Image image = new Image("", resource);
-        return image;
+    default Component newImage(Resource resource) {
+//        Image image = new Image("", resource);
+//        return image;
+        Label label = new Label();
+        label.addStyleName("image");
+        label.setSizeUndefined();
+        label.setIcon(resource);
+        return label;
+    }
+
+    default Label newLabel(String content) {
+        return newLabel(content, null);
     }
 
     default Label newLabel(String content, String style) {

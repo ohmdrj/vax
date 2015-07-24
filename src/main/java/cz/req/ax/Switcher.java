@@ -1,12 +1,12 @@
 package cz.req.ax;
 
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.SingleComponentContainer;
+
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 
 /**
@@ -63,6 +63,10 @@ public class Switcher<T> extends CssLayout implements SingleComponentContainer, 
     public void setContent(Component content) {
         removeAllComponents();
         addComponent(content);
+    }
+
+    public void refresh() {
+        vswitch.set(value);
     }
 
 }

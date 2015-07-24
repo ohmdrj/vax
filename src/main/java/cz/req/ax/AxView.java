@@ -1,54 +1,64 @@
 package cz.req.ax;
 
+import java.util.stream.Stream;
+
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.TabSheet;
 
-public abstract class AxView extends CssLayout implements View, Container, Navigation, Components {
+public abstract class AxView extends RootLayout implements View, Navigation, Components {
 
-    ContainerRoot containerRoot;
     TabSheet tabSheet;
+    String parameters;
 
     protected AxView() {
-        this(false);
-    }
-
-    protected AxView(boolean wrap) {
-        containerRoot = new ContainerRoot(this, wrap);
         String name = getClass().getSimpleName();
         name = name.replaceAll("View", "-view").toLowerCase();
         setStyleName("page-root");
         addStyleName(name);
-        setSizeUndefined();
-//        setSizeFull();
     }
 
-    @Override
-    public ContainerRoot getRoot() {
-        return containerRoot;
+    public Integer getParameterInteger() {
+        Integer[] values = getParameterIntegers();
+        return values != null && values.length == 1 ? values[0] : null;
+    }
+
+    public Integer[] getParameterIntegers() {
+        try {
+            return Stream.of(getParameterStrings())
+                    .map(Integer::parseInt)
+                    .toArray(size -> new Integer[size]);
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public String[] getParameterStrings() {
+        return parameters.split("/");
     }
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        //TODO Parse navigation parameter??
+        parameters = event.getParameters();
     }
 
+    //TODO Refactorize
     public AxView actions(AxAction... actions) {
-        Container.super.menuActions(actions);
+        menuActions(actions);
         return this;
     }
 
+    //TODO Refactorize
     public AxView components(Component... components) {
-        Container.super.mainComponents(components);
+        mainComponents(components);
         return this;
     }
 
+    //TODO Refactorize
     public AxView components(String layoutName, Component... components) {
-        //TODO Support wrap??
-        Container.super.bodyLayout(layoutName).addComponents(components);
+        bodyLayout(layoutName).addComponents(components);
         return this;
     }
 
@@ -74,6 +84,10 @@ public abstract class AxView extends CssLayout implements View, Container, Navig
 
     public TabSheet.Tab addTabSheet(String caption, FontAwesome awesome, Component component) {
         return tabSheet().addTab(component, caption, awesome);
+    }
+
+    public void removeAllComponents() {
+        mainPanel().removeAllComponents();
     }
 
 }

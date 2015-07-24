@@ -1,7 +1,10 @@
 package cz.req.ax;
 
 import com.google.common.base.Joiner;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.Resource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.UI;
@@ -19,7 +22,8 @@ public class AxAction<T> implements Cloneable {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     private T value;
-    private String caption, description, style;
+    private String caption, description;
+    private List<String> styles = new ArrayList<>();
     private Boolean enabled = Boolean.TRUE;
     private Boolean right = Boolean.FALSE;
     private Supplier<String> confirm;
@@ -54,6 +58,11 @@ public class AxAction<T> implements Cloneable {
         return confirm(() -> message);
     }
 
+    public AxAction<T> styles(List<String> styles) {
+        this.styles = styles;
+        return this;
+    }
+
     public AxAction<T> danger() {
         return style("danger");
     }
@@ -75,7 +84,7 @@ public class AxAction<T> implements Cloneable {
     }
 
     public AxAction<T> style(String style) {
-        this.style = style;
+        styles.add(style);
         return this;
     }
 
@@ -97,6 +106,10 @@ public class AxAction<T> implements Cloneable {
         return enabled(false);
     }
 
+    public AxAction<T> icon(String themeResource) {
+        this.icon= new ThemeResource(themeResource);
+        return this;
+    }
     //TODO DescribedFunctionInterface
     public AxAction<T> icon(Resource icon) {
         this.icon = icon;
@@ -144,18 +157,18 @@ public class AxAction<T> implements Cloneable {
         return this;
     }
 
+    public int submenuSize() {
+        return submenu != null ? submenu.size() : 0;
+    }
+
     protected void onAction() {
         try {
             doExecute(Phase.RunBefore, runBefore);
-            if (confirm == null) {
+            String message = getConfirm();
+            if (message == null) {
                 doActionAndAfter();
             } else {
-                String message = confirm.get();
-                if (message == null) {
-                    doActionAndAfter();
-                } else {
-                    new AxConfirm(message, this::doActionAndAfter).show();
-                }
+                new AxConfirm(message, this::doActionAndAfter).show();
             }
         } catch (ActionException ae) {
             if (exception == null) {
@@ -171,8 +184,7 @@ public class AxAction<T> implements Cloneable {
 
     public void navigate(Throwable th) {
         AxUI ui = (AxUI) UI.getCurrent();
-        ui.getSession().setAttribute(Throwable.class, th);
-        ui.getNavigator().navigateTo(ui.errorView);
+        ui.navigate(th);
     }
 
     private void doActionAndAfter() throws ActionException {
@@ -225,7 +237,13 @@ public class AxAction<T> implements Cloneable {
     }
 
     public String getStyle() {
+        String style = styles.isEmpty() ? null : styles.iterator().next();
         return Joiner.on("-").skipNulls().join(style, right ? "right" : null);
+    }
+
+    public List<String> getStyles() {
+//        return styles.stream().map(style -> right ? style + "-right" : style).collect(Collectors.toList());
+        return styles;
     }
 
     public Runnable getRun() {
@@ -244,43 +262,78 @@ public class AxAction<T> implements Cloneable {
         return action;
     }
 
+    public String getConfirm() {
+        return confirm != null ? confirm.get() : null;
+    }
+
     public Button button() {
         //TODO New factory AxButton
         //TODO Caption/Icon by factory method
         //TODO Review lazy??
         Button button = new Button(caption, icon);
         if (description != null) button.setDescription(description);
-        if (style != null) button.addStyleName(style);
+        if (!styles.isEmpty()) styles.forEach(button::addStyleName);
         if (right) button.addStyleName("right");
         button.addClickListener(event -> onAction());
         button.setEnabled(enabled);
         return button;
     }
 
+    public MenuBar menuBar() {
+        MenuBar menuBar = new MenuBar();
+        menuBar.addStyleName("actions");
+        styles.forEach(menuBar::addStyleName);
+        menuItem(menuBar);
+        return menuBar;
+    }
+
     public MenuBar.MenuItem menuItem(MenuBar menuBar) {
+        if (caption == null) caption = "";
         MenuBar.MenuItem menuItem = menuBar.addItem(caption, null);
         if (icon != null) menuItem.setIcon(icon);
         if (submenu == null) {
             menuItem.setCommand((item) -> onAction());
         } else {
             for (AxAction action : submenu) {
-                if (action==null ) {
+                if (action == null) {
                     //SPACER??
-                }else {
+                } else {
                     action.menuItem(menuItem);
                 }
             }
+        }
+        if (enabled != null) {
+            menuItem.setEnabled(enabled);
         }
         return menuItem;
     }
 
     public MenuBar.MenuItem menuItem(MenuBar.MenuItem parentMenuItem) {
+        MenuBar.MenuItem item;
         if (icon != null) {
-            return parentMenuItem.addItem(caption, icon, (item) -> onAction());
+            item = parentMenuItem.addItem(caption, icon, (i) -> onAction());
         } else {
-            return parentMenuItem.addItem(caption, (item) -> onAction());
+            item = parentMenuItem.addItem(caption, (i) -> onAction());
         }
+        if (enabled != null) {
+            item.setEnabled(enabled);
+        }
+        return item;
     }
+
+    public ShortcutListener shortcutListener(int keycode) {
+        return new ShortcutListener(null, keycode, null) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                onAction();
+            }
+        };
+    }
+
+    public ShortcutListener shortcutListenerEnter() {
+        return shortcutListener(ShortcutAction.KeyCode.ENTER);
+    }
+
 
     //TODO Checked exception
     public static class ActionException extends RuntimeException {
@@ -321,11 +374,12 @@ public class AxAction<T> implements Cloneable {
                 .caption(caption)
                 .description(description)
                 .icon(icon)
-                .style(style)
+                .styles(styles)
                 .run(run)
                 .runBefore(runBefore)
                 .runAfter(runAfter)
-                .action(action);
+                .action(action)
+                .confirm(confirm);
     }
 
 }

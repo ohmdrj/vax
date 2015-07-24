@@ -98,30 +98,6 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
     height: 100%;
   }
 
-  .page-root {
-    > .menu-bar, > .menu-bar-wrap > .menu-bar {
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 40px;
-      z-index: 900;
-      position: fixed;
-      background-color: #252525;
-      font-size: 20px;
-      > .v-menubar-menuitem {
-        padding: 2px 15px 0px 15px;
-        border: none !important;
-        border-radius: 0 !important;
-        > .v-menubar-menuitem-caption > .v-icon {
-          margin: 0 8px 0 0;
-        }
-      }
-    }
-  }
-  .menu-bar::after {
-    display: none;
-  }
-
   > .page-body {
     > .main-panel {
       padding-top: 40px;
@@ -144,7 +120,7 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
   .v-button-primary {
     background: #197de1;
     padding: 0 15px;
-    font-weight: normal;
+    font-weight: 400;
   }
 
   .v-button-danger {
@@ -219,8 +195,7 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
     display: block;
     width: 60%;
     > .item-form {
-      top: 90px;
-      right: 0;
+      right: 20px;
       width: 40%;
       position: fixed;
       box-sizing: border-box;
@@ -229,6 +204,19 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
         position: relative;
         box-sizing: border-box;
         width: 100%;
+      }
+    }
+  }
+
+  .editor-vertical {
+    display: block;
+    > .item-form {
+      width: 100%;
+      > .v-widget {
+        width: 100%;
+        > table {
+          width: 100%;
+        }
       }
     }
   }
@@ -242,8 +230,13 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
       white-space: nowrap;
       border: 1px solid $ax-lite-bgrnd;
       font-size: 18px;
-      font-weight: 300;
+      font-weight: 200;
     }
+  }
+
+  .form-error {
+    white-space: normal;
+    color: $v-error-indicator-color
   }
 
   .item-form {
@@ -274,7 +267,7 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
   }
 
   .v-checkbox {
-    margin: 10px 20px 10px 0;
+    margin: 7px 5px 0px 0;
   }
 
   .v-datefield-popup .v-datefield-calendarpanel-day {
@@ -283,7 +276,7 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
 
   .v-table {
     font-size: 18px;
-    font-weight: 300;
+    font-weight: 200;
     .v-table-cell-content {
       height: 30px;
       padding-top: 2px;
@@ -339,6 +332,10 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
 
   .hack-noscroll .v-scrollable {
     overflow: hidden;
+  }
+
+  .hack-allow-v-scroll .v-scrollable {
+    overflow-y: auto;
   }
 
   .v-window-contents > .v-scrollable:before {

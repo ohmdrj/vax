@@ -1,6 +1,10 @@
 package cz.req.ax;
 
+import java.io.Serializable;
+
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.util.BeanItem;
+
 
 public class AxBeanContainer<T extends IdObject<Integer>> extends BeanContainer<Integer, T> {
 
@@ -19,6 +23,10 @@ public class AxBeanContainer<T extends IdObject<Integer>> extends BeanContainer<
         return type;
     }
 
+    public BeanItem<T> newItem() {
+        return new BeanItem<T>(newBean());
+    }
+
     public T newBean() {
         try {
             return type.newInstance();
@@ -28,16 +36,22 @@ public class AxBeanContainer<T extends IdObject<Integer>> extends BeanContainer<
     }
 
     public Integer delete(Object object) {
-        Integer id;
-        if (object instanceof Integer) {
-            id = ((Integer) object);
-        } else if (object instanceof IdObject) {
-            id = ((IdEntity) object).getId();
-        } else {
-            throw new IllegalArgumentException();
-        }
+        Integer id = getId(object);
         super.removeItem(id);
         return id;
+    }
+
+    protected Integer getId(Object object) {
+        if (object instanceof Integer) {
+            return (Integer) object;
+        }
+        if (object instanceof IdObject) {
+            Serializable id = ((IdObject) object).getId();
+            if (id instanceof Integer) {
+                return (Integer) id;
+            }
+        }
+        throw new IllegalArgumentException("Objekt nemá ID typu Integer");
     }
 
 }

@@ -14,13 +14,20 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 
 public class AxVaadinServlet extends SpringVaadinServlet {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    static final Logger logger = LoggerFactory.getLogger(AxVaadinServlet.class);
     File themeDir;
     boolean themeCompile = false;
     Semaphore semaphore = new Semaphore(1);
@@ -59,9 +66,9 @@ public class AxVaadinServlet extends SpringVaadinServlet {
             } catch (Exception e) {
                 log("Error serving static resource " + request.getPathInfo(), e);
             }
-        } else if (themeCompile && request.getServletPath().equals("/VAADIN")
-                && request.getPathInfo().startsWith("/themes")
-                && request.getPathInfo().endsWith(".css")) {
+        } else if (themeCompile
+                && request.getPathInfo().contains("/VAADIN/themes")
+                && request.getPathInfo().endsWith("styles.css")) {
             CurrentInstance.clearAll();
             VaadinServletRequest vaadinRequest = new VaadinServletRequest(request, getService());
             VaadinServletResponse vaadinResponse = new VaadinServletResponse(response, getService());
@@ -71,7 +78,7 @@ public class AxVaadinServlet extends SpringVaadinServlet {
                 String scssName = request.getPathInfo().substring(0, request.getPathInfo().length() - 4);
                 CssCacheItem cacheItem = cache.get(scssName);
                 if (cacheItem == null) {
-                    cacheItem = new CssCacheItem(new File(themeDir, "VAADIN" + scssName + ".scss"));
+                    cacheItem = new CssCacheItem(themeDir, scssName + ".scss");
                     cache.put(scssName, cacheItem);
                 }
                 response.setCharacterEncoding("UTF-8");
@@ -101,25 +108,50 @@ public class AxVaadinServlet extends SpringVaadinServlet {
         private Long time;
         private File file;
         private String content;
+        private List<File> imports;
 
-        public CssCacheItem(File file) {
-            if (!file.exists()) throw new RuntimeException("Missing scss style file " + file);
-            this.file = file;
+        public CssCacheItem(File themeDir, String sassPath) {
+            logger.warn("Watch sass changes in " + themeDir);
+            file = new File(themeDir, sassPath);
+            if (!file.exists()) throw new RuntimeException("Missing theme file " + file);
+            imports = new ArrayList<>();
+            try {
+                Files.walkFileTree(file.getParentFile().toPath(), new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        if (file.toString().endsWith(".scss")) {
+                            logger.warn("   - " + file);
+                            imports.add(file.toFile());
+                        }
+                        return super.visitFile(file, attrs);
+                    }
+                });
+            } catch (IOException e) {
+                throw new RuntimeException("Error reading tree", e);
+            }
         }
 
         public String getContent() {
-            if (content == null || file.lastModified() > time) {
-                loadContent();
+            if (time == null) return loadContent();
+            boolean modified = false;
+            if (time != null) for (File file : imports) {
+                long lastm = file.lastModified();
+                if (file != null && lastm > time) {
+                    logger.info("Modified sass file " + file);
+                    modified = true;
+                }
             }
+            if (modified) return loadContent();
             return content;
         }
 
-        protected void loadContent() {
+        protected String loadContent() {
             try {
                 ScssStylesheet scssStyle = ScssStylesheet.get(file.getAbsolutePath());
                 scssStyle.compile();
                 content = scssStyle.printState();
                 time = System.currentTimeMillis();
+                return content;
             } catch (Exception e) {
                 throw new RuntimeException("Error sass style compilation", e);
             }

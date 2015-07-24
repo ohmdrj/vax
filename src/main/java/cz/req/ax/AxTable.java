@@ -30,9 +30,21 @@ public abstract class AxTable<T> implements ComponentWrapper, Refresh {
 
     public Table getTable() {
         if (table == null) {
-            table = new Table(null, getContainer());
+            table = new Table(null, getContainer()) {
+                @Override
+                public void setPageLength(int pageLength) {
+                    super.setPageLength(pageLength);
+                    // Pokud chceme zobrazovat jen cast (nastaveno pageLength) tak scroll musime povolit
+                    if (pageLength > 0) {
+                        table.addStyleName("hack-allow-v-scroll");
+                    } else {
+                        table.removeStyleName("hack-allow-v-scroll");
+                    }
+                }
+            };
             table.addStyleName("hack-noscroll");
             table.setWidth(100, Sizeable.Unit.PERCENTAGE);
+//            table.setWidth(100, Sizeable.Unit.PERCENTAGE);
             table.setPageLength(0);
             table.setSelectable(true);
             table.setColumnHeaderMode(Table.ColumnHeaderMode.HIDDEN);

@@ -20,6 +20,13 @@
             <organization>Request</organization>
             <organizationUrl>http://req.cz</organizationUrl>
         </developer>
+        <developer>
+            <id>pikl</id>
+            <name>Jan Pikl</name>
+            <email>pikl@marbes.cz</email>
+            <organization>MARBES CONSULTING s.r.o.</organization>
+            <organizationUrl>http://marbes.cz</organizationUrl>
+        </developer>
     </developers>
 
     <properties>
@@ -52,17 +59,12 @@
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-server</artifactId>
             <version>${vaadin.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.vaadin.external.google</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-client-compiled</artifactId>
             <version>${vaadin.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
@@ -87,10 +89,9 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
-            <!--<scope>provided</scope>-->
+            <version>3.1.0</version>
+            <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>

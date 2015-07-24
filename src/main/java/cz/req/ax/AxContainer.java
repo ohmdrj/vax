@@ -56,9 +56,8 @@ public class AxContainer<T extends IdObject<Integer>> extends AxBeanContainer<T>
     }
 
     public Integer delete(Object object) {
-        Integer id = super.delete(object);
-        repository.delete(id);
-        return id;
+        repository.delete(getId(object));
+        return super.delete(object);
     }
 
     public void refresh() {

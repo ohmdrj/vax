@@ -1,59 +1,96 @@
 package cz.req.ax;
 
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.ErrorHandler;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
-public class AxWindow extends Window implements Container, Navigation, Components {
+public class AxWindow extends RootLayout implements Navigation, Components {
 
-    ContainerRoot containerRoot;
+    Window window;
 
     public AxWindow() {
-        CssLayout layout = new CssLayout();
-        layout.setStyleName("window-root");
-        addStyleName("window-headerless");
-        setClosable(false);
-        setResizable(false);
-        setContent(layout);
-        containerRoot = new ContainerRoot(layout, false);
+        setStyleName("window-root");
+        window = new Window();
+        window.addStyleName("window-headerless");
+        window.setSizeUndefined();
+        window.setResizable(false);
+        window.setClosable(false);
+        window.setContent(this);
+    }
+
+    public Window getWindow() {
+        return window;
     }
 
     @Override
-    public ContainerRoot getRoot() {
-        return containerRoot;
+    public AxMenuBar menuBar() {
+        return getVariable(PAGE_MENU, () -> {
+            AxMenuBar menuBar = new AxMenuBar();
+            menuBar.addStyleName("menu-bar");
+            pageFooter().addComponent(menuBar);
+            return menuBar;
+        });
     }
 
+    //TODO Burianek Review??
+    public AxWindow show(UI ui) {
+        ui.addWindow(window);
+        if (!AxUtils.focusFirst(mainPanel())) {
+            focus();
+        }
+        return this;
+    }
     public AxWindow show() {
-        center();
-        UI.getCurrent().addWindow(this);
+        window.center();
+        show(UI.getCurrent());
+        return this;
+    }
+
+    //TODO Burianek Review
+    public AxWindow showTopRight() {
+        window.setPositionX(UI.getCurrent().getPage().getBrowserWindowWidth() - Math.round(window.getWidth()) - 2);
+        window.setPositionY(42);
+        show(UI.getCurrent());
+        return this;
+    }
+
+    public AxWindow show(int x, int y) {
+        window.setPositionX(x);
+        window.setPositionY(y);
+        show(UI.getCurrent());
+        return this;
+    }
+
+    public AxWindow close() {
+        window.close();
         return this;
     }
 
     public AxWindow modal() {
-        setModal(true);
+        window.setModal(true);
         return this;
     }
 
     public AxWindow size(Integer width, Integer height) {
-        if (width != null) setWidth(width, Unit.PIXELS);
-        if (height != null) setHeight(height, Unit.PIXELS);
+        if (width != null) window.setWidth(width, Unit.PIXELS);
+        if (height != null) window.setHeight(height, Unit.PIXELS);
         return this;
     }
 
     public AxWindow style(String styleName) {
-        addStyleName(styleName);
+        window.addStyleName(styleName);
         return this;
     }
 
     public AxWindow caption(String caption) {
-        getRoot().addComponent(newLabel(caption, "window-caption"));
+        pageHeader().addComponent(newLabel(caption, "window-caption"));
         return this;
     }
 
     public AxWindow components(Component... components) {
-        Container.super.mainComponents(components);
+        mainComponents(components);
         return this;
     }
 
@@ -62,19 +99,14 @@ public class AxWindow extends Window implements Container, Navigation, Component
         return this;
     }
 
-    /*@Override
-    public AxWindow mainPanel() {
-        Container.super.mainPanel();
-        return this;
-    }*/
-
     public AxWindow buttonClose() {
-        menuBar().actions(new AxAction().caption("Zavřít").run(this::close).right());
-        return this;
+        return buttonClose("Zavřít");
     }
 
     public AxWindow buttonClose(String caption) {
-        menuBar().actions(new AxAction().caption(caption).run(this::close));
+        AxAction action = new AxAction().caption(caption).run(window::close).right();
+        addShortcutListener(action.shortcutListener(ShortcutAction.KeyCode.ESCAPE));
+        menuBar().actions(action);
         return this;
     }
 
@@ -83,12 +115,24 @@ public class AxWindow extends Window implements Container, Navigation, Component
         if (runAfter != null) {
             action.runAfter(() -> {
                 runAfter.run();
-                close();
+                window.close();
             });
         } else {
-            action.runAfter(this::close);
+            action.runAfter(window::close);
         }
-        menuBar().actions(action);
+        menuBar().actions(action.right());
         return this;
     }
+
+    public AxWindow buttonPrimary(AxAction action) {
+        addShortcutListener(action.shortcutListenerEnter());
+        buttonAndClose(action.primary());
+        return this;
+    }
+
+    public AxWindow closeListener(Window.CloseListener listener) {
+        window.addCloseListener(listener);
+        return this;
+    }
+
 }

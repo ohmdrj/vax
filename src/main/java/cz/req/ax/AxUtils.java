@@ -1,9 +1,11 @@
 package cz.req.ax;
 
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ErrorHandler;
 import com.vaadin.ui.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class AxUtils {
 
@@ -30,6 +32,30 @@ public class AxUtils {
     public static void closeWindows() {
         for (Window window : new ArrayList<>(UI.getCurrent().getWindows())) {
             UI.getCurrent().removeWindow(window);
+        }
+    }
+
+    public static boolean focusFirst(Component component) {
+        if (component == null) return false;
+        if (component instanceof HasComponents) {
+            Iterator<Component> iterator = ((HasComponents) component).iterator();
+            while (iterator.hasNext()) {
+                if (focusFirst(iterator.next())) {
+                    return true;
+                }
+            }
+        } else if (component instanceof AbstractTextField) {
+            ((AbstractTextField) component).focus();
+            return true;
+        }
+        return false;
+    }
+
+    public static Integer getParameterInteger(ViewChangeListener.ViewChangeEvent event) {
+        try {
+            return Integer.parseInt(event.getParameters());
+        } catch (Exception ex) {
+            return null;
         }
     }
 }
