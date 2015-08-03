@@ -17,7 +17,7 @@
             <id>burianek</id>
             <name>Ondrej Burianek</name>
             <email>burianek@req.cz</email>
-            <organization>Request</organization>
+            <organization>Request, MARBES CONSULTING s.r.o.</organization>
             <organizationUrl>http://req.cz</organizationUrl>
         </developer>
         <developer>
@@ -114,10 +114,6 @@
     </build>
 
     <repositories>
-        <repository>
-            <id>nexus</id>
-            <url>http://dev.x/nexus/content/groups/public/</url>
-        </repository>
         <repository>
             <id>vaadin-releases</id>
             <url>https://oss.sonatype.org/content/repositories/vaadin-releases/</url>
