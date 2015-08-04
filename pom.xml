@@ -12,6 +12,13 @@
     <name>Vaadin AX</name>
     <description>Vaadin Another eXtension project</description>
 
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
     <developers>
         <developer>
             <id>burianek</id>
@@ -28,6 +35,9 @@
             <organizationUrl>http://marbes.cz</organizationUrl>
         </developer>
     </developers>
+    <scm>
+        <url>https://github.com/zerem/vax.git</url>
+    </scm>
 
     <properties>
         <spring-boot.version>1.2.3.RELEASE</spring-boot.version>
@@ -47,6 +57,11 @@
                 <groupId>cz.req.vax</groupId>
                 <artifactId>vax</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-client-compiled</artifactId>
+                <version>${vaadin.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -99,7 +114,6 @@
         </dependency>
     </dependencies>
 
-
     <build>
         <plugins>
             <plugin>
@@ -114,10 +128,6 @@
     </build>
 
     <repositories>
-        <repository>
-            <id>vaadin-releases</id>
-            <url>https://oss.sonatype.org/content/repositories/vaadin-releases/</url>
-        </repository>
         <repository>
             <id>vaadin-addons</id>
             <url>http://maven.vaadin.com/vaadin-addons</url>
