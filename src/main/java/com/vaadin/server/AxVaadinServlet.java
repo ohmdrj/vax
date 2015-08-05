@@ -57,25 +57,26 @@ public class AxVaadinServlet extends SpringVaadinServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (request.getPathInfo() != null && request.getPathInfo().startsWith("/APP/PUBLISHED")) {
+        StringBuilder builder = new StringBuilder();
+        if (request.getServletPath()!=null) builder.append(request.getServletPath());
+        if (request.getPathInfo()!=null) builder.append(request.getPathInfo());
+        String path = builder.toString();
+        if (path.startsWith("/APP/PUBLISHED")) {
             response.setHeader("Cache-Control", "no-cache");
             try {
-                String path = request.getPathInfo();//.replace("..", "");
-                InputStream stream = getClass().getResourceAsStream(path);
+                InputStream stream = getClass().getResourceAsStream(request.getPathInfo());
                 ByteStreams.copy(stream, response.getOutputStream());
             } catch (Exception e) {
-                log("Error serving static resource " + request.getPathInfo(), e);
+                log("Error serving static resource " + path, e);
             }
-        } else if (themeCompile
-                && request.getPathInfo().contains("/VAADIN/themes")
-                && request.getPathInfo().endsWith("styles.css")) {
+        } else if (themeCompile && path.contains("/themes/") && path.endsWith("styles.css")) {
             CurrentInstance.clearAll();
             VaadinServletRequest vaadinRequest = new VaadinServletRequest(request, getService());
             VaadinServletResponse vaadinResponse = new VaadinServletResponse(response, getService());
             getService().setCurrentInstances(null, null);
             try {
                 semaphore.acquire();
-                String scssName = request.getPathInfo().substring(0, request.getPathInfo().length() - 4);
+                String scssName = path.substring(0, path.length() - 4);
                 CssCacheItem cacheItem = cache.get(scssName);
                 if (cacheItem == null) {
                     cacheItem = new CssCacheItem(themeDir, scssName + ".scss");
