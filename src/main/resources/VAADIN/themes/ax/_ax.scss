@@ -156,7 +156,8 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
 
   .v-button:focus:after {
     border: 0;
-    box-shadow: none;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
   }
 
   .v-menubar {
@@ -178,6 +179,10 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
     .v-menubar-menuitem-danger-right, .v-menubar-menuitem-friendly-right {
       float: right;
     }
+  }
+  .v-menubar:focus:after {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
   }
 
   .v-window .v-menubar {
@@ -305,6 +310,39 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
       margin-left: 10px !important;
     }
 
+  }
+
+  .window-root {
+    width: 100%;
+    > .v-layout {
+      display: block;
+      width: 100%;
+    }
+    > .page-header {
+      > .window-caption {
+        margin: 12px 18px 18px;
+        font-size: 1.6em;
+        font-weight: 400;
+        color: $ax-main-focus;
+      }
+    }
+    > .page-footer {
+      > .menu-bar {
+        width: initial;
+        float: right;
+        margin: 20px;
+        font-size: 18px;
+        background: inherit;
+        > .v-menubar-menuitem {
+          background-color: $ax-lite-color;
+          margin-left: 10px;
+        }
+        > .v-menubar-menuitem-primary,
+        .v-menubar-menuitem-primary-right {
+          background-color: $ax-main-focus;
+        }
+      }
+    }
   }
 
   .window-headerless .v-window-outerheader {
