@@ -7,6 +7,7 @@ import com.vaadin.server.DefaultErrorHandler;
 import com.vaadin.server.ErrorHandler;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
@@ -84,16 +85,26 @@ public abstract class AxUI extends UI implements ViewChangeListener {
     @Override
     public void detach() {
         eventBus.unregister(this);
+        for (Window window : getWindows()) {
+            if (window.getContent() != null) eventBus.unregister(window.getContent());
+        }
         try {
             Field field = Navigator.class.getDeclaredField("currentView");
             field.setAccessible(true);
             Object view = field.get(getNavigator());
             eventBus.unregister(view);
         } catch (Exception e) {
-            e.printStackTrace();
             System.err.println("Error unregister view " + e.getMessage());
         }
         super.detach();
+    }
+
+    @Override
+    public void addWindow(Window window) throws IllegalArgumentException, NullPointerException {
+        if (window.getContent() != null) {
+            eventBus.register(window.getContent());
+        }
+        super.addWindow(window);
     }
 
     @Override
