@@ -44,7 +44,6 @@ public abstract class AxTable<T> implements ComponentWrapper, Refresh {
             };
             table.addStyleName("hack-noscroll");
             table.setWidth(100, Sizeable.Unit.PERCENTAGE);
-//            table.setWidth(100, Sizeable.Unit.PERCENTAGE);
             table.setPageLength(0);
             table.setSelectable(true);
             table.setColumnHeaderMode(Table.ColumnHeaderMode.HIDDEN);
@@ -131,6 +130,11 @@ public abstract class AxTable<T> implements ComponentWrapper, Refresh {
         return column(propertyId);
     }
 
+    public AxTable<T> header(Table.ColumnHeaderMode headerMode) {
+        getTable().setColumnHeaderMode(headerMode);
+        return this;
+    }
+
     public AxTable<T> done() {
         table.setVisibleColumns(visibleColumns.toArray());
         refresh();
@@ -150,6 +154,11 @@ public abstract class AxTable<T> implements ComponentWrapper, Refresh {
             //this.table.getContainer().pro
         }
 
+        public ColumnFactory<T> header(String header) {
+            table.getTable().setColumnHeader(property, header);
+            return this;
+        }
+
         public ColumnFactory<T> width(int pixels) {
             table.getTable().setColumnWidth(property, pixels);
             return this;
@@ -162,6 +171,24 @@ public abstract class AxTable<T> implements ComponentWrapper, Refresh {
 
         public ColumnFactory<T> converter(Converter<String, ?> converter) {
             table.getTable().setConverter(property, converter);
+            return this;
+        }
+
+        public ColumnFactory<T> generator(IdCellGenerator generator) {
+            table.getTable().addGeneratedColumn(property, (source, itemId, columnId) ->
+                    generator.generateCell(itemId, columnId));
+            return this;
+        }
+
+        public ColumnFactory<T> generator(ItemCellGenerator<T> generator) {
+            table.getTable().addGeneratedColumn(property, (source, itemId, columnId) -> {
+                try {
+                    BeanItem<T> item = (BeanItem<T>) table.getContainer().getItem(itemId);
+                    return generator.generateCell(item.getBean(), itemId, columnId);
+                } catch (Exception ex) {
+                    return null;
+                }
+            });
             return this;
         }
 
@@ -182,6 +209,18 @@ public abstract class AxTable<T> implements ComponentWrapper, Refresh {
         public AxTable<T> done() {
             return table.done();
         }
+    }
+
+    public interface IdCellGenerator<T> {
+
+        Component generateCell(T itemId, Object columnId);
+
+    }
+
+    public interface ItemCellGenerator<T> {
+
+        Component generateCell(T itemObject, Object itemId, Object columnId);
+
     }
 
     public void refresh() {

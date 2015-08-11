@@ -16,6 +16,10 @@ public class AxContainer<T extends IdObject<Integer>> extends AxBeanContainer<T>
     private Function<JpaRepository<T, Integer>, List<T>> function;
     private BeanIdResolver<Integer, T> resolver = bean -> bean == null ? null : bean.getId();
 
+    public static <T extends IdObject<Integer>> AxContainer<T> init(Class<T> type) {
+        return new AxContainer<>(type);
+    }
+
     public AxContainer(AxRepository<T> repository) {
         this(repository.entityClass());
         repository(repository);
