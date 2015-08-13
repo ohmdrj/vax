@@ -8,7 +8,8 @@ public class MavenUtils {
     public static String getVersion(String groupId, String artifactId) {
         String version;
         try {
-            InputStream resourceAsStream = MavenUtils.class.getResourceAsStream("/META-INF/maven/cz.tacr.elza/elza-ui/pom.properties");
+            InputStream resourceAsStream = MavenUtils.class.getResourceAsStream(
+                    "/META-INF/maven/" + groupId + "/" + artifactId + "/pom.properties");
             Properties prop = new Properties();
             prop.load(resourceAsStream);
             version = prop.getProperty("version");
