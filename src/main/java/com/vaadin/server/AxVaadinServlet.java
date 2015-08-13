@@ -76,18 +76,12 @@ public class AxVaadinServlet extends SpringVaadinServlet {
             getService().setCurrentInstances(null, null);
             try {
                 semaphore.acquire();
-                String scssName = path.substring(0, path.length() - 4);
-                CssCacheItem cacheItem = cache.get(scssName);
-                if (cacheItem == null) {
-                    cacheItem = new CssCacheItem(themeDir, scssName + ".scss");
-                    cache.put(scssName, cacheItem);
-                }
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("text/css;charset=UTF-8");
                 response.setHeader("Cache-Control", "no-cache");
                 PrintWriter writer = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(response.getOutputStream(), "UTF-8")));
-                writer.print(cacheItem.getContent());
+                writer.print(getCacheItem(path).getContent());
                 writer.flush();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -103,6 +97,16 @@ public class AxVaadinServlet extends SpringVaadinServlet {
         } else {
             super.service(request, response);
         }
+    }
+
+    public CssCacheItem getCacheItem(String path) {
+        String scssName = path.substring(0, path.length() - 4);
+        CssCacheItem cacheItem = cache.get(scssName);
+        if (cacheItem == null) {
+            cacheItem = new CssCacheItem(themeDir, scssName + ".scss");
+            cache.put(scssName, cacheItem);
+        }
+        return cacheItem;
     }
 
     public static class CssCacheItem {
