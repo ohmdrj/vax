@@ -8,7 +8,7 @@
     </parent>
     <groupId>cz.req.vax</groupId>
     <artifactId>vax</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <name>Vaadin AX</name>
     <description>Vaadin Another eXtension project</description>
 
@@ -41,7 +41,7 @@
 
     <properties>
         <spring-boot.version>1.2.3.RELEASE</spring-boot.version>
-        <spring-vaadin.version>3.1</spring-vaadin.version>
+        <spring-vaadin.version>3.1.1-SNAPSHOT</spring-vaadin.version>
         <vaadin.version>7.3.10</vaadin.version>
     </properties>
     <dependencyManagement>
@@ -92,7 +92,7 @@
             <version>${vaadin.version}</version>
         </dependency>
         <dependency>
-            <groupId>ru.xpoft.vaadin</groupId>
+            <groupId>cz.req.vax</groupId>
             <artifactId>spring-vaadin-integration</artifactId>
             <version>${spring-vaadin.version}</version>
         </dependency>
@@ -139,8 +139,9 @@
 
     <repositories>
         <repository>
-            <id>vaadin-addons</id>
-            <url>http://maven.vaadin.com/vaadin-addons</url>
+            <id>ossrh</id>
+            <name>Sonatype OSS snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
     </repositories>
 
