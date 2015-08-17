@@ -315,6 +315,9 @@ public class AxAction<T> implements Cloneable {
         } else {
             item = parentMenuItem.addItem(caption, (i) -> onAction());
         }
+        if (styles.size() > 0) {
+            item.setStyleName(styles.get(0));
+        }
         if (enabled != null) {
             item.setEnabled(enabled);
         }
