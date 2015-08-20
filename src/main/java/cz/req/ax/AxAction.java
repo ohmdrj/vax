@@ -26,6 +26,7 @@ public class AxAction<T> implements Cloneable {
     private List<String> styles = new ArrayList<>();
     private Boolean enabled = Boolean.TRUE;
     private Boolean right = Boolean.FALSE;
+    private Boolean shortcuts = Boolean.TRUE;
     private Supplier<String> confirm;
     private Resource icon;
     private Runnable run, runBefore, runAfter;
@@ -106,10 +107,16 @@ public class AxAction<T> implements Cloneable {
         return enabled(false);
     }
 
-    public AxAction<T> icon(String themeResource) {
-        this.icon= new ThemeResource(themeResource);
+    public AxAction<T> disableShortcuts() {
+        shortcuts = Boolean.FALSE;
         return this;
     }
+
+    public AxAction<T> icon(String themeResource) {
+        this.icon = new ThemeResource(themeResource);
+        return this;
+    }
+
     //TODO DescribedFunctionInterface
     public AxAction<T> icon(Resource icon) {
         this.icon = icon;
@@ -325,6 +332,9 @@ public class AxAction<T> implements Cloneable {
     }
 
     public ShortcutListener shortcutListener(int keycode) {
+        if (!shortcuts) {
+            return null;
+        }
         return new ShortcutListener(null, keycode, null) {
             @Override
             public void handleAction(Object sender, Object target) {

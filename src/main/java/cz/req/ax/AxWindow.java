@@ -1,6 +1,7 @@
 package cz.req.ax;
 
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.ErrorHandler;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
@@ -125,7 +126,8 @@ public class AxWindow extends RootLayout implements Navigation, Components {
     }
 
     public AxWindow buttonPrimary(AxAction action) {
-        addShortcutListener(action.shortcutListenerEnter());
+        ShortcutListener shortcut = action.shortcutListenerEnter();
+        if (shortcut!=null) addShortcutListener(shortcut);
         buttonAndClose(action.primary());
         return this;
     }
