@@ -1,5 +1,6 @@
 package cz.req.ax;
 
+import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.*;
@@ -31,40 +32,40 @@ public class ExceptionView extends AxView {
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         AxUtils.closeWindows();
-        AbstractComponent component;
         Throwable exception = getSession().getAttribute(Throwable.class);
-        if (exception != null) {
-            logException(exception);
-            Accordion accordion = new Accordion();
-            do {
-                StringWriter stringWriter = new StringWriter();
-                exception.printStackTrace(new PrintWriter(stringWriter));
-                TextArea stacktrace = new TextArea("Stacktrace", stringWriter.toString());
-                stacktrace.setWidth(100, Unit.PERCENTAGE);
-                stacktrace.setHeight(200, Unit.PIXELS);
-                stacktrace.setReadOnly(true);
-
-                accordion.addTab(stacktrace, exception.getMessage(), FontAwesome.EXCLAMATION_CIRCLE);
-                component = stacktrace;
-
-                if (exception.getCause() != null && !exception.getCause().equals(exception)) {
-                    exception = exception.getCause();
-                } else {
-                    exception = null;
-                }
-            } while (exception != null);
-
-            accordion.setSelectedTab(component);
-            component = accordion;
-
-        } else {
-            component = new Label("Neznámá chyba :(");
+        if (exception == null) {
+            navigate(viewMain);
+            return;
         }
+        logException(exception);
+        Accordion accordion = new Accordion();
+        AbstractComponent component;
+        do {
+            StringWriter stringWriter = new StringWriter();
+            exception.printStackTrace(new PrintWriter(stringWriter));
+            TextArea stacktrace = new TextArea("Stacktrace", stringWriter.toString());
+            stacktrace.setWidth(100, Unit.PERCENTAGE);
+            stacktrace.setHeight(200, Unit.PIXELS);
+            stacktrace.setReadOnly(true);
+
+            accordion.addTab(stacktrace, exception.getMessage(), FontAwesome.EXCLAMATION_CIRCLE);
+            component = stacktrace;
+
+            if (exception.getCause() != null && !exception.getCause().equals(exception)) {
+                exception = exception.getCause();
+            } else {
+                exception = null;
+            }
+        } while (exception != null);
+
+        accordion.setSelectedTab(component);
+        component = accordion;
+
 
         Label label = new Label("Ale toto je nepříjemné ...");
         label.addStyleName("h2");
         label.addStyleName("primary");
-        Button button = new Button("Pokračovat", e -> navigate(viewMain));
+        Button button = new Button("Pokračovat", clickEvent -> JavaScript.eval("history.back();"));
         components(label, button, component);
     }
 
