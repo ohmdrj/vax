@@ -1,12 +1,15 @@
 package cz.req.ax;
 
-import java.util.stream.Stream;
-
+import com.sun.istack.internal.Nullable;
+import com.vaadin.data.util.converter.StringToIntegerConverter;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TabSheet;
+
+import java.util.Locale;
+import java.util.stream.Stream;
 
 public abstract class AxView extends RootLayout implements View, Navigation, Components {
 
@@ -24,16 +27,18 @@ public abstract class AxView extends RootLayout implements View, Navigation, Com
         return parameters;
     }
 
+    @Nullable
     public Integer getParameterInteger() {
-        Integer[] values = getParameterIntegers();
-        return values != null && values.length == 1 ? values[0] : null;
+        try {
+            return new StringToIntegerConverter().convertToModel(parameters, Integer.class, Locale.getDefault());
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public Integer[] getParameterIntegers() {
         try {
-            return Stream.of(getParameterStrings())
-                    .map(Integer::parseInt)
-                    .toArray(size -> new Integer[size]);
+            return Stream.of(getParameterStrings()).map(Integer::parseInt).toArray(size -> new Integer[size]);
         } catch (Exception ex) {
             return null;
         }
