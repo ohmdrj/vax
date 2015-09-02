@@ -20,6 +20,10 @@ public abstract class AxView extends RootLayout implements View, Navigation, Com
         addStyleName(name);
     }
 
+    public String getParameters() {
+        return parameters;
+    }
+
     public Integer getParameterInteger() {
         Integer[] values = getParameterIntegers();
         return values != null && values.length == 1 ? values[0] : null;

@@ -22,6 +22,16 @@ public abstract class AxUI extends UI implements ViewChangeListener {
     @Autowired
     Environment environment;
 
+    //TODO Implement Navigation?
+    public static void nav() {
+        ((AxUI)(getCurrent())).navigate();
+    }
+
+    //TODO Implement Navigation?
+    public static void nav(Throwable ex) {
+        ((AxUI)(getCurrent())).navigate(ex);
+    }
+
     public AxUI() {
         setSizeUndefined();
     }
@@ -58,11 +68,13 @@ public abstract class AxUI extends UI implements ViewChangeListener {
         }
     }
 
+    //TODO Navigation support
     protected void navigate() {
         if (!tryNavigateProperty("vax.viewMain"))
             throw new IllegalArgumentException("Missing default view configuration property vax.viewMain");
     }
 
+    //TODO Navigation support
     protected void navigate(Throwable th) {
         getSession().setAttribute(Throwable.class, th);
         if (!tryNavigateProperty("vax.viewError"))

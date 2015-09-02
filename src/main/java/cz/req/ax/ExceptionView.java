@@ -26,7 +26,7 @@ public class ExceptionView extends AxView {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Value("${vax.viewMain}")
+    @Value("${vax.viewMain:Main}")
     String viewMain;
 
     @Override
