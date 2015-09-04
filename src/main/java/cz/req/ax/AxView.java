@@ -1,6 +1,5 @@
 package cz.req.ax;
 
-import com.sun.istack.internal.Nullable;
 import com.vaadin.data.util.converter.StringToIntegerConverter;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -27,7 +26,6 @@ public abstract class AxView extends RootLayout implements View, Navigation, Com
         return parameters;
     }
 
-    @Nullable
     public Integer getParameterInteger() {
         try {
             return new StringToIntegerConverter().convertToModel(parameters, Integer.class, Locale.getDefault());
