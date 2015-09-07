@@ -1,18 +1,5 @@
 package cz.req.ax;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
@@ -23,21 +10,16 @@ import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.converter.Converter;
-import com.vaadin.ui.AbstractField;
-import com.vaadin.ui.AbstractLayout;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.RichTextArea;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 //TODO Refactor flow API
@@ -166,6 +148,10 @@ public class AxForm<T> extends CustomComponent {
 
     public Item getItem() {
         return fieldGroup.getItemDataSource();
+    }
+
+    public Integer getValueId() {
+        return ObjectIdentity.id(getValue());
     }
 
     public T getValue() {
@@ -446,7 +432,7 @@ public class AxForm<T> extends CustomComponent {
 
     }
 
-    static class AxConverter<T extends IdObject> implements Converter<Integer, T> {
+    static class AxConverter<T> implements Converter<Integer, T> {
 
         AbstractBeanContainer<?, T> container;
 
@@ -467,7 +453,7 @@ public class AxForm<T> extends CustomComponent {
         @Override
         public Integer convertToPresentation(T value, Class<? extends Integer> targetType, Locale locale) throws ConversionException {
             if (value == null) return null;
-            return (Integer) value.getId();
+            return ObjectIdentity.id(value);
         }
 
         @Override

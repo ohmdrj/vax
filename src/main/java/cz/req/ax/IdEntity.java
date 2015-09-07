@@ -3,7 +3,7 @@ package cz.req.ax;
 import javax.persistence.*;
 
 @MappedSuperclass
-public class IdEntity implements IdObject<Integer> {
+public class IdEntity {
 
     @Id
     @Column(name = "ID")

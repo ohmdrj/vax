@@ -16,7 +16,7 @@ import java.io.Serializable;
 /**
  * @author ondrej
  */
-public class AxRepositoryFactoryBean<R extends JpaRepository<T, I>, T extends IdObject<I>, I extends Integer>
+public class AxRepositoryFactoryBean<R extends JpaRepository<T, I>, T, I extends Integer>
         extends JpaRepositoryFactoryBean<R, T, I> {
 
     @Override
@@ -24,7 +24,7 @@ public class AxRepositoryFactoryBean<R extends JpaRepository<T, I>, T extends Id
         return new AxRepositoryFactory(entityManager);
     }
 
-    public static class AxRepositoryFactory<T extends IdObject<I>, I extends Serializable> extends JpaRepositoryFactory {
+    public static class AxRepositoryFactory<T, I> extends JpaRepositoryFactory {
 
         private EntityManager entityManager;
 

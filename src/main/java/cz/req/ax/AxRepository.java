@@ -7,7 +7,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @author ondrej
  */
 @NoRepositoryBean
-public interface AxRepository<T extends IdObject<Integer>> extends JpaRepository<T, Integer> {
+public interface AxRepository<T> extends JpaRepository<T, Integer> {
 
     Class<T> entityClass();
 

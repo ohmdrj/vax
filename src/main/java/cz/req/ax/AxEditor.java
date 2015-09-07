@@ -3,13 +3,13 @@ package cz.req.ax;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Notification;
 
-public class AxEditor<T extends IdObject<Integer>> extends CssLayout implements Refresh {
+public class AxEditor<T> extends CssLayout implements Refresh {
 
     AxContainer<T> container;
     AxForm<T> form;
     AxTable<T> table;
 
-    public static <T extends IdObject<Integer>> AxEditor<T> init(AxContainer<T> cont) {
+    public static <T> AxEditor<T> init(AxContainer<T> cont) {
         return new AxEditor<T>(cont);
     }
 
@@ -28,20 +28,20 @@ public class AxEditor<T extends IdObject<Integer>> extends CssLayout implements 
                         e.printStackTrace();
                         return;
                     }
-                    if (entity.getId() == null) {
+                    if (ObjectIdentity.id(entity) == null) {
                         form.setItem(container.create(entity));
                     } else {
                         form.setItem(container.update(entity));
                     }
                     Notification.show("Uloženo");
                     table.refresh();
-                    table.getTable().select(form.getValue().getId());
+                    table.getTable().select(form.getValueId());
                 }).button());
         form.getButtonBar().addComponent(new AxAction<T>().caption("Nový")
                 .action(entity -> form.setItem(container.newItem())).button());
         form.getButtonBar().addComponent(new AxAction<T>().caption("Smazat")
                 .action(entity -> {
-                    if (form.getValue().getId() != null) {
+                    if (form.getValueId() != null) {
                         new AxConfirm("Smazat vybranou položku?", () -> {
                             try {
                                 container.delete(form.getValue());

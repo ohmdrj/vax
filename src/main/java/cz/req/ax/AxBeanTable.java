@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class AxBeanTable<T extends IdObject<Integer>> extends AxTable<T> {
+public class AxBeanTable<T> extends AxTable<T> {
 
     AxBeanContainer<T> container;
 
-    public static <T extends IdObject<Integer>> AxBeanTable<T> init(AxBeanContainer<T> type) {
+    public static <T> AxBeanTable<T> init(AxBeanContainer<T> type) {
         return new AxBeanTable<>(type);
     }
 

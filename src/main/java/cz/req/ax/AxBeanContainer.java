@@ -1,16 +1,14 @@
 package cz.req.ax;
 
-import java.io.Serializable;
-
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItem;
 
 
-public class AxBeanContainer<T extends IdObject<Integer>> extends BeanContainer<Integer, T> {
+public class AxBeanContainer<T> extends BeanContainer<Integer, T> {
 
     Class<T> type;
 
-    public static <T extends IdObject<Integer>> AxBeanContainer<T> init(Class<T> type) {
+    public static <T> AxBeanContainer<T> init(Class<T> type) {
         return new AxBeanContainer<>(type);
     }
 
@@ -45,13 +43,7 @@ public class AxBeanContainer<T extends IdObject<Integer>> extends BeanContainer<
         if (object instanceof Integer) {
             return (Integer) object;
         }
-        if (object instanceof IdObject) {
-            Serializable id = ((IdObject) object).getId();
-            if (id instanceof Integer) {
-                return (Integer) id;
-            }
-        }
-        throw new IllegalArgumentException("Objekt nemá ID typu Integer");
+        return ObjectIdentity.id(object);
     }
 
 }

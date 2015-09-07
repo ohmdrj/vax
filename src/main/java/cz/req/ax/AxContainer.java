@@ -9,14 +9,14 @@ import java.util.function.Supplier;
 
 //@Component("AxContainer")
 //@Scope("prototype")
-public class AxContainer<T extends IdObject<Integer>> extends AxBeanContainer<T> implements Refresh {
+public class AxContainer<T> extends AxBeanContainer<T> implements Refresh {
 
     private JpaRepository<T, Integer> repository;
     private Supplier<List<T>> supplier;
     private Function<JpaRepository<T, Integer>, List<T>> function;
-    private BeanIdResolver<Integer, T> resolver = bean -> bean == null ? null : bean.getId();
+    private BeanIdResolver<Integer, T> resolver = bean -> ObjectIdentity.id(bean);
 
-    public static <T extends IdObject<Integer>> AxContainer<T> init(Class<T> type) {
+    public static <T> AxContainer<T> init(Class<T> type) {
         return new AxContainer<>(type);
     }
 
@@ -51,12 +51,12 @@ public class AxContainer<T extends IdObject<Integer>> extends AxBeanContainer<T>
 
     public BeanItem<T> create(T bean) {
         T item = repository.save(bean);
-        return addItem(item.getId(), item);
+        return addItem(ObjectIdentity.id(bean), item);
     }
 
     public BeanItem<T> update(T bean) {
         T item = repository.save(bean);
-        return getItem(item.getId());
+        return getItem(ObjectIdentity.id(bean));
     }
 
     public Integer delete(Object object) {

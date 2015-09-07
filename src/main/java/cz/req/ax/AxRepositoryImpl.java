@@ -17,7 +17,7 @@ import java.lang.reflect.Field;
 /**
  * @author ondrej
  */
-public class AxRepositoryImpl<T extends IdObject<Integer>>
+public class AxRepositoryImpl<T>
         extends SimpleJpaRepository<T, Integer>
         implements AxRepository<T> {
 
