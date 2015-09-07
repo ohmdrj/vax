@@ -20,6 +20,8 @@ public abstract class AxUI extends UI implements ViewChangeListener {
     @Autowired
     EventBus eventBus;
     @Autowired
+    AxProperties properties;
+    @Autowired
     Environment environment;
 
     //TODO Implement Navigation?
@@ -49,7 +51,7 @@ public abstract class AxUI extends UI implements ViewChangeListener {
         public void error(com.vaadin.server.ErrorEvent event) {
             super.error(event);
             UI.getCurrent().getSession().setAttribute(Throwable.class, event.getThrowable());
-            UI.getCurrent().getNavigator().navigateTo(getEnvironment().getProperty("vax.viewError"));
+            UI.getCurrent().getNavigator().navigateTo(properties.getViewError());
         }
     };
 
@@ -70,19 +72,19 @@ public abstract class AxUI extends UI implements ViewChangeListener {
 
     //TODO Navigation support
     protected void navigate() {
-        if (!tryNavigateProperty("vax.viewMain"))
+        if (!tryNavigate(properties.getViewMain()))
             throw new IllegalArgumentException("Missing default view configuration property vax.viewMain");
     }
 
     //TODO Navigation support
     protected void navigate(Throwable th) {
         getSession().setAttribute(Throwable.class, th);
-        if (!tryNavigateProperty("vax.viewError"))
+        if (!tryNavigate(properties.getViewError()))
             throw new IllegalArgumentException("Missing default view configuration property vax.viewError");
     }
 
-    protected boolean tryNavigateProperty(String propertyName) {
-        String viewName = getEnvironment().getProperty(propertyName);
+    protected boolean tryNavigate(String viewName) {
+//        String viewName = getEnvironment().getProperty(propertyName);
         if (StringUtils.isEmpty(viewName)) return false;
         getNavigator().navigateTo(viewName);
         return true;

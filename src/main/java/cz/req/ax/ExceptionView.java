@@ -1,12 +1,11 @@
 package cz.req.ax;
 
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.xpoft.vaadin.VaadinView;
@@ -26,15 +25,15 @@ public class ExceptionView extends AxView {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Value("${vax.viewMain:Main}")
-    String viewMain;
+    @Autowired
+    AxProperties properties;
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         AxUtils.closeWindows();
         Throwable exception = getSession().getAttribute(Throwable.class);
         if (exception == null) {
-            navigate(viewMain);
+            navigate(properties.getViewMain());
             return;
         }
         logException(exception);
