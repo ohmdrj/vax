@@ -8,7 +8,7 @@
     </parent>
     <groupId>cz.req.vax</groupId>
     <artifactId>vax</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0-SNAPSHOT</version>
     <name>Vaadin AX</name>
     <description>Vaadin Another eXtension project</description>
 
