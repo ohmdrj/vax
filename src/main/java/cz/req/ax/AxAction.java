@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class AxAction<T> implements Cloneable {
@@ -28,6 +29,7 @@ public class AxAction<T> implements Cloneable {
     private Boolean right = Boolean.FALSE;
     private Boolean shortcuts = Boolean.TRUE;
     private Supplier<String> confirm;
+    private Function<T, String> confirmAction;
     private Resource icon;
     private Runnable run, runBefore, runAfter;
     private Consumer<T> action;
@@ -57,6 +59,15 @@ public class AxAction<T> implements Cloneable {
 
     public AxAction<T> confirm(String message) {
         return confirm(() -> message);
+    }
+
+    public AxAction<T> confirmAction(Function<T, String> confirmAction) {
+        this.confirmAction = confirmAction;
+        return this;
+    }
+
+    public AxAction<T> confirmAction(String message) {
+        return confirmAction(v -> message);
     }
 
     public AxAction<T> styles(List<String> styles) {
@@ -169,14 +180,57 @@ public class AxAction<T> implements Cloneable {
     }
 
     protected void onAction() {
-        try {
-            doExecute(Phase.RunBefore, runBefore);
+        safeExec(() -> {
+            doExecute(Phase.RunBefore, runBefore, null);
             String message = getConfirm();
             if (message == null) {
-                doActionAndAfter();
+                doValueAndActionAndAfter();
             } else {
-                new AxConfirm(message, this::doActionAndAfter).show();
+                new AxConfirm(message, this::doValueAndActionAndAfter).show();
             }
+        });
+    }
+
+    private void doValueAndActionAndAfter() throws ActionException {
+        safeExec(() -> {
+            doExecute(Phase.Run, run, null);
+            T val = doExecute(Phase.Value, (Supplier<T>) this::getValue, null);
+            String message = getConfirmAction(val);
+            if (message == null) {
+                doActionAndAfter(val);
+            } else {
+                new AxConfirm(message, () -> doActionAndAfter(val)).show();
+            }
+        });
+    }
+
+    private void doActionAndAfter(T val) throws ActionException {
+        safeExec(() -> {
+            doExecute(Phase.Action, action, val);
+            doExecute(Phase.RunAfter, runAfter, null);
+        });
+    }
+
+    private T doExecute(Phase phase, Object exec, T val) throws ActionException {
+        try {
+            if (exec instanceof Runnable) ((Runnable) exec).run();
+            else if (exec instanceof Supplier) return ((Supplier<T>) exec).get();
+            else if (exec instanceof Consumer) ((Consumer<T>) exec).accept(val);
+            else if (exec instanceof AxAction) ((AxAction) exec).onAction();
+        } catch (ActionException ae) {
+            ae.setPhase(phase);
+            throw ae;
+        } catch (Exception ex) {
+            throw new AxAction.ActionException(phase, ex);
+        } catch (Throwable th) {
+            throw th;
+        }
+        return null;
+    }
+
+    private void safeExec(Runnable exec) {
+        try {
+            exec.run();
         } catch (ActionException ae) {
             if (exception == null) {
                 logger.error("Missing exception handler");
@@ -192,35 +246,6 @@ public class AxAction<T> implements Cloneable {
     public void navigate(Throwable th) {
         AxUI ui = (AxUI) UI.getCurrent();
         ui.navigate(th);
-    }
-
-    private void doActionAndAfter() throws ActionException {
-        doExecute(Phase.Run, run);
-        doExecute(Phase.Value, action);
-        //TODO Action validate predicate?
-        doExecute(Phase.RunAfter, runAfter);
-    }
-
-    private void doExecute(Phase phase, Object exec) throws ActionException {
-        T tran = null;
-        try {
-            if (exec == null) return;
-            if (exec instanceof Runnable) ((Runnable) exec).run();
-            if (exec instanceof Consumer) {
-                tran = getValue();
-                phase = Phase.Action;
-                ((Consumer<T>) exec).accept(tran);
-            }
-            if (exec instanceof AxAction) ((AxAction) exec).onAction();
-
-        } catch (ActionException ae) {
-            ae.setPhase(phase);
-            throw ae;
-        } catch (Exception ex) {
-            throw new AxAction.ActionException(phase, ex);
-        } catch (Throwable th) {
-            throw th;
-        }
     }
 
     public T getValue() {
@@ -271,6 +296,10 @@ public class AxAction<T> implements Cloneable {
 
     public String getConfirm() {
         return confirm != null ? confirm.get() : null;
+    }
+
+    public String getConfirmAction(T val) {
+        return confirmAction != null ? confirmAction.apply(val) : null;
     }
 
     public Button button() {
