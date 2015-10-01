@@ -7,6 +7,7 @@ import com.vaadin.ui.ComboBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.beans.PropertyDescriptor;
 import java.util.function.Function;
 
 /**
@@ -18,9 +19,24 @@ public class AxComboBox<T> extends ComboBox {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     Function<T, String> itemCaptionFunction;
 
-    public AxComboBox(String caption, Container dataSource, Function<T, String> itemCaption) {
+    public AxComboBox(String caption, Container dataSource, Function<T, String> itemCaptionFunction) {
         super(caption, dataSource);
-        this.itemCaptionFunction = itemCaption;
+        this.itemCaptionFunction = itemCaptionFunction;
+    }
+
+    public AxComboBox(String caption, Container dataSource, String itemCaption) {
+        super(caption, dataSource);
+        //TODO Burianek Hotfix konverze to string pro autocomplete. Nema byt reseno pres item indexed property?
+        this.itemCaptionFunction = item -> {
+            if (item == null) return null;
+            try {
+                Object result = new PropertyDescriptor(itemCaption, item.getClass()).getReadMethod().invoke(item);
+                return result == null ? null : result.toString();
+            } catch (Exception e) {
+                logger.info("Cannot read property " + itemCaption + " from object " + item.getClass().getCanonicalName(), e);
+                return null;
+            }
+        };
     }
 
     public void setItemCaptionFunction(Function<T, String> itemCaptionFunction) {

@@ -17,7 +17,10 @@ import org.springframework.util.Assert;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -316,10 +319,8 @@ public class AxForm<T> extends CustomComponent {
 
     public AxField<ComboBox> addCombo(String caption, String property, AbstractBeanContainer container,
                                       String display) {
-        ComboBox combo = new ComboBox(caption, container);
-        combo.setItemCaptionPropertyId(display);
+        AxComboBox combo = new AxComboBox(caption, container, display);
         //TODO Burianek Tlacitko na odstraneni hodnoty z Combo (wrap, styl component-group)
-        //TODO Burianek Podpora konverze to string pro autocomplete!!!
         if (container instanceof BeanContainer && display != null) {
             combo.setConverter(new AxConverter(container));
         }
