@@ -8,7 +8,7 @@
     </parent>
     <groupId>cz.req.vax</groupId>
     <artifactId>vax</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.1.1-SNAPSHOT</version>
     <name>Vaadin AX</name>
     <description>Vaadin Another eXtension project</description>
 
@@ -166,6 +166,34 @@
     </build>
 
     <profiles>
+        <profile>
+            <id>marbes</id>
+            <activation>
+                <property>
+                    <name>release</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>releases</id>
+                    <name>Release repository</name>
+                    <url>http://nexus.marbes.cz/content/repositories/releases</url>
+                </repository>
+            </repositories>
+            <distributionManagement>
+                <repository>
+                    <id>releases</id>
+                    <name>Release repository</name>
+                    <url>http://nexus.marbes.cz/content/repositories/releases</url>
+                </repository>
+                <snapshotRepository>
+                    <id>snapshots</id>
+                    <name>Marbes Snapshot Repository</name>
+                    <url>http://nexus.marbes.cz/content/repositories/snapshots</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
         <profile>
             <id>central</id>
             <build>
