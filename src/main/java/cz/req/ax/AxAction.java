@@ -327,6 +327,7 @@ public class AxAction<T> implements Cloneable {
         if (caption == null) caption = "";
         MenuBar.MenuItem menuItem = menuBar.addItem(caption, null);
         if (icon != null) menuItem.setIcon(icon);
+        if (description != null) menuItem.setDescription(description);
         if (submenu == null) {
             menuItem.setCommand((item) -> onAction());
         } else {
