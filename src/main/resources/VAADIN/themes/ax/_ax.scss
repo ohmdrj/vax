@@ -353,11 +353,23 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
   .window-confirm,
   .window-info {
     min-width: 200px;
-    .main-panel > .h2 {
-      margin: 40px 40px 20px;
-      white-space: normal;
+    .main-panel {
+      > .h2 {
+        margin: 40px 40px 20px;
+        white-space: normal;
+      }
+      > .v-button {
+        margin-left: 40px;
+      }
+      > .stacktrace {
+        width: 100%;
+        height: 300px;
+        overflow: auto;
+        white-space: pre;
+        border: 1px solid #EEEEEE;
+        background-color: #FEFEFE;
+      }
     }
-
   }
 
   .v-scrollable {

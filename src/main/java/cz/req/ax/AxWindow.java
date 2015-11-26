@@ -44,24 +44,17 @@ public class AxWindow extends RootLayout implements Navigation, Components {
         return this;
     }
     public AxWindow show() {
-        window.center();
-        show(UI.getCurrent());
-        return this;
+        return centered().show(UI.getCurrent());
     }
 
     //TODO Burianek Review
     public AxWindow showTopRight() {
-        window.setPositionX(UI.getCurrent().getPage().getBrowserWindowWidth() - Math.round(window.getWidth()) - 2);
-        window.setPositionY(42);
-        show(UI.getCurrent());
-        return this;
+        int x = UI.getCurrent().getPage().getBrowserWindowWidth() - Math.round(window.getWidth()) - 2;
+        return show(x, 42);
     }
 
     public AxWindow show(int x, int y) {
-        window.setPositionX(x);
-        window.setPositionY(y);
-        show(UI.getCurrent());
-        return this;
+        return position(x, y).show(UI.getCurrent());
     }
 
     public AxWindow close() {
@@ -71,6 +64,17 @@ public class AxWindow extends RootLayout implements Navigation, Components {
 
     public AxWindow modal() {
         window.setModal(true);
+        return this;
+    }
+
+    protected AxWindow centered() {
+        window.center();
+        return this;
+    }
+
+    public AxWindow position(Integer x, Integer y) {
+        if (x != null) window.setPositionX(x);
+        if (y != null) window.setPositionY(y);
         return this;
     }
 
