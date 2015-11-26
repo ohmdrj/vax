@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 
 public class AxAction<T> implements Cloneable {
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     private T value;
     private String caption, description;
@@ -33,7 +33,7 @@ public class AxAction<T> implements Cloneable {
     private Resource icon;
     private Runnable run, runBefore, runAfter;
     private Consumer<T> action;
-    private Consumer<ActionException> exception;
+    private Consumer<ActionException> exception = this::defaultExceptionHandler;
     private Supplier<T> variable;
     private List<AxAction> submenu;
 
@@ -152,6 +152,11 @@ public class AxAction<T> implements Cloneable {
     public AxAction<T> exception(Consumer<ActionException> exception) {
         this.exception = exception;
         return this;
+    }
+
+    private void defaultExceptionHandler(AxAction.ActionException exception) {
+        logger.error(exception.getMessage(), exception);
+        new AxMessage("Nastala chyba při vykonávání akce.").stackTrace(exception.getCause()).show();
     }
 
     public AxAction<T> run(Runnable run) {

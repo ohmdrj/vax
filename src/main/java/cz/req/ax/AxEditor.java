@@ -43,12 +43,8 @@ public class AxEditor<T> extends CssLayout implements Refresh {
                 .action(entity -> {
                     if (form.getValueId() != null) {
                         new AxConfirm("Smazat vybranou položku?", () -> {
-                            try {
-                                container.delete(form.getValue());
-                                form.setItem(container.newItem());
-                            } catch (Exception e) {
-                                new AxMessage("Nelze odstranit vybranou položku.").show();
-                            }
+                            container.delete(form.getValue());
+                            form.setItem(container.newItem());
                         }).show();
                     }
                 }).button());
