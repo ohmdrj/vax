@@ -1,6 +1,7 @@
 package cz.req.ax;
 
 import com.google.common.base.Joiner;
+import com.vaadin.data.Validator;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.Resource;
@@ -155,8 +156,24 @@ public class AxAction<T> implements Cloneable {
     }
 
     private void defaultExceptionHandler(AxAction.ActionException exception) {
-        logger.error(exception.getMessage(), exception);
-        new AxMessage("Nastala chyba při vykonávání akce.").stackTrace(exception.getCause()).show();
+        Validator.InvalidValueException invalidValueException = findInvalidValueCause(exception);
+        if (invalidValueException != null) {
+            // Validační chyby formuláře nezobrazujeme
+            logger.debug("Uživatel zadal nevalidní hodnotu: " + invalidValueException.getMessage());
+        } else {
+            logger.error(exception.getMessage(), exception);
+            new AxMessage("Nastala chyba při vykonávání akce.").stackTrace(exception.getCause()).show();
+        }
+    }
+
+    private Validator.InvalidValueException findInvalidValueCause(Throwable throwable) {
+        while (throwable != null) {
+            if (throwable instanceof Validator.InvalidValueException) {
+                return (Validator.InvalidValueException) throwable;
+            }
+            throwable = throwable.getCause();
+        }
+        return null;
     }
 
     public AxAction<T> run(Runnable run) {
