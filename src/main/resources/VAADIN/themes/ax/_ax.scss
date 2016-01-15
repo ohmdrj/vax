@@ -406,6 +406,83 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
     }
   }
 
+  // AxFormLayout
+  .form-layout {
+    display: inline-block;
+    > .form-row {
+      display: table-row;
+      > * {
+        display: table-cell;
+        padding-top: 0.25em;
+      }
+      > .form-caption {
+        padding-right: 1em;
+        white-space: nowrap;
+        opacity: 0.75;
+        &.required:after {
+          content: "*";
+          color: $v-required-field-indicator-color;
+          margin-left: 0.25em;
+        }
+      }
+      > .form-value {
+        white-space: normal;
+        > .v-caption {
+          > .v-captiontext {
+            display: none; // Original field caption
+          }
+          > .v-required-field-indicator {
+            display: none; // Original field require indicator
+          }
+          > .v-errorindicator {
+            margin-left: -1.25em;
+            margin-right: -1em;
+          }
+        }
+        > .v-button {
+          white-space: normal;
+        }
+      }
+    }
+    &.vertical {
+      > .form-row {
+        display: block;
+        > .form-caption,
+        > .form-value {
+          display: block;
+        }
+      }
+    }
+  }
+
+  // LocalDateField, LocalTimeField, LocalDateTimeField
+  .local-date-field.v-customcomponent-error,
+  .local-date-time-field.v-customcomponent-error {
+    .v-datefield-textfield {
+      @include valo-textfield-error-style;
+    }
+    .v-datefield-button {
+      color: $v-error-indicator-color;
+      border-color: $v-error-indicator-color;
+    }
+  }
+  .local-time-field.v-customcomponent-error,
+  .local-date-time-field.v-customcomponent-error {
+    .v-filterselect-input {
+      @include valo-textfield-error-style;
+    }
+    .v-filterselect-button {
+      color: $v-error-indicator-color;
+      border-color: $v-error-indicator-color;
+    }
+  }
+  .local-time-field > .v-filterselect {
+    width: 6em;
+  }
+  .local-date-time-field .v-caption-local-time-field > .v-errorindicator {
+    display: none;
+  }
+
   .Aqua {
     background-color: #4FC1E9;
   }

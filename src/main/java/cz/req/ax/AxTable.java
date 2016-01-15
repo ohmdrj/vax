@@ -197,6 +197,11 @@ public abstract class AxTable<T> implements ComponentWrapper, Refresh {
             return this;
         }
 
+        public ColumnFactory<T> alignCenter() {
+            table.getTable().setColumnAlignment(property, Table.Align.CENTER);
+            return this;
+        }
+
         public ColumnFactory<T> column(String propertyId) {
             return new ColumnFactory(table, propertyId);
         }
