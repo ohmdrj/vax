@@ -45,7 +45,6 @@ public class AxTiler<T> extends CssLayout {
         this.container = container;
         refresh();
         return this;
-//        entityName = container.getRepository().entityClass().getSimpleName();
     }
 
     public AxTiler<T> action(Consumer<T> action) {
