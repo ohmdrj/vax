@@ -20,13 +20,17 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
     }
 
     @Override
-    public void commit() throws CommitException {
+    public void commit() {
         for (Field field: getFields()) {
             if (field.isRequired() && Strings.isNullOrEmpty(field.getRequiredError())) {
                 field.setRequiredError("Není vyplněna hodnota.");
             }
         }
-        super.commit();
+        try {
+            super.commit();
+        } catch (Exception e) {
+            throw new RuntimeException("Chyba při ukládání formuláře", e);
+        }
     }
 
 }

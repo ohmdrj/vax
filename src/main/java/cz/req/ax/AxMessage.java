@@ -2,7 +2,9 @@ package cz.req.ax;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 
@@ -14,7 +16,8 @@ import com.vaadin.ui.Label;
 public class AxMessage extends AxWindow {
 
     private static final int DEFAULT_WIDTH = 500;
-    private static final int STACKTRACE_WIDTH = 800;
+    private static final int ERROR_WIDTH = 800;
+    private static final Set<String> USER_EXCEPTIONS = ImmutableSet.of("UserException", "ConfigurationException");
 
     private final Label message;
 
@@ -27,8 +30,16 @@ public class AxMessage extends AxWindow {
                 .buttonClose("Zavřít");
     }
 
+    /**
+     * @deprecated use {@link #error(Throwable)}
+     */
+    @Deprecated
     public AxMessage stackTrace(Throwable throwable) {
-        if (throwable.getClass().getSimpleName().equals("UserException")) {
+        return error(throwable);
+    }
+
+    public AxMessage error(Throwable throwable) {
+        if (USER_EXCEPTIONS.contains(throwable.getClass().getSimpleName())) {
             message.setValue(throwable.getLocalizedMessage());
         } else {
             Button button = new Button("Zobrazit výpis chyby");
@@ -40,9 +51,9 @@ public class AxMessage extends AxWindow {
                 Label stacktrace = newLabel(writer.toString(), "stacktrace");
 
                 // Window.center() naprosto nefunkční, takže pokus o ruční zarovnání
-                int x = window.getPositionX() - (STACKTRACE_WIDTH - DEFAULT_WIDTH) / 2;
+                int x = window.getPositionX() - (ERROR_WIDTH - DEFAULT_WIDTH) / 2;
                 int y = window.getPositionY() - 150; // +300px height v css
-                components(stacktrace).position(x, y).size(STACKTRACE_WIDTH, null);
+                components(stacktrace).position(x, y).size(ERROR_WIDTH, null);
             });
 
             components(button);
