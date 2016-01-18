@@ -30,13 +30,13 @@ public class AxFieldFactory extends DefaultFieldGroupFieldFactory {
 
     @Override
     public <T extends Field> T createField(Class<?> type, Class<T> fieldType) {
-        if (LocalDate.class.equals(type) || fieldType.isAssignableFrom(LocalDateField.class)) {
+        if (LocalDate.class.equals(type) && fieldType.isAssignableFrom(LocalDateField.class)) {
             return (T) new LocalDateField();
         }
-        if (LocalTime.class.equals(type) || fieldType.isAssignableFrom(LocalTimeField.class)) {
+        if (LocalTime.class.equals(type) && fieldType.isAssignableFrom(LocalTimeField.class)) {
             return (T) new LocalTimeField();
         }
-        if (LocalDateTime.class.equals(type) || fieldType.isAssignableFrom(LocalDateTimeField.class)) {
+        if (LocalDateTime.class.equals(type) && fieldType.isAssignableFrom(LocalDateTimeField.class)) {
             return (T) new LocalDateTimeField();
         }
         if (NUMBER_CONVERTERS.containsKey(type) && fieldType.isAssignableFrom(TextField.class)) {
