@@ -162,7 +162,7 @@ public class AxAction<T> implements Cloneable {
             logger.debug("Uživatel zadal nevalidní hodnotu: " + invalidValueException.getMessage());
         } else {
             logger.error(exception.getMessage(), exception);
-            new AxMessage("Nastala chyba při vykonávání akce.").stackTrace(exception.getCause()).show();
+            new AxMessage("Nastala chyba při vykonávání akce.").error(exception.getCause()).show();
         }
     }
 
