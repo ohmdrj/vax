@@ -160,6 +160,16 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
     -webkit-box-shadow: none !important;
   }
 
+  .v-button-link {
+    width: auto;
+    height: auto;
+    padding: 0;
+    text-align: left;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   .v-menubar {
     color: $ax-dark-color;
     background: $ax-dark-bgrnd none;
@@ -183,6 +193,43 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
   .v-menubar:focus:after {
     box-shadow: none !important;
     -webkit-box-shadow: none !important;
+  }
+
+  .v-menubar-link {
+    @include valo-link-style;
+    background: none;
+    width: auto;
+    height: auto;
+    line-height: inherit;
+    > .v-menubar-menuitem {
+      background: none;
+      padding: 0;
+      &:before {
+        display: none;
+      }
+      &:after {
+        font-family: FontAwesome;
+        content: "\f078";
+        font-size: 0.7em;
+        vertical-align: 0.15em;
+        margin: 0 -0.2em 0 0.5em;
+        opacity: 0.5;
+      }
+      > .v-menubar-menuitem-caption {
+        &:hover {
+          text-decoration: underline;
+        }
+        &:after {
+          display: none; // Nelze vypnout text-decoration
+        }
+        > .v-icon {
+          margin-left: 0;
+        }
+      }
+    }
+    > .v-menubar-menuitem-selected {
+      color: inherit;
+    }
   }
 
   .v-window .v-menubar {
