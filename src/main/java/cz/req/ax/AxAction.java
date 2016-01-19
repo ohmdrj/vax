@@ -21,6 +21,8 @@ import java.util.function.Supplier;
 
 public class AxAction<T> implements Cloneable {
 
+    public static AxAction SEPARATOR = new AxAction();
+
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private T value;
@@ -356,6 +358,8 @@ public class AxAction<T> implements Cloneable {
             for (AxAction action : submenu) {
                 if (action == null) {
                     //SPACER??
+                } else if (action == SEPARATOR) {
+                    menuItem.addSeparator();
                 } else {
                     action.menuItem(menuItem);
                 }
