@@ -13,6 +13,7 @@ import com.vaadin.ui.Label;
 public class AxFormLayout extends CssLayout implements Components {
 
     private boolean hideEmptyRows;
+    private String captionSuffix;
     
     public AxFormLayout() {
         addStyleName("form-layout");
@@ -24,6 +25,10 @@ public class AxFormLayout extends CssLayout implements Components {
     
     public void makeVertical() {
         addStyleName("vertical");
+    }
+
+    public void setCaptionSuffix(String captionSuffix) {
+        this.captionSuffix = captionSuffix;
     }
 
     public RowBuilder addRow() {
@@ -38,7 +43,9 @@ public class AxFormLayout extends CssLayout implements Components {
         private boolean hideEmpty = hideEmptyRows;
 
         public RowBuilder caption(String caption) {
-            this.caption = caption + ":";
+            if (!Strings.isNullOrEmpty(caption)) {
+                this.caption = caption + Strings.nullToEmpty(captionSuffix);
+            }
             return this;
         }
 
