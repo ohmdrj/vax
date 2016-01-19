@@ -455,6 +455,17 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
     }
   }
 
+  // SelectionColumn
+  .v-checkbox.radio > input ~ label {
+    &:before {
+      border-radius: 50%;
+    }
+    &:after {
+      content: "\f111";
+      font-size: 0.55em;
+    }
+  }
+
   // LocalDateField, LocalTimeField, LocalDateTimeField
   .local-date-field.v-customcomponent-error,
   .local-date-time-field.v-customcomponent-error {
