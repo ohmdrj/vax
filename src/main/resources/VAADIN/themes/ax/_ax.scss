@@ -458,14 +458,18 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
     display: inline-block;
     > .form-row {
       display: table-row;
+      &:not(:first-child) > * {
+        padding-top: 0.75em;
+      }
       > * {
         display: table-cell;
-        padding-top: 0.25em;
+        line-height: $v-line-height 37px;
       }
       > .form-caption {
-        padding-right: 1em;
         white-space: nowrap;
-        opacity: 0.75;
+        font-size: 0.875em;
+        vertical-align: middle;
+        padding-right: 1.5em;
         &.required:after {
           content: "*";
           color: $v-required-field-indicator-color;
@@ -494,6 +498,9 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
     &.vertical {
       > .form-row {
         display: block;
+        &:not(:first-child) > .form-value {
+          padding-top: 0;
+        }
         > .form-caption,
         > .form-value {
           display: block;
