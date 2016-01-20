@@ -70,8 +70,11 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
   }
 }
 
+@import "fontawsome/font-awesome";
+
 @mixin ax {
 
+  @include font-awesome;
   @include valo;
 
   .v-ui {
@@ -453,6 +456,9 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
     }
     .h2, .v-button {
       margin: 16px;
+    }
+    .v-textarea {
+      overflow: scroll;
     }
   }
 

@@ -69,6 +69,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
@@ -95,6 +96,11 @@
             <groupId>cz.req.vax</groupId>
             <artifactId>spring-vaadin-integration</artifactId>
             <version>${spring-vaadin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>javax.transaction</groupId>

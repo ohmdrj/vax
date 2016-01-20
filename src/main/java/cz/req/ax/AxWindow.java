@@ -43,6 +43,7 @@ public class AxWindow extends RootLayout implements Navigation, Components {
         }
         return this;
     }
+
     public AxWindow show() {
         return centered().show(UI.getCurrent());
     }
@@ -131,7 +132,7 @@ public class AxWindow extends RootLayout implements Navigation, Components {
 
     public AxWindow buttonPrimary(AxAction action) {
         ShortcutListener shortcut = action.shortcutListenerEnter();
-        if (shortcut!=null) addShortcutListener(shortcut);
+        if (shortcut != null) addShortcutListener(shortcut);
         buttonAndClose(action.primary());
         return this;
     }

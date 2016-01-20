@@ -10,7 +10,7 @@ import com.vaadin.ui.TabSheet;
 import java.util.Locale;
 import java.util.stream.Stream;
 
-public abstract class AxView extends RootLayout implements View, Navigation, Components {
+public abstract class AxView extends RootLayout implements View, Navigation, Components, Push {
 
     TabSheet tabSheet;
     String parameters;

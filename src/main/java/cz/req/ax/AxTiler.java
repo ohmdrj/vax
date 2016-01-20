@@ -26,7 +26,7 @@ public class AxTiler<T> extends CssLayout {
         factory = (bean) -> {
             Assert.notNull(bean);
             Object caption = bean.getItemProperty(propertyId).getValue();
-            AbstractComponent button = new Button(caption.toString(), event -> {
+            AbstractComponent button = new Button(String.valueOf(caption), event -> {
                 if (action == null) return;
                 T data = (T) event.getButton().getData();
                 action.accept(data);
@@ -40,12 +40,17 @@ public class AxTiler<T> extends CssLayout {
         };
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        components.forEach(c -> c.setEnabled(enabled));
+    }
+
     public AxTiler<T> container(AbstractBeanContainer<?, T> container) {
         Assert.notNull(propertyId, "Set propertyId before container!");
         this.container = container;
         refresh();
         return this;
-//        entityName = container.getRepository().entityClass().getSimpleName();
     }
 
     public AxTiler<T> action(Consumer<T> action) {
@@ -85,7 +90,9 @@ public class AxTiler<T> extends CssLayout {
         }
         for (Object id : container.getItemIds()) {
             BeanItem<T> bean = container.getItem(id);
-            addComponent(factory.apply(bean));
+            AbstractComponent component = factory.apply(bean);
+            component.setEnabled(isEnabled());
+            addComponent(component);
         }
     }
 

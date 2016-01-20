@@ -2,8 +2,10 @@ package cz.req.ax;
 
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ErrorHandler;
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.*;
 
+import javax.servlet.http.Cookie;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -13,9 +15,26 @@ public class AxUtils {
         System.out.println(event);
     };
 
-    /*public static <T> T getDataValue(Class<T> type, Property.ValueChangeEvent event) {
+    public static String readCookie(String name) {
+        for (Cookie cookie : VaadinService.getCurrentRequest().getCookies()) {
+            if (cookie.getName().equals(name)) {
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
 
-        }*/
+    public static void writeCookie(String name, String value) {
+        try {
+            Cookie cookie = new Cookie(name, value);
+            cookie.setPath(VaadinService.getCurrentRequest().getContextPath());
+            cookie.setMaxAge(30 * 24 * 60 * 60);
+            VaadinService.getCurrentResponse().addCookie(cookie);
+        } catch (Exception e) {
+            System.err.println("Cannot write cookie " + name + ": " + e.getMessage());
+        }
+    }
+
     public static Integer getTabPosition(TabSheet tabSheet) {
         return tabSheet.getTabPosition(tabSheet.getTab(tabSheet.getSelectedTab()));
     }
@@ -44,8 +63,8 @@ public class AxUtils {
                     return true;
                 }
             }
-        } else if (component instanceof AbstractTextField) {
-            ((AbstractTextField) component).focus();
+        } else if (component instanceof Field) {
+            ((Field) component).focus();
             return true;
         }
         return false;

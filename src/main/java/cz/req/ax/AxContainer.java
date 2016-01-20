@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-//@Component("AxContainer")
-//@Scope("prototype")
 public class AxContainer<T> extends AxBeanContainer<T> implements Refresh {
 
     private JpaRepository<T, Integer> repository;

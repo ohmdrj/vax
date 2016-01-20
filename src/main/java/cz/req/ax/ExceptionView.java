@@ -64,7 +64,13 @@ public class ExceptionView extends AxView {
         Label label = new Label("Ale toto je nepříjemné ...");
         label.addStyleName("h2");
         label.addStyleName("primary");
-        Button button = new Button("Pokračovat", clickEvent -> JavaScript.eval("history.back();"));
+        Button button = new Button("Pokračovat", clickEvent -> {
+            try {
+                JavaScript.eval("history.back();");
+            } catch (Exception e) {
+                navigate(properties.getViewMain());
+            }
+        });
         components(label, button, component);
     }
 

@@ -38,7 +38,7 @@ public interface Navigation {
         navigate(viewName(viewClass), null);
     }
 
-    default void navigate(Class<? extends AxView> viewClass, Object parameter) {
+    default void navigate(Class<? extends AxView> viewClass, Object... parameter) {
         navigate(viewName(viewClass), parameter);
     }
 
@@ -46,10 +46,12 @@ public interface Navigation {
         navigate(viewName, null);
     }
 
-    default void navigate(String viewName, Object parameter) {
-        StringBuffer viewState = new StringBuffer(viewName);
-        if (parameter != null) {
-            viewState.append("/").append(parameter.toString());
+    default void navigate(String viewName, Object... parameter) {
+        StringBuilder viewState = new StringBuilder(viewName);
+        if (parameter != null && parameter.length > 0) {
+            for (Object o : parameter) {
+                viewState.append("/").append(o.toString());
+            }
         }
         UI.getCurrent().getNavigator().navigateTo(viewState.toString());
     }
