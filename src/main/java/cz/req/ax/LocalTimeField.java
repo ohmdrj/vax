@@ -133,4 +133,16 @@ public class LocalTimeField extends CustomField<LocalTime> {
         field.focus();
     }
 
+    @Override
+    public void setReadOnly(boolean readOnly) {
+        field.setReadOnly(readOnly);
+        super.setReadOnly(readOnly);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        field.setEnabled(enabled);
+        super.setEnabled(enabled);
+    }
+
 }

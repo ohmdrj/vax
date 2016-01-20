@@ -93,4 +93,18 @@ public class LocalDateTimeField extends CustomField<LocalDateTime> {
         super.validate();
     }
 
+    @Override
+    public void setReadOnly(boolean readOnly) {
+        dateField.setReadOnly(readOnly);
+        timeField.setReadOnly(readOnly);
+        super.setReadOnly(readOnly);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        dateField.setEnabled(enabled);
+        timeField.setEnabled(enabled);
+        super.setEnabled(enabled);
+    }
+
 }
