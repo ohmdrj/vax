@@ -68,28 +68,28 @@ public class LocalDateTimeField extends CustomField<LocalDateTime> {
         LocalDate date = dateField.getValue();
         LocalTime time = timeField.getValue();
 
-        if (date != null && time != null) {
-            return date.atTime(time);
-        } else {
-            return null;
+        if (date != null) {
+            if (time != null) {
+                return date.atTime(time);
+            } if (!timeField.isVisible()) {
+                return date.atStartOfDay();
+            }
         }
+        return null;
     }
 
     @Override
     protected void setInternalValue(LocalDateTime newValue) {
-        if (newValue != null) {
-            dateField.setValue(newValue.toLocalDate());
-            timeField.setValue(newValue.toLocalTime());
-        } else {
-            dateField.setValue(null);
-            timeField.setValue(null);
-        }
+        dateField.setValue(newValue != null ? newValue.toLocalDate() : null);
+        timeField.setValue(newValue != null && timeField.isVisible() ? newValue.toLocalTime() : null);
     }
 
     @Override
     public void validate() throws Validator.InvalidValueException {
         dateField.validate();
-        timeField.validate();
+        if (timeField.isVisible()) {
+            timeField.validate();
+        }
         super.validate();
     }
 
@@ -109,6 +109,9 @@ public class LocalDateTimeField extends CustomField<LocalDateTime> {
 
     public void setTimeVisible(boolean visible) {
         timeField.setVisible(visible);
+        if (!visible) {
+            timeField.setValue(null);
+        }
     }
 
     public boolean isTimeVisible() {

@@ -44,6 +44,11 @@ public class AxFieldFactory extends DefaultFieldGroupFieldFactory {
             field.setConverter(NUMBER_CONVERTERS.get(type));
             return (T) field;
         }
+        if (fieldType.isAssignableFrom(LabelField.class)) {
+            LabelField field = new LabelField();
+            field.setConverter(NUMBER_CONVERTERS.get(type));
+            return (T) field;
+        }
         return super.createField(type, fieldType);
     }
 
