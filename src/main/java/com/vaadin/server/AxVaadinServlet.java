@@ -58,8 +58,8 @@ public class AxVaadinServlet extends SpringVaadinServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         StringBuilder builder = new StringBuilder();
-        if (request.getServletPath()!=null) builder.append(request.getServletPath());
-        if (request.getPathInfo()!=null) builder.append(request.getPathInfo());
+        if (request.getServletPath() != null) builder.append(request.getServletPath());
+        if (request.getPathInfo() != null) builder.append(request.getPathInfo());
         String path = builder.toString();
         if (path.startsWith("/APP/PUBLISHED")) {
             response.setHeader("Cache-Control", "no-cache");
@@ -95,7 +95,12 @@ public class AxVaadinServlet extends SpringVaadinServlet {
                 throw new ServletException(e);
             }
         } else {
-            super.service(request, response);
+            try {
+                super.service(request, response);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new ServletException(e);
+            }
         }
     }
 

@@ -25,10 +25,14 @@ public class AxUtils {
     }
 
     public static void writeCookie(String name, String value) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setPath(VaadinService.getCurrentRequest().getContextPath());
-        cookie.setMaxAge(30 * 24 * 60 * 60);
-        VaadinService.getCurrentResponse().addCookie(cookie);
+        try {
+            Cookie cookie = new Cookie(name, value);
+            cookie.setPath(VaadinService.getCurrentRequest().getContextPath());
+            cookie.setMaxAge(30 * 24 * 60 * 60);
+            VaadinService.getCurrentResponse().addCookie(cookie);
+        } catch (Exception e) {
+            System.err.println("Cannot write cookie " + name + ": " + e.getMessage());
+        }
     }
 
     public static Integer getTabPosition(TabSheet tabSheet) {

@@ -1,5 +1,6 @@
 package cz.req.ax;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Component;
@@ -46,6 +47,14 @@ public interface Components {
 
     default Label newLabel(String content, String style) {
         Label label = new Label(content);
+        label.setSizeUndefined();
+        label.addStyleName(style);
+        return label;
+    }
+
+    default Label newLabel(FontAwesome icon, String content, String style) {
+        Label label = new Label(content);
+        label.setIcon(icon);
         label.setSizeUndefined();
         label.addStyleName(style);
         return label;
