@@ -63,8 +63,8 @@ public class AxUtils {
                     return true;
                 }
             }
-        } else if (component instanceof AbstractTextField) {
-            ((AbstractTextField) component).focus();
+        } else if (component instanceof Field) {
+            ((Field) component).focus();
             return true;
         }
         return false;
