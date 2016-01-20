@@ -17,7 +17,6 @@ import ru.xpoft.vaadin.DiscoveryNavigator;
 
 import java.lang.reflect.Field;
 
-@Push(PushMode.MANUAL)
 public abstract class AxUI extends UI implements ViewChangeListener {
 
     @Autowired

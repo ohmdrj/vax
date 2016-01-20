@@ -6,8 +6,12 @@ import com.vaadin.ui.UI;
 import ru.xpoft.vaadin.VaadinView;
 
 import java.lang.annotation.Annotation;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class AxMenuBar extends MenuBar {
+
+    Map<AxAction, MenuItem> items = new LinkedHashMap<>();
 
     public AxMenuBar actions(AxAction... actions) {
         for (AxAction action : actions) {
@@ -33,19 +37,22 @@ public class AxMenuBar extends MenuBar {
         });*/
         MenuItem item = action.menuItem(this);
         if (action.getStyle() != null) item.setStyleName(action.getStyle());
+        items.put(action, item);
         return item;
     }
 
     public AxMenuBar menu(String caption, FontAwesome awesome, AxAction... actions) {
         MenuItem menu = addItem(caption, awesome, null);
         for (AxAction action : actions) {
-            MenuItem item = menu.addItem(action.getCaption(), action.getIcon(), menuItem -> {
-                action.onAction();
-            });
+            MenuItem item = menu.addItem(action.getCaption(), action.getIcon(), menuItem -> action.onAction());
             if (action.getStyle() != null) item.setStyleName(action.getStyle());
+            items.put(action, item);
         }
         return this;
     }
 
+    public MenuItem item(AxAction action) {
+        return items.get(action);
+    }
 
 }
