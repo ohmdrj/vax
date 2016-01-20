@@ -108,7 +108,7 @@ public class LocalDateTimeField extends CustomField<LocalDateTime> {
     }
 
     public void setTimeVisible(boolean visible) {
-        timeField.setVisible(true);
+        timeField.setVisible(visible);
     }
 
     public boolean isTimeVisible() {
