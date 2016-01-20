@@ -89,4 +89,16 @@ public class LocalDateField extends CustomField<LocalDate> {
         field.setResolution(resolution);
     }
 
+    @Override
+    public void setReadOnly(boolean readOnly) {
+        field.setReadOnly(readOnly);
+        super.setReadOnly(readOnly);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        field.setEnabled(enabled);
+        super.setEnabled(enabled);
+    }
+
 }
