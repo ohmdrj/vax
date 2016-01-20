@@ -1,8 +1,11 @@
 package cz.req.ax;
 
 import com.google.common.collect.ImmutableList;
+import com.vaadin.data.Container;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
+import org.springframework.util.Assert;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,20 +17,48 @@ import java.util.stream.Collectors;
 public class SelectionColumn<ID> implements Table.ColumnGenerator, AxTable.IdCellGenerator<ID> {
 
     public static final String ID = "_selection";
-    private static final String RADIO = "radio";
+    private static final String RADIO_STYLE = "radio";
 
+    private Table table;
+    private String columnId;
+    private Table.HeaderClickListener headerClickListener = e -> {
+        if (e.getPropertyId().equals(columnId)) {
+            toggleItemSelection();
+        }
+    };
+    private ItemClickEvent.ItemClickListener itemClickListener = e -> toggleItemSelected((ID) e.getItemId());
+    private Container.ItemSetChangeListener itemSetChangeListener = e -> destroyCheckBoxes();
     private boolean multiselect;
     private boolean nullSelectionAllowed;
+    private boolean headerCheckbox = true;
+    private boolean rowClickSelection;
     private Map<ID, CheckBox> checkBoxMap = new HashMap<>();
     private Set<SelectionChangeListener<ID>> listeners = new LinkedHashSet<>();
 
+    public SelectionColumn() {
+        this(ID);
+    }
+
+    public SelectionColumn(String columnId) {
+        this.columnId = Objects.requireNonNull(columnId);
+    }
+
+    public String getColumnId() {
+        return columnId;
+    }
+
     @Override
     public Object generateCell(Table source, Object itemId, Object columnId) {
+        Assert.state(table != null, "Table was not set using setTable(Table)");
+        Assert.state(table == source, "Table differs from source");
+
         return generateCell((ID) itemId, columnId);
     }
 
     @Override
     public Component generateCell(ID itemId, Object columnId) {
+        Assert.state(table != null, "Table was not set using setTable(Table)");
+
         CheckBox checkBox = new CheckBox();
         checkBox.setImmediate(true);
         checkBox.addValueChangeListener(e -> {
@@ -47,13 +78,46 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator, AxTable.IdCel
             fireItemSelectionChange();
         });
         if (!multiselect && !nullSelectionAllowed) {
-            checkBox.addStyleName(RADIO);
+            checkBox.addStyleName(RADIO_STYLE);
         }
         if (!nullSelectionAllowed && checkBoxMap.isEmpty()) {
             checkBox.setInternalValue(true);
         }
         checkBoxMap.put(itemId, checkBox);
+        if (checkBox.getValue()) {
+            fireItemSelectionChange();
+        }
         return checkBox;
+    }
+
+    private void destroyCheckBoxes() {
+        checkBoxMap.clear();
+        updateHeaderCheckBox();
+        fireItemSelectionChange();
+    }
+
+    public void setTable(Table table) {
+        if (this.table != table) {
+            removeRowClickSelection();
+            removeHeaderCheckBox();
+            removeItemSetChangeListener();
+            this.table = table;
+            addItemSetChangeListener();
+            updateHeaderCheckBox();
+            updateRowClickSelection();
+        }
+    }
+
+    private void addItemSetChangeListener() {
+        if (table != null) {
+            table.addItemSetChangeListener(itemSetChangeListener);
+        }
+    }
+
+    private void removeItemSetChangeListener() {
+        if (table != null) {
+            table.removeItemSetChangeListener(itemSetChangeListener);
+        }
     }
 
     public boolean isNullSelectionAllowed() {
@@ -68,6 +132,7 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator, AxTable.IdCel
                 fireItemSelectionChange();
             }
             updateCheckboxStyle();
+            updateHeaderCheckBox();
         }
     }
 
@@ -92,16 +157,85 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator, AxTable.IdCel
                 fireItemSelectionChange();
             }
             updateCheckboxStyle();
+            updateHeaderCheckBox();
         }
     }
 
     private void updateCheckboxStyle() {
         for (CheckBox checkBox : checkBoxMap.values()) {
             if (multiselect || nullSelectionAllowed) {
-                checkBox.removeStyleName(RADIO);
+                checkBox.removeStyleName(RADIO_STYLE);
             } else {
-                checkBox.addStyleName(RADIO);
+                checkBox.addStyleName(RADIO_STYLE);
             }
+        }
+    }
+
+    public boolean isHeaderCheckbox() {
+        return headerCheckbox;
+    }
+
+    public void setHeaderCheckbox(boolean headerCheckbox) {
+        if (this.headerCheckbox != headerCheckbox) {
+            this.headerCheckbox = headerCheckbox;
+            updateHeaderCheckBox();
+        }
+    }
+
+    private void updateHeaderCheckBox() {
+        if (headerCheckbox && multiselect && nullSelectionAllowed) {
+            addHeaderCheckBox();
+        } else {
+            removeHeaderCheckBox();
+        }
+    }
+
+    private void addHeaderCheckBox() {
+        if (table != null) {
+            table.setColumnHeader(columnId, "<span class=\"v-checkbox v-widget\"><input type=\"checkbox\""
+                    + (!checkBoxMap.isEmpty() && areAllItemsSelected() ? " checked" : "")
+                    + "><label></label></span>");
+            table.removeHeaderClickListener(headerClickListener);
+            table.addHeaderClickListener(headerClickListener);
+        }
+    }
+
+    private void removeHeaderCheckBox() {
+        if (table != null) {
+            table.setColumnHeader(columnId, null);
+            table.removeHeaderClickListener(headerClickListener);
+        }
+    }
+
+    public boolean isRowClickSelection() {
+        return rowClickSelection;
+    }
+
+    public void setRowClickSelection(boolean rowClickSelection) {
+        if (this.rowClickSelection != rowClickSelection) {
+            this.rowClickSelection = rowClickSelection;
+            updateRowClickSelection();
+        }
+    }
+
+    private void updateRowClickSelection() {
+        if (rowClickSelection) {
+            addRowClickSelection();
+        } else {
+            removeRowClickSelection();
+        }
+    }
+
+    private void addRowClickSelection() {
+        if (table != null) {
+            table.removeItemClickListener(itemClickListener);
+            table.addItemClickListener(itemClickListener);
+        }
+    }
+
+    private void removeRowClickSelection() {
+        if (table != null) {
+            table.removeItemClickListener(itemClickListener);
         }
     }
 
@@ -129,6 +263,7 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator, AxTable.IdCel
         } else {
             selectAllItems();
         }
+        updateHeaderCheckBox();
     }
 
     public void setItemSelected(ID itemId, boolean selected) {
@@ -143,8 +278,16 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator, AxTable.IdCel
         return checkBox != null && Boolean.TRUE.equals(checkBox.getValue());
     }
 
+    public void toggleItemSelected(ID itemId) {
+        setItemSelected(itemId, !isItemSelected(itemId));
+    }
+
     public boolean isAnyItemSelected() {
         return checkBoxMap.entrySet().stream().anyMatch(e -> e.getValue().getValue());
+    }
+
+    private boolean areAllItemsSelected() {
+        return checkBoxMap.entrySet().stream().allMatch(e -> e.getValue().getValue());
     }
 
     public List<ID> getSelectedItemIds() {
