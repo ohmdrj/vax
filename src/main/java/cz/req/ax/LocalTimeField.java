@@ -114,7 +114,11 @@ public class LocalTimeField extends CustomField<LocalTime> {
     @Override
     protected void setInternalValue(LocalTime time) {
         if (time != null) {
-            field.setValue(createStringValue(time.getHour(), time.getMinute()));
+            String value = createStringValue(time.getHour(), time.getMinute());
+            if (!field.containsId(value)) {
+                field.addItem(value);
+            }
+            field.setValue(value);
         } else {
             field.setValue(null);
         }
