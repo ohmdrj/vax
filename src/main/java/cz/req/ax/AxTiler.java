@@ -21,11 +21,12 @@ public class AxTiler<T> extends CssLayout {
     BiFunction<BeanItem<T>, AbstractComponent, AbstractComponent> modifier;
 
     public AxTiler() {
-        addStyleName("tiler");
+        setStyleName("tiler");
         setSizeUndefined();
         factory = (bean) -> {
             Assert.notNull(bean);
-            Object caption = bean.getItemProperty(propertyId).getValue();
+            Object caption = propertyId == null ? bean.getBean()
+                    : bean.getItemProperty(propertyId).getValue();
             AbstractComponent button = new Button(String.valueOf(caption), event -> {
                 if (action == null) return;
                 T data = (T) event.getButton().getData();
@@ -34,7 +35,6 @@ public class AxTiler<T> extends CssLayout {
             if (modifier != null) {
                 button = modifier.apply(bean, button);
             }
-            button.addStyleName("tile");
             button.setData(bean.getBean());
             return button;
         };
@@ -43,11 +43,15 @@ public class AxTiler<T> extends CssLayout {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        components.forEach(c -> c.setEnabled(enabled));
+        components.forEach(c -> {
+            c.setEnabled(enabled);
+            if (c instanceof CssLayout) {
+                ((CssLayout) c).iterator().forEachRemaining(x -> x.setEnabled(enabled));
+            }
+        });
     }
 
     public AxTiler<T> container(AbstractBeanContainer<?, T> container) {
-        Assert.notNull(propertyId, "Set propertyId before container!");
         this.container = container;
         refresh();
         return this;
@@ -65,6 +69,11 @@ public class AxTiler<T> extends CssLayout {
 
     public AxTiler<T> modifier(BiFunction<BeanItem<T>, AbstractComponent, AbstractComponent> modifier) {
         this.modifier = modifier;
+        return this;
+    }
+
+    public AxTiler<T> tile(Function<T, CssLayout> tile) {
+        this.factory = item -> tile.apply(item == null ? null : item.getBean());
         return this;
     }
 
@@ -89,11 +98,22 @@ public class AxTiler<T> extends CssLayout {
             ((AxContainer) container).refresh();
         }
         for (Object id : container.getItemIds()) {
-            BeanItem<T> bean = container.getItem(id);
-            AbstractComponent component = factory.apply(bean);
-            component.setEnabled(isEnabled());
-            addComponent(component);
+            createTile(container.getItem(id));
         }
+    }
+
+    protected AbstractComponent createTile(BeanItem<T> bean) {
+        AbstractComponent component = factory.apply(bean);
+        if (component instanceof CssLayout && action != null) {
+            CssLayout layout = (CssLayout) component;
+            layout.addLayoutClickListener(event -> {
+                T value = bean == null ? null : bean.getBean();
+                action.accept(value);
+            });
+        }
+        component.setEnabled(isEnabled());
+        addComponent(component);
+        return component;
     }
 
 }

@@ -12,9 +12,14 @@ public interface Components {
 
     String getId();
 
-    default CssLayout cssLayout(String name, Component... components) {
+    default CssLayout cssLayout(Component... components) {
         CssLayout layout = new CssLayout(components);
         layout.setSizeUndefined();
+        return layout;
+    }
+
+    default CssLayout cssLayout(String name, Component... components) {
+        CssLayout layout = cssLayout(components);
         layout.setStyleName(name);
         return layout;
     }

@@ -11,9 +11,7 @@ import java.util.Iterator;
 
 public class AxUtils {
 
-    public static ErrorHandler EMPTY_ERROR_HANDLER = event -> {
-        System.out.println(event);
-    };
+    public static ErrorHandler EMPTY_ERROR_HANDLER = event -> System.err.println(event);
 
     public static String readCookie(String name) {
         for (Cookie cookie : VaadinService.getCurrentRequest().getCookies()) {

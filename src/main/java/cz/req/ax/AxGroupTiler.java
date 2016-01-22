@@ -1,7 +1,6 @@
 package cz.req.ax;
 
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Label;
 
 import java.util.*;
@@ -50,9 +49,7 @@ public class AxGroupTiler<T> extends AxTiler<T> {
                 label.setStyleName("caption");
                 addComponent(label);
                 for (BeanItem<T> bean : beans) {
-                    AbstractComponent component = factory.apply(bean);
-                    component.addStyleName("tile-" + key.toString());
-                    addComponent(component);
+                    createTile(bean).addStyleName("tile-" + key.toString());
                 }
             }
         }
