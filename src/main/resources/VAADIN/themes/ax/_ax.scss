@@ -332,6 +332,9 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
   .v-table {
     font-size: 18px;
     font-weight: 200;
+    &.has-item-click-listener .v-table-body tr {
+      cursor: pointer;
+    }
     .v-table-header-cell .v-checkbox {
       margin-top: -0.15em;
     }

@@ -1,6 +1,5 @@
 package cz.req.ax;
 
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
 @FunctionalInterface
@@ -14,20 +13,15 @@ public interface Refresh {
         }
     }
 
-    default void pushRefresh() {
-        System.err.println("Refresh TicketChange");
-        UI.getCurrent().access(new Runnable() {
-            @Override
-            public void run() {
-                try {
-//                    refresh();
-                    Notification.show("Refresh");
-//                UI.getCurrent().push();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+    /*default void pushRefresh() {
+        if (getUI() == null) return;
+        getUI().access(() -> {
+            try {
+                refresh();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
-    }
+    }*/
 
 }

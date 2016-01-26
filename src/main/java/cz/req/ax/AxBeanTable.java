@@ -25,6 +25,12 @@ public class AxBeanTable<T> extends AxTable<T> {
                 selectListener.beanEvent(item == null ? null : item.getBean());
             }
         });
+        getTable().addItemClickListener(event -> {
+            if (clickListener != null) {
+                BeanItem<T> item = container.getItem(event.getItemId());
+                clickListener.beanEvent(item == null ? null : item.getBean());
+            }
+        });
     }
 
     @Override

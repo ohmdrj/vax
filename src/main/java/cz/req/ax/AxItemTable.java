@@ -12,15 +12,17 @@ public class AxItemTable<T> extends AxTable<T> {
 
     public AxItemTable(final AxItemContainer<T> container) {
         this.container = container;
-        getTable().addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                if (selectListener == null) return;
-                if (event == null || event.getProperty() == null) {
-                    selectListener.beanEvent(null);
-                } else {
-                    selectListener.beanEvent((T) event.getProperty().getValue());
-                }
+        getTable().addValueChangeListener(event -> {
+            if (selectListener == null) return;
+            if (event == null || event.getProperty() == null) {
+                selectListener.beanEvent(null);
+            } else {
+                selectListener.beanEvent((T) event.getProperty().getValue());
+            }
+        });
+        getTable().addItemClickListener(event -> {
+            if (clickListener != null) {
+                clickListener.beanEvent((T) event.getItemId());
             }
         });
     }

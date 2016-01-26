@@ -6,9 +6,9 @@ import com.vaadin.ui.Label;
 public class AvesomeLabel extends Label {
 
 	private static final long serialVersionUID = -1987552834791565983L;
-	
-	private String size, fixedWidth, border, spin, pull, rotate, flip, inverse, stackOrder, custom;
-    private AvesomeLabel stacked;
+
+	private String size, fixedWidth, border, spin, pull, rotate, flip, inverse, stackOrder, custom, style;
+	private AvesomeLabel stacked;
     private AvesomeIcon icon;
     
     public AvesomeLabel(AvesomeIcon icon) {
@@ -66,8 +66,13 @@ public class AvesomeLabel extends Label {
     public AvesomeLabel setCustomStyle(String css) {
     	custom = css; return this;
     }
-    
-    public AvesomeLabel setSizeLg() {
+
+	public AvesomeLabel setStyle(String style) {
+		setStyleName(style);
+		return this;
+	}
+
+	public AvesomeLabel setSizeLg() {
     	size = "fa-lg"; return this;
     }
     
