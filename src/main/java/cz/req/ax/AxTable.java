@@ -14,9 +14,12 @@ import java.util.function.Predicate;
 
 public abstract class AxTable<T> implements ComponentWrapper, Refresh {
 
+    static final String HAS_ITEM_CLICK_LISTENER = "has-item-click-listener";
+
     List<String> visibleColumns = new ArrayList<>();
     Container.Filter containerFilter;
     BeanEventListener<T> selectListener;
+    BeanEventListener<T> clickListener;
     BeanEventListener<T> selectPredicate;
     Refresh refreshListener;
     Table table;
@@ -87,8 +90,23 @@ public abstract class AxTable<T> implements ComponentWrapper, Refresh {
         return this;
     }
 
+    public AxTable<T> selectable(boolean selectable) {
+        getTable().setSelectable(selectable);
+        return this;
+    }
+
     public AxTable<T> select(BeanEventListener<T> listener) {
         selectListener = listener;
+        return this;
+    }
+
+    public AxTable<T> click(BeanEventListener<T> listener) {
+        clickListener = listener;
+        if (clickListener != null) {
+            getTable().addStyleName(HAS_ITEM_CLICK_LISTENER);
+        } else {
+            getTable().removeStyleName(HAS_ITEM_CLICK_LISTENER);
+        }
         return this;
     }
 
@@ -100,6 +118,15 @@ public abstract class AxTable<T> implements ComponentWrapper, Refresh {
                 return filter.test(bean);
             }
         });
+    }
+
+    public AxTable<T> pageLength(int pageLength) {
+        getTable().setPageLength(pageLength);
+        return this;
+    }
+
+    public AxTable<T> disablePaging() {
+        return pageLength(0);
     }
 
     public AxTable<T> filter(Container.Filter filter) {
@@ -128,6 +155,12 @@ public abstract class AxTable<T> implements ComponentWrapper, Refresh {
     public ColumnFactory<T> column(String propertyId, Table.ColumnGenerator columnGenerator) {
         table.addGeneratedColumn(propertyId, columnGenerator);
         return column(propertyId);
+    }
+
+    public ColumnFactory<T> column(SelectionColumn column) {
+        ColumnFactory<T> factory = column(column.getColumnId(), column);
+        column.setTable(getTable());
+        return factory;
     }
 
     public AxTable<T> header(Table.ColumnHeaderMode headerMode) {
