@@ -10,6 +10,8 @@ import com.vaadin.ui.Table;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public abstract class AxTable<T> implements ComponentWrapper, Refresh {
@@ -204,6 +206,16 @@ public abstract class AxTable<T> implements ComponentWrapper, Refresh {
 
         public ColumnFactory<T> converter(Converter<String, ?> converter) {
             table.getTable().setConverter(property, converter);
+            return this;
+        }
+
+        public <MODEL> ColumnFactory<T> format(Function<MODEL, String> formatter) {
+            table.getTable().setConverter(property, new StringToConverter() {
+                @Override
+                public String convertToPresentation(Object value, Class targetType, Locale locale) throws ConversionException {
+                    return formatter.apply((MODEL) value);
+                }
+            });
             return this;
         }
 
