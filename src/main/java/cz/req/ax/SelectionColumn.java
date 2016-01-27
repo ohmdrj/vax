@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
  *         Date: 18.1.2016
  */
-public class SelectionColumn<ID> implements Table.ColumnGenerator, AxTable.IdCellGenerator<ID> {
+public class SelectionColumn<ID> implements Table.ColumnGenerator {
 
     public static final String ID = "_selection";
     private static final String RADIO_STYLE = "radio";
@@ -27,7 +27,6 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator, AxTable.IdCel
         }
     };
     private ItemClickEvent.ItemClickListener itemClickListener = e -> toggleItemSelected((ID) e.getItemId());
-    private Container.ItemSetChangeListener itemSetChangeListener = e -> destroyCheckBoxes();
     private boolean multiselect;
     private boolean nullSelectionAllowed;
     private boolean headerCheckbox = true;
@@ -49,15 +48,14 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator, AxTable.IdCel
 
     @Override
     public Object generateCell(Table source, Object itemId, Object columnId) {
-        Assert.state(table != null, "Table was not set using setTable(Table)");
-        Assert.state(table == source, "Table differs from source");
-
-        return generateCell((ID) itemId, columnId);
-    }
-
-    @Override
-    public Component generateCell(ID itemId, Object columnId) {
-        Assert.state(table != null, "Table was not set using setTable(Table)");
+        if (table == null) {
+            table = source;
+            table.addItemSetChangeListener(e -> destroyCheckBoxes());
+            updateHeaderCheckBox();
+            updateRowClickSelection();
+        } else if (table != source) {
+            throw new IllegalStateException("Selection column cannot be used for multiple tables.");
+        }
 
         CheckBox checkBox = new CheckBox();
         checkBox.setImmediate(true);
@@ -83,7 +81,7 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator, AxTable.IdCel
         if (!nullSelectionAllowed && checkBoxMap.isEmpty()) {
             checkBox.setInternalValue(true);
         }
-        checkBoxMap.put(itemId, checkBox);
+        checkBoxMap.put((ID) itemId, checkBox);
         if (checkBox.getValue()) {
             fireItemSelectionChange();
         }
@@ -94,30 +92,6 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator, AxTable.IdCel
         checkBoxMap.clear();
         updateHeaderCheckBox();
         fireItemSelectionChange();
-    }
-
-    public void setTable(Table table) {
-        if (this.table != table) {
-            removeRowClickSelection();
-            removeHeaderCheckBox();
-            removeItemSetChangeListener();
-            this.table = table;
-            addItemSetChangeListener();
-            updateHeaderCheckBox();
-            updateRowClickSelection();
-        }
-    }
-
-    private void addItemSetChangeListener() {
-        if (table != null) {
-            table.addItemSetChangeListener(itemSetChangeListener);
-        }
-    }
-
-    private void removeItemSetChangeListener() {
-        if (table != null) {
-            table.removeItemSetChangeListener(itemSetChangeListener);
-        }
     }
 
     public boolean isNullSelectionAllowed() {
@@ -183,28 +157,19 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator, AxTable.IdCel
     }
 
     private void updateHeaderCheckBox() {
-        if (headerCheckbox && multiselect && nullSelectionAllowed) {
-            addHeaderCheckBox();
-        } else {
-            removeHeaderCheckBox();
-        }
-    }
-
-    private void addHeaderCheckBox() {
         if (table != null) {
-            table.setColumnHeader(columnId, "<span class=\"v-checkbox v-widget\"><input type=\"checkbox\""
-                    + (!checkBoxMap.isEmpty() && areAllItemsSelected() ? " checked" : "")
-                    + "><label></label></span>");
-            table.removeHeaderClickListener(headerClickListener);
-            table.addHeaderClickListener(headerClickListener);
+            if (headerCheckbox && multiselect && nullSelectionAllowed) {
+                table.setColumnHeader(columnId, "<span class=\"v-checkbox v-widget\"><input type=\"checkbox\""
+                        + (!checkBoxMap.isEmpty() && areAllItemsSelected() ? " checked" : "")
+                        + "><label></label></span>");
+                table.removeHeaderClickListener(headerClickListener);
+                table.addHeaderClickListener(headerClickListener);
+            } else {
+                table.setColumnHeader(columnId, null);
+                table.removeHeaderClickListener(headerClickListener);
+            }
         }
-    }
 
-    private void removeHeaderCheckBox() {
-        if (table != null) {
-            table.setColumnHeader(columnId, null);
-            table.removeHeaderClickListener(headerClickListener);
-        }
     }
 
     public boolean isRowClickSelection() {
@@ -219,24 +184,15 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator, AxTable.IdCel
     }
 
     private void updateRowClickSelection() {
-        if (rowClickSelection) {
-            addRowClickSelection();
-        } else {
-            removeRowClickSelection();
-        }
-    }
-
-    private void addRowClickSelection() {
         if (table != null) {
-            table.removeItemClickListener(itemClickListener);
-            table.addItemClickListener(itemClickListener);
+            if (rowClickSelection) {
+                table.removeItemClickListener(itemClickListener);
+                table.addItemClickListener(itemClickListener);
+            } else {
+                table.removeItemClickListener(itemClickListener);
+            }
         }
-    }
 
-    private void removeRowClickSelection() {
-        if (table != null) {
-            table.removeItemClickListener(itemClickListener);
-        }
     }
 
     public void selectAllItems() {

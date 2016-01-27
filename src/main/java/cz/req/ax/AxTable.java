@@ -160,9 +160,7 @@ public abstract class AxTable<T> implements ComponentWrapper, Refresh {
     }
 
     public ColumnFactory<T> column(SelectionColumn column) {
-        ColumnFactory<T> factory = column(column.getColumnId(), column);
-        column.setTable(getTable());
-        return factory;
+        return column(column.getColumnId(), column);
     }
 
     public AxTable<T> header(Table.ColumnHeaderMode headerMode) {
@@ -254,6 +252,10 @@ public abstract class AxTable<T> implements ComponentWrapper, Refresh {
         public ColumnFactory<T> column(String propertyId, Table.ColumnGenerator columnGenerator) {
             table.getTable().addGeneratedColumn(propertyId, columnGenerator);
             return column(propertyId);
+        }
+
+        public Table getTable() {
+            return done().getTable();
         }
 
         public AxTable<T> done() {
