@@ -60,6 +60,7 @@ public class AxForm<T> extends CustomComponent {
     private AxForm(BeanItem<T> beanItem) {
         beanClass = (Class<T>) beanItem.getBean().getClass();
         fieldGroup = new BeanFieldGroup<>(beanClass);
+        fieldGroup.setFieldFactory(new AxFieldFactory());
         fieldGroup.setItemDataSource(beanItem);
         fieldGroup.setBuffered(true);
         formErrorLabel = new Label();

@@ -2,6 +2,7 @@ package cz.req.ax;
 
 import com.google.common.base.Strings;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Field;
 import org.springframework.util.Assert;
@@ -38,7 +39,7 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
     }
 
     @Override
-    public void commit() throws CommitException {
+    public void commit() throws FieldGroup.CommitException {
         for (Field field: getFields()) {
             if (field.isRequired() && Strings.isNullOrEmpty(field.getRequiredError())) {
                 field.setRequiredError("Není vyplněna hodnota.");
@@ -51,9 +52,17 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
         try {
             commit();
             return getItemDataSource().getBean();
-        } catch (Exception e) {
-            throw new RuntimeException("Chyba při ukládání formuláře", e);
+        } catch (FieldGroup.CommitException e) {
+            throw new CommitException(e);
         }
+    }
+
+    public static class CommitException extends RuntimeException {
+
+        public CommitException(FieldGroup.CommitException origin) {
+            super(origin.getMessage(), origin.getCause());
+        }
+
     }
 
 }
