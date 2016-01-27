@@ -119,17 +119,20 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
   }
 
 
-  .v-button-primary {
+  .v-button-primary,
+  .v-upload-primary .v-button {
     background: #197de1;
     padding: 0 15px;
     font-weight: 400;
   }
 
-  .v-button-danger {
+  .v-button-danger,
+  .v-upload-danger .v-button {
     background: #ed473b;
   }
 
-  .v-button-friendly {
+  .v-button-friendly,
+  .v-upload-friendly .v-button {
     background: #2c9720;
   }
 
@@ -162,7 +165,15 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
     -webkit-box-shadow: none !important;
   }
 
-  .v-button-link {
+  .v-upload-link .v-button {
+    @extend .v-button-link;
+    &:hover:after {
+      background: none;
+    }
+  }
+
+  .v-button-link,
+  .v-upload-link .v-button {
     width: auto;
     height: auto;
     padding: 0;

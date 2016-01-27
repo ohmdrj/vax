@@ -9,6 +9,7 @@ import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Upload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -337,6 +338,16 @@ public class AxAction<T> implements Cloneable {
         button.addClickListener(event -> onAction());
         button.setEnabled(enabled);
         return button;
+    }
+
+    public Upload upload() {
+        Upload upload = new Upload();
+        if (description != null) upload.setDescription(description);
+        if (!styles.isEmpty()) styles.forEach(upload::addStyleName);
+        if (right) upload.addStyleName("right");
+        upload.setButtonCaption(caption);
+        upload.setImmediate(true);
+        return upload;
     }
 
     public MenuBar menuBar() {
