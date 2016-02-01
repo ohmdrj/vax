@@ -1,11 +1,14 @@
 package cz.req.ax;
 
 import com.vaadin.data.Property;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.DateField;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -18,10 +21,25 @@ import java.util.Date;
  */
 public class LocalDateField extends CustomField<LocalDate> {
 
+    private static final String[] FALLBACK_FORMATS = new String[] {"ddMMyyyy", "ddMMyy"};
+
     private final DateField field;
 
     public LocalDateField() {
-        field = new DateField();
+        field = new DateField() {
+            @Override
+            protected Date handleUnparsableDateString(String dateString) throws Converter.ConversionException {
+                for (String format: FALLBACK_FORMATS) {
+                    try {
+                        if (dateString.length() == format.length()) {
+                            return new SimpleDateFormat(format).parse(dateString);
+                        }
+                    } catch (ParseException ignored) {
+                    }
+                }
+                return super.handleUnparsableDateString(dateString);
+            }
+        };
         field.addValueChangeListener(e -> {
             Date value = field.getValue();
             if (value != null) {
