@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 
@@ -36,6 +37,11 @@ public class AxMessage extends AxWindow {
     @Deprecated
     public AxMessage stackTrace(Throwable throwable) {
         return error(throwable);
+    }
+
+    public AxMessage htmlContent() {
+        message.setContentMode(ContentMode.HTML);
+        return this;
     }
 
     public AxMessage error(Throwable throwable) {
