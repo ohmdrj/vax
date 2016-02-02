@@ -5,6 +5,7 @@ import com.vaadin.data.util.converter.StringToIntegerConverter;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Page;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TabSheet;
 
@@ -45,6 +46,14 @@ public abstract class AxView extends RootLayout implements View, Navigation, Com
 
     public String[] getParameterStrings() {
         return parameters.split("/");
+    }
+
+    public void setParameters(Object... parameters) {
+        String uriFragment = Page.getCurrent().getUriFragment();
+        int viewNameEnd = uriFragment.indexOf("/");
+        String viewName = viewNameEnd < 0 ? uriFragment : uriFragment.substring(0, viewNameEnd);
+        String newUriFragment = AxUtils.makeURL(viewName, parameters);
+        Page.getCurrent().setUriFragment(newUriFragment, false);
     }
 
     @Override
