@@ -46,14 +46,9 @@ public interface Navigation {
         navigate(viewName, null);
     }
 
-    default void navigate(String viewName, Object... parameter) {
-        StringBuilder viewState = new StringBuilder(viewName);
-        if (parameter != null && parameter.length > 0) {
-            for (Object o : parameter) {
-                viewState.append("/").append(o.toString());
-            }
-        }
-        UI.getCurrent().getNavigator().navigateTo(viewState.toString());
+    default void navigate(String viewName, Object... parameters) {
+        String viewState = AxUtils.makeURL(viewName, parameters);
+        UI.getCurrent().getNavigator().navigateTo(viewState);
     }
 
     default String viewName(Class<? extends AxView> viewClass) {

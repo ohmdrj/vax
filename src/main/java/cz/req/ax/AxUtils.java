@@ -75,4 +75,17 @@ public class AxUtils {
             return null;
         }
     }
+
+    public static String makeURL(String base, Object... parameters) {
+        StringBuilder sb = new StringBuilder(base);
+        if (parameters != null && parameters.length > 0) {
+            for (Object parameter : parameters) {
+                if (parameter != null) {
+                    sb.append("/").append(parameter.toString());
+                }
+            }
+        }
+        return sb.toString();
+    }
+
 }
