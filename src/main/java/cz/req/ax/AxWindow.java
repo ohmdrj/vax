@@ -10,6 +10,7 @@ import com.vaadin.ui.Window;
 public class AxWindow extends RootLayout implements Navigation, Components {
 
     Window window;
+    boolean manualFocus = false;
 
     public AxWindow() {
         setStyleName("window-root");
@@ -38,8 +39,10 @@ public class AxWindow extends RootLayout implements Navigation, Components {
     //TODO Burianek Review??
     public AxWindow show(UI ui) {
         ui.addWindow(window);
-        if (!AxUtils.focusFirst(mainPanel())) {
-            focus();
+        if (!manualFocus) {
+            if (!AxUtils.focusFirst(mainPanel())) {
+                focus();
+            }
         }
         return this;
     }
@@ -139,6 +142,11 @@ public class AxWindow extends RootLayout implements Navigation, Components {
 
     public AxWindow closeListener(Window.CloseListener listener) {
         window.addCloseListener(listener);
+        return this;
+    }
+
+    public AxWindow manualFocus() {
+        manualFocus = true;
         return this;
     }
 
