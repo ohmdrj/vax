@@ -1,5 +1,6 @@
 package cz.req.ax;
 
+import com.google.common.base.CaseFormat;
 import com.vaadin.data.util.converter.StringToIntegerConverter;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -17,9 +18,9 @@ public abstract class AxView extends RootLayout implements View, Navigation, Com
 
     protected AxView() {
         String name = getClass().getSimpleName();
-        name = name.replaceAll("View", "-view").toLowerCase();
         setStyleName("page-root");
-        addStyleName(name);
+        addStyleName(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, name));
+        addStyleName(name.replaceAll("View", "-view").toLowerCase()); // Pouze zpetna kompatibilita
     }
 
     public String getParameters() {
