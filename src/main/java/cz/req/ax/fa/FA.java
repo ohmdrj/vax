@@ -1,8 +1,8 @@
-package cz.req.ax.awsome;
+package cz.req.ax.fa;
 
 import com.vaadin.server.FontIcon;
 
-public enum AvesomeIcon implements FontIcon {
+public enum FA implements FontIcon {
 	ADJUST("fa-adjust", 0xf042),
 	ADN("fa-adn", 0xf170),
 	ALIGN_CENTER("fa-align-center", 0xf037),
@@ -600,19 +600,19 @@ public enum AvesomeIcon implements FontIcon {
 	private static final String fontFamily = "FontAwesomeLabelAddon";
     private int codepoint;
     protected String clazz;
-    
-    AvesomeIcon(String clazz, int codepoint) {
-        this.codepoint = codepoint;
+
+	FA(String clazz, int codepoint) {
+		this.codepoint = codepoint;
         this.clazz = clazz;
     }
     
     public String getClazz() {
     	return clazz;
     }
-    
-    public AvesomeLabel getLabel() {
-    	return new AvesomeLabel(this);
-    }
+
+	public FALabel getLabel() {
+		return new FALabel(this);
+	}
     
     @Override
     public String getMIMEType() {

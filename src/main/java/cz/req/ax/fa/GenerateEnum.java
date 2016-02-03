@@ -1,4 +1,4 @@
-package cz.req.ax.awsome;
+package cz.req.ax.fa;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
