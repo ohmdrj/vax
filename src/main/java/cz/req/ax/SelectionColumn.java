@@ -3,6 +3,7 @@ package cz.req.ax;
 import com.google.common.collect.ImmutableList;
 import com.vaadin.data.Container;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import org.springframework.util.Assert;
@@ -22,7 +23,7 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator {
     private Table table;
     private String columnId;
     private Table.HeaderClickListener headerClickListener = e -> {
-        if (e.getPropertyId().equals(columnId)) {
+        if (e.getPropertyId().equals(columnId) && e.getButton() == MouseEventDetails.MouseButton.LEFT && !e.isDoubleClick()) {
             toggleItemSelection();
         }
     };
