@@ -65,6 +65,10 @@ public class AxVaadinServlet extends SpringVaadinServlet {
             response.setHeader("Cache-Control", "no-cache");
             try {
                 InputStream stream = getClass().getResourceAsStream(request.getPathInfo());
+                if (stream == null) {
+                    log("Missing static resource " + path);
+                    return;
+                }
                 ByteStreams.copy(stream, response.getOutputStream());
             } catch (Exception e) {
                 log("Error serving static resource " + path, e);
