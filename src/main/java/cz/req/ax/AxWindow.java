@@ -47,6 +47,11 @@ public class AxWindow extends RootLayout implements Navigation, Components {
         return this;
     }
 
+    @Override
+    protected void focus() {
+        window.focus();
+    }
+
     public AxWindow show() {
         return centered().show(UI.getCurrent());
     }
