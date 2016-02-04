@@ -1,5 +1,6 @@
 package cz.req.ax;
 
+import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.UI;
 import ru.xpoft.vaadin.VaadinView;
 
@@ -49,6 +50,10 @@ public interface Navigation {
     default void navigate(String viewName, Object... parameters) {
         String viewState = AxUtils.makeURL(viewName, parameters);
         UI.getCurrent().getNavigator().navigateTo(viewState);
+    }
+
+    default void navigateBack() {
+        JavaScript.eval("window.history.back();");
     }
 
     default String viewName(Class<? extends AxView> viewClass) {
