@@ -1,11 +1,16 @@
 package cz.req.ax;
 
 import com.google.common.base.Strings;
+import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Field;
 import org.springframework.util.Assert;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
@@ -48,18 +53,52 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
         super.commit();
     }
 
-    public T commitValue() {
+    private void commitUnchecked() {
         try {
             commit();
-            return getItemDataSource().getBean();
         } catch (FieldGroup.CommitException e) {
             throw new CommitException(e);
         }
     }
 
+    public T commitAndGet() {
+        commitUnchecked();
+        return getBean();
+    }
+
+    public T commitAndMerge(T targetBeanValue, Object... extraPropertyIds) {
+        return commitAndMerge(new BeanItem<T>(targetBeanValue), extraPropertyIds).getBean();
+    }
+
+    public BeanItem<T> commitAndMerge(BeanItem<T> targetBeanItem, Object... extraPropertyIds) {
+        commitUnchecked();
+        return merge(targetBeanItem, extraPropertyIds);
+    }
+
+    private BeanItem<T> merge(BeanItem<T> targetBeanItem, Object... extraPropertyIds) {
+        BeanItem<T> sourceBeanItem = getItemDataSource();
+
+        Set<Object> propertyIds = new HashSet<>();
+        propertyIds.addAll(getBoundPropertyIds());
+        propertyIds.addAll(Arrays.asList(extraPropertyIds));
+
+        for (Object propertyId: propertyIds) {
+            Property sourceProperty = sourceBeanItem.getItemProperty(propertyId);
+            Property targetProperty =  targetBeanItem.getItemProperty(propertyId);
+            targetProperty.setValue(sourceProperty.getValue());
+        }
+
+        setItemDataSource(targetBeanItem);
+        return targetBeanItem;
+    }
+
+    public T getBean() {
+        return getItemDataSource().getBean();
+    }
+
     public static class CommitException extends RuntimeException {
 
-        public CommitException(FieldGroup.CommitException origin) {
+        private CommitException(FieldGroup.CommitException origin) {
             super(origin.getMessage(), origin.getCause());
         }
 
