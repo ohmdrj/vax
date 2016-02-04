@@ -28,6 +28,7 @@ public class LocalDateTimeField extends CustomField<LocalDateTime> {
         timeField.addValueChangeListener(e -> fireValueChange(false));
 
         addStyleName("local-date-time-field");
+        updateTimeStyle();
         setSizeUndefined();
     }
 
@@ -112,10 +113,22 @@ public class LocalDateTimeField extends CustomField<LocalDateTime> {
         if (!visible) {
             timeField.setValue(null);
         }
+        updateTimeStyle();
     }
 
     public boolean isTimeVisible() {
         return timeField.isVisible();
+    }
+
+    private void updateTimeStyle() {
+        if (timeField.isVisible()) {
+            addStyleName("time-visible");
+            removeStyleName("time-hidden");
+
+        } else {
+            removeStyleName("time-visible");
+            addStyleName("time-hidden");
+        }
     }
 
 }

@@ -543,6 +543,11 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
   }
 
   // LocalDateField, LocalTimeField, LocalDateTimeField
+  $local-date-field-width: 11.5em;
+  $local-date-field-min-width: 8.5em;
+  $local-time-field-width: 6em;
+  $local-time-field-min-width: 6em;
+
   .local-date-field.v-customcomponent-error,
   .local-date-time-field.v-customcomponent-error {
     .v-datefield-textfield {
@@ -563,11 +568,43 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
       border-color: $v-error-indicator-color;
     }
   }
-  .local-time-field > .v-filterselect {
-    width: 6em;
+  .local-date-field {
+    width: $local-date-field-width;
+    min-width: $local-date-field-min-width;
+    > .v-datefield {
+      width: 100%;
+    }
   }
-  .local-date-time-field .v-caption-local-time-field > .v-errorindicator {
-    display: none;
+  .local-time-field {
+    width: $local-time-field-width;
+    min-width: $local-time-field-min-width;
+    > .v-filterselect {
+      width: 100%;
+    }
+  }
+  .local-date-time-field {
+    &.time-hidden {
+      width: $local-date-field-width;
+      min-width: $local-date-field-min-width;
+    }
+    &.time-visible {
+      $fixed-width: $local-date-field-min-width + $local-time-field-min-width;
+      width: $fixed-width;
+      min-width: $fixed-width;
+    }
+    > .v-layout {
+      display: table;
+      width: 100%;
+      > * {
+        display: table-cell;
+      }
+      > .local-date-field {
+        width: 100%;
+      }
+    }
+    .v-caption-local-time-field > .v-errorindicator {
+      display: none;
+    }
   }
 
   .Aqua {
