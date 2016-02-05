@@ -1,5 +1,6 @@
 package cz.req.ax;
 
+import com.google.common.base.Strings;
 import com.vaadin.data.Item;
 import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
@@ -17,9 +18,7 @@ import org.springframework.util.Assert;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -50,26 +49,23 @@ public class AxForm<T> extends CustomComponent {
     }
 
     Class<T> beanClass;
-    BeanFieldGroup<T> fieldGroup;
+    AxBinder<T> binder;
     Consumer<T> error;
-    List<AxField> fields = new ArrayList<>();
     HorizontalLayout buttonBar;
     AxFormValidator<T> formValidator;
     Label formErrorLabel;
+    String captionSuffix;
 
     private AxForm(BeanItem<T> beanItem) {
         beanClass = (Class<T>) beanItem.getBean().getClass();
-        fieldGroup = new BeanFieldGroup<>(beanClass);
-        fieldGroup.setFieldFactory(new AxFieldFactory());
-        fieldGroup.setItemDataSource(beanItem);
-        fieldGroup.setBuffered(true);
+        binder = AxBinder.init(beanClass);
+        binder.setItemDataSource(beanItem);
         formErrorLabel = new Label();
         formErrorLabel.setVisible(false);
         formErrorLabel.addStyleName("form-error");
         setSizeUndefined();
         addStyleName("item-form");
         addComponent(formErrorLabel);
-        handlePreCommit(event -> fields.forEach(field -> field.field.setRequiredError(field.requiredMessage)));
         handlePreCommit(event -> {
             formErrorLabel.setVisible(false);
             if (formValidator != null) {
@@ -97,8 +93,20 @@ public class AxForm<T> extends CustomComponent {
         return this;
     }
 
+    public void setCaptionSuffix(String captionSuffix) {
+        this.captionSuffix = captionSuffix;
+    }
+
+    public void setFieldFactory(FieldGroupFieldFactory fieldFactory) {
+        binder.setFieldFactory(fieldFactory);
+    }
+
     public BeanFieldGroup<T> getFieldGroup() {
-        return fieldGroup;
+        return binder;
+    }
+
+    public AxBinder<T> getBinder() {
+        return binder;
     }
 
     public AbstractLayout getRootLayout() {
@@ -118,7 +126,7 @@ public class AxForm<T> extends CustomComponent {
     }
 
     public void handlePreCommit(Consumer<FieldGroup.CommitEvent> handler) {
-        fieldGroup.addCommitHandler(new FieldGroup.CommitHandler() {
+        binder.addCommitHandler(new FieldGroup.CommitHandler() {
             @Override
             public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
                 handler.accept(commitEvent);
@@ -131,7 +139,7 @@ public class AxForm<T> extends CustomComponent {
     }
 
     public void handlePostCommit(Consumer<FieldGroup.CommitEvent> handler) {
-        fieldGroup.addCommitHandler(new FieldGroup.CommitHandler() {
+        binder.addCommitHandler(new FieldGroup.CommitHandler() {
             @Override
             public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
             }
@@ -151,7 +159,7 @@ public class AxForm<T> extends CustomComponent {
     }
 
     public Item getItem() {
-        return fieldGroup.getItemDataSource();
+        return binder.getItemDataSource();
     }
 
     public Integer getValueId() {
@@ -159,7 +167,7 @@ public class AxForm<T> extends CustomComponent {
     }
 
     public T getValue() {
-        Item itemValue = fieldGroup.getItemDataSource();
+        Item itemValue = binder.getItemDataSource();
         if (itemValue == null) {
             return null;
         } else if (itemValue instanceof BeanItem) {
@@ -171,10 +179,10 @@ public class AxForm<T> extends CustomComponent {
 
     public void setItem(BeanItem<T> beanItem) {
         if (beanItem instanceof BeanItem) {
-            fieldGroup.setItemDataSource(beanItem);
-            if (!fieldGroup.isEnabled()) fieldGroup.setEnabled(true);
+            binder.setItemDataSource(beanItem);
+            if (!binder.isEnabled()) binder.setEnabled(true);
         } else {
-            fieldGroup.setEnabled(false);
+            binder.setEnabled(false);
         }
     }
 
@@ -184,9 +192,9 @@ public class AxForm<T> extends CustomComponent {
 
     public void setValue(T itemValue) {
         if (itemValue == null) {
-            fieldGroup.setItemDataSource((T) null);
+            binder.setItemDataSource((T) null);
         } else {
-            fieldGroup.setItemDataSource(new BeanItem<T>((T) itemValue));
+            binder.setItemDataSource(new BeanItem<T>((T) itemValue));
         }
     }
 
@@ -197,7 +205,7 @@ public class AxForm<T> extends CustomComponent {
     }
 
     public AxForm<T> fieldFactory(FieldGroupFieldFactory fieldFactory) {
-        fieldGroup.setFieldFactory(fieldFactory);
+        binder.setFieldFactory(fieldFactory);
         return this;
     }
 
@@ -207,7 +215,9 @@ public class AxForm<T> extends CustomComponent {
         if (f instanceof TextField) {
             ((TextField) f).setNullRepresentation("");
         }
-        fields.add(field);
+        if (!Strings.isNullOrEmpty(captionSuffix)) {
+            f.setCaption(Strings.nullToEmpty(f.getCaption()) + captionSuffix);
+        }
         addComponent(f);
         return field;
     }
@@ -240,7 +250,7 @@ public class AxForm<T> extends CustomComponent {
         checkItemNest(property);
         LabelField field = new LabelField();
         field.setConverter(new StringToConverter());
-        fieldGroup.bind(field, property);
+        binder.bind(field, property);
         if (caption != null) {
             Label label = new Label(caption);
             label.addStyleName("caption");
@@ -251,23 +261,23 @@ public class AxForm<T> extends CustomComponent {
         return field;
     }
 
+    public <F extends Field> AxField<F> addField(F field, String property) {
+        binder.bind(field, property);
+        return addField(new AxField<>(field));
+    }
+
     public AxField<? extends Field> addField(String caption, String property) {
-        Field<?> field = fieldGroup.buildAndBind(caption, property);
+        Field<?> field = binder.buildAndBind(caption, property);
         return addField(new AxField<>(field));
     }
 
     public <T extends AbstractField> AxField<T> addField(String caption, String property, Class<T> type) {
-        T field = fieldGroup.buildAndBind(caption, property, type);
+        T field = binder.buildAndBind(caption, property, type);
         return addField(new AxField<>(field));
     }
 
     public T commit() {
-        try {
-            fieldGroup.commit();
-            return getValue();
-        } catch (Exception e) {
-            throw new RuntimeException("Chyba pri ukladani formulare", e);
-        }
+        return binder.commitAndGet();
     }
 
     public AbstractLayout getButtonBar() {
@@ -296,13 +306,13 @@ public class AxForm<T> extends CustomComponent {
     public AxField<PasswordField> addPassword(String caption, String property) {
         PasswordField field = new PasswordField(caption);
         field.setNullRepresentation("");
-        fieldGroup.bind(field, property);
+        binder.bind(field, property);
         return addField(new AxField<>(field));
     }
 
     public AxField<RichTextArea> addRichtext(String caption, String property) {
         RichTextArea field = new RichTextArea(caption);
-        fieldGroup.bind(field, property);
+        binder.bind(field, property);
         return addField(new AxField<>(field));
     }
 
@@ -314,7 +324,7 @@ public class AxForm<T> extends CustomComponent {
         }
         combo.setPageLength(0);
         combo.setImmediate(true);
-        fieldGroup.bind(combo, property);
+        binder.bind(combo, property);
         return addField(new AxField<>(combo));
     }
 
@@ -327,7 +337,7 @@ public class AxForm<T> extends CustomComponent {
         }
         combo.setPageLength(0);
         combo.setImmediate(true);
-        fieldGroup.bind(combo, property);
+        binder.bind(combo, property);
         return addField(new AxField<>(combo));
     }
 
@@ -337,7 +347,7 @@ public class AxForm<T> extends CustomComponent {
         ComboBox combo = new ComboBox(caption, container);
         //combo.setItemCaptionPropertyId(display);
         combo.setImmediate(true);
-        fieldGroup.bind(combo, property);
+        binder.bind(combo, property);
         return addField(new AxField<>(combo));
     }
 
@@ -360,7 +370,7 @@ public class AxForm<T> extends CustomComponent {
         RichTextArea textArea = new RichTextArea();
         textArea.setCaption(caption);
         textArea.setNullRepresentation("");
-        fieldGroup.bind(textArea, property);
+        binder.bind(textArea, property);
         return addField(new AxField<>(textArea));
     }
 
