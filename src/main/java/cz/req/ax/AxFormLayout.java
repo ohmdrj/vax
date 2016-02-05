@@ -40,6 +40,14 @@ public class AxFormLayout extends CssLayout implements Components {
         return new RowBuilder();
     }
 
+    public RowBuilder addRow(String caption) {
+        return addRow().caption(caption);
+    }
+
+    public void addRow(Field field) {
+        addRow().field(field);
+    }
+
     private boolean isEmpty(Component component) {
         return !component.isVisible()
                 || (component instanceof Label && Strings.isNullOrEmpty(((Label) component).getValue()));
