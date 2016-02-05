@@ -25,6 +25,7 @@ $v-link-text-decoration: none;
 $v-overlay-shadow: 0 0 0 2px #000;
 $v-overlay-border-width: 2px;
 $valo-menu-background-color: darken($v-focus-color, 10%);
+$form-row-spacing: 0.4em;
 
 @mixin valo-animate-in-fade($duration: 100ms, $delay: null) {
   @include animation(valo-animate-in-fade $duration $delay backwards);
@@ -330,6 +331,9 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
   .v-formlayout {
     box-sizing: border-box;
     padding: 0 20px 10px;
+    tbody > .v-formlayout-row:not(:first-child) > td {
+      padding-top: $form-row-spacing;
+    }
   }
 
   .v-checkbox {
@@ -481,7 +485,7 @@ $valo-menu-background-color: darken($v-focus-color, 10%);
     > .form-row {
       display: table-row;
       &:not(:first-child) > * {
-        padding-top: 0.75em;
+        padding-top: $form-row-spacing;
       }
       > * {
         display: table-cell;
