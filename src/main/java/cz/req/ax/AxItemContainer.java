@@ -11,7 +11,7 @@ public class AxItemContainer<T> extends BeanItemContainer<T> {
         return new AxItemContainer<>(type);
     }
 
-    public static <T> AxItemContainer<T> init(Class<T> type, Collection<T> items) {
+    public static <T> AxItemContainer<T> init(Class<T> type, Collection<? extends T> items) {
         AxItemContainer<T> container = new AxItemContainer<>(type);
         container.addAll(items);
         return container;

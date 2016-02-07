@@ -3,6 +3,7 @@ package cz.req.ax;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.server.Resource;
 import com.vaadin.ui.ComboBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,10 @@ public class AxComboBox<T> extends ComboBox {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     Function<T, String> itemCaptionFunction;
+    Function<T, Resource> itemIconFunction;
+
+    public AxComboBox() {
+    }
 
     public AxComboBox(String caption, Container dataSource, Function<T, String> itemCaptionFunction) {
         super(caption, dataSource);
@@ -43,6 +48,10 @@ public class AxComboBox<T> extends ComboBox {
         this.itemCaptionFunction = itemCaptionFunction;
     }
 
+    public void setItemIconFunction(Function<T, Resource> itemIconFunction) {
+        this.itemIconFunction = itemIconFunction;
+    }
+
     @Override
     public String getItemCaption(Object itemId) {
         if (itemCaptionFunction == null) return super.getItemCaption(itemId);
@@ -62,4 +71,24 @@ public class AxComboBox<T> extends ComboBox {
             return "#";
         }
     }
+
+    @Override
+    public Resource getItemIcon(Object itemId) {
+        if (itemIconFunction == null) return super.getItemIcon(itemId);
+        if (itemId == null) return null;
+        try {
+            Item item = getItem(itemId);
+            if (item == null) return null;
+            if (item instanceof BeanItem) {
+                T bean = ((BeanItem<T>) item).getBean();
+                return itemIconFunction.apply(bean);
+            } else {
+                throw new IllegalArgumentException("Invalid item " + item);
+            }
+        } catch (Exception ex) {
+            logger.error("ComboBox itemIconFunction error", ex);
+            return null;
+        }
+    }
+
 }

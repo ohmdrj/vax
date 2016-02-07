@@ -103,10 +103,6 @@ public class LocalDateField extends CustomField<LocalDate> {
         field.setDateFormat(dateFormat);
     }
 
-    public void setResolution(Resolution resolution) {
-        field.setResolution(resolution);
-    }
-
     @Override
     public void setReadOnly(boolean readOnly) {
         field.setReadOnly(readOnly);
