@@ -18,7 +18,9 @@ import org.springframework.util.Assert;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -51,6 +53,7 @@ public class AxForm<T> extends CustomComponent {
     Class<T> beanClass;
     AxBinder<T> binder;
     Consumer<T> error;
+    List<AxField> fields = new ArrayList<>();
     HorizontalLayout buttonBar;
     AxFormValidator<T> formValidator;
     Label formErrorLabel;
@@ -66,6 +69,7 @@ public class AxForm<T> extends CustomComponent {
         setSizeUndefined();
         addStyleName("item-form");
         addComponent(formErrorLabel);
+        handlePreCommit(event -> fields.forEach(field -> field.field.setRequiredError(field.requiredMessage)));
         handlePreCommit(event -> {
             formErrorLabel.setVisible(false);
             if (formValidator != null) {
@@ -218,6 +222,7 @@ public class AxForm<T> extends CustomComponent {
         if (!Strings.isNullOrEmpty(captionSuffix)) {
             f.setCaption(Strings.nullToEmpty(f.getCaption()) + captionSuffix);
         }
+        fields.add(field);
         addComponent(f);
         return field;
     }
@@ -310,6 +315,10 @@ public class AxForm<T> extends CustomComponent {
         return addField(new AxField<>(field));
     }
 
+    /**
+     * @deprecated duplicates {@link #addRichText(String, String)}
+     */
+    @Deprecated
     public AxField<RichTextArea> addRichtext(String caption, String property) {
         RichTextArea field = new RichTextArea(caption);
         binder.bind(field, property);
