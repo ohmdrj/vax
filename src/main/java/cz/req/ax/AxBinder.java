@@ -6,6 +6,7 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Field;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.util.Assert;
 
 import java.util.Arrays;
@@ -64,6 +65,15 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
     public T commitAndGet() {
         commitUnchecked();
         return getBean();
+    }
+
+    public T commitAndMerge(JpaRepository<T, Integer> repository, Object... extraPropertyIds) {
+        Integer id = ObjectIdentity.id(getBean());
+        if (id != null) {
+            return commitAndMerge(repository.getOne(id), extraPropertyIds);
+        } else {
+            return commitAndGet();
+        }
     }
 
     public T commitAndMerge(T targetBeanValue, Object... extraPropertyIds) {
