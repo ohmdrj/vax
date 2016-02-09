@@ -92,6 +92,11 @@ public abstract class AxTable<T> implements ComponentWrapper, Refresh {
         return this;
     }
 
+    public AxTable<T> sortable(boolean sortable) {
+        getTable().setSortEnabled(sortable);
+        return this;
+    }
+
     public AxTable<T> selectable(boolean selectable) {
         getTable().setSelectable(selectable);
         return this;
