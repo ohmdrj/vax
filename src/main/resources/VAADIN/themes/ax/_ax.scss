@@ -256,6 +256,24 @@ $form-row-spacing: 0.4em;
     }
   }
 
+  // Focus
+  .v-button:focus,
+  .v-upload input[type=file]:focus + .v-button,
+  .v-upload input[type=file] + .v-button:focus {
+    &:after {
+      background-color: rgba(120, 120, 120, 0.1);
+    }
+  }
+  .v-button.link:focus,
+  .v-upload.link input[type=file]:focus + .v-button,
+  .v-upload.link input[type=file] + .v-button:focus,
+  .v-menubar.link:focus .v-menubar-menuitem-caption {
+    text-decoration: underline;
+    &:after {
+      background-color: inherit;
+    }
+  }
+
   /* Components */
   .editor-horizontal {
     display: block;
