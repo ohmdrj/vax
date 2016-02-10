@@ -77,6 +77,10 @@ $form-row-spacing: 0.4em;
 
   @include valo;
 
+  html {
+    font-size: $v-font-size; // = 1rem
+  }
+
   .v-ui {
     overflow: hidden !important;
   }
