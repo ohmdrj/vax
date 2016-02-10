@@ -41,7 +41,7 @@ public class AxItemContainer<T> extends BeanItemContainer<T> {
         requestedSortAsc = ascending;
 
         if (sortRequestCallback instanceof Function) {
-            replaceAllItems(((Function<Sort, Collection<? extends T>>) sortRequestCallback).apply(getSortRequest()));
+            replaceAllItems(((Function<Sort, Collection<? extends T>>) sortRequestCallback).apply(getSort()));
         } else if (sortRequestCallback instanceof Runnable) {
             ((Runnable) sortRequestCallback).run();
         } else {
@@ -49,7 +49,7 @@ public class AxItemContainer<T> extends BeanItemContainer<T> {
         }
     }
 
-    public Sort getSortRequest() {
+    public Sort getSort() {
         List<Sort.Order> orders = new ArrayList<>();
         if (requestedSortIds != null) {
             for (int i = 0; i < requestedSortIds.length; i++) {
