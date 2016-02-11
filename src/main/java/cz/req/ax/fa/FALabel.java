@@ -112,9 +112,13 @@ public class FALabel extends Label {
 		pull = "pull-right"; return this;
     }
 
-	public FALabel spin() {
-		spin = "fa-spin"; return this;
+	public FALabel setSpin(boolean enabled) {
+		spin = enabled ? "fa-spin" : null; return this;
     }
+
+	public FALabel spin() {
+		return setSpin(true);
+	}
 
 	public FALabel rotate90() {
 		rotate = "fa-rotate-90"; return this;
