@@ -12,8 +12,16 @@ public class CheckBoxBuilder extends FieldBuilder<Boolean, CheckBox, CheckBoxBui
         super(new CheckBox());
     }
 
+    public CheckBoxBuilder(String caption) {
+        super(new CheckBox(caption));
+    }
+
     public CheckBoxBuilder(CheckBox field) {
         super(field);
+    }
+
+    public CheckBoxBuilder(CheckBox field, boolean useDefaults) {
+        super(field, useDefaults);
     }
 
 }

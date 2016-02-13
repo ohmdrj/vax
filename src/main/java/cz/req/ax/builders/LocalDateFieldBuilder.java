@@ -14,8 +14,16 @@ public class LocalDateFieldBuilder extends FieldBuilder<LocalDate, LocalDateFiel
         super(new LocalDateField());
     }
 
+    public LocalDateFieldBuilder(String caption) {
+        super(new LocalDateField(caption));
+    }
+
     public LocalDateFieldBuilder(LocalDateField field) {
         super(field);
+    }
+
+    public LocalDateFieldBuilder(LocalDateField field, boolean useDefaults) {
+        super(field, useDefaults);
     }
 
 }

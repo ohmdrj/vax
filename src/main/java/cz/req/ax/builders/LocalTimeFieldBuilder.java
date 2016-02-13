@@ -1,5 +1,6 @@
 package cz.req.ax.builders;
 
+import cz.req.ax.LocalDateField;
 import cz.req.ax.LocalTimeField;
 
 import java.time.LocalTime;
@@ -14,8 +15,16 @@ public class LocalTimeFieldBuilder extends FieldBuilder<LocalTime, LocalTimeFiel
         super(new LocalTimeField());
     }
 
+    public LocalTimeFieldBuilder(String caption) {
+        super(new LocalTimeField(caption));
+    }
+
     public LocalTimeFieldBuilder(LocalTimeField field) {
         super(field);
+    }
+
+    public LocalTimeFieldBuilder(LocalTimeField field, boolean useDefaults) {
+        super(field, useDefaults);
     }
 
 }

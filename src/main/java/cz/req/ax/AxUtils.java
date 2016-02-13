@@ -88,4 +88,12 @@ public class AxUtils {
         return sb.toString();
     }
 
+    public static <T> T newInstance(Class<T> beanType) {
+        try {
+            return beanType.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

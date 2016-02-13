@@ -1,10 +1,7 @@
 package cz.req.ax;
 
 import com.google.common.base.Strings;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +16,7 @@ public class AxFormLayout extends CssLayout implements Components {
     private Map<Component, Component> rowMap = new HashMap<>(); // Value component -> Row
     
     public AxFormLayout() {
+        setCaptionSuffix(":");
         addStyleName("form-layout");
     }
 
@@ -36,6 +34,11 @@ public class AxFormLayout extends CssLayout implements Components {
         this.captionSuffix = captionSuffix;
     }
 
+    @Override
+    public void addComponent(Component component) {
+        addRow(component);
+    }
+
     public RowBuilder addRow() {
         return new RowBuilder();
     }
@@ -44,8 +47,12 @@ public class AxFormLayout extends CssLayout implements Components {
         return addRow().caption(caption);
     }
 
-    public void addRow(Field field) {
-        addRow().field(field);
+    public void addRow(Component component) {
+        if (component instanceof Field) {
+            addRow().field((Field) component);
+        } else {
+            addRow().component(component);
+        }
     }
 
     private boolean isEmpty(Component component) {
@@ -87,7 +94,9 @@ public class AxFormLayout extends CssLayout implements Components {
         }
 
         public void field(Field field) {
-            caption(field.getCaption()).required(field.isRequired()).component(field);
+            caption(field instanceof CheckBox ? null : field.getCaption());
+            required(field.isRequired());
+            component(field);
         }
 
         public void component(Component component) {
