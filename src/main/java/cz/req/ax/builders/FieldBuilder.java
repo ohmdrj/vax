@@ -15,12 +15,8 @@ import java.util.function.Consumer;
  */
 public class FieldBuilder<V, F extends Field<V>, B extends FieldBuilder<V, F, B>> extends ComponentBuilder<F, B> {
 
-    public FieldBuilder(F field) {
-        super(field);
-    }
-
-    public FieldBuilder(F field, boolean useDefaults) {
-        super(field, useDefaults);
+    public FieldBuilder(F target, boolean useDefaults) {
+        super(target, useDefaults);
     }
 
     @Override
@@ -30,12 +26,8 @@ public class FieldBuilder<V, F extends Field<V>, B extends FieldBuilder<V, F, B>
         conversionError("Neplatná hodnota.");
     }
 
-    public F field() {
-        return component();
-    }
-
     public B required(boolean required) {
-        component.setRequired(required);
+        target.setRequired(required);
         return (B) this;
     }
 
@@ -44,17 +36,17 @@ public class FieldBuilder<V, F extends Field<V>, B extends FieldBuilder<V, F, B>
     }
 
     public B requiredError(String error) {
-        component.setRequiredError(error);
+        target.setRequiredError(error);
         return (B) this;
     }
 
     public B value(V value) {
-        component.setValue(value);
+        target.setValue(value);
         return (B) this;
     }
 
     public B validator(Validator validator) {
-        component.addValidator(validator);
+        target.addValidator(validator);
         return (B) this;
     }
 
@@ -63,34 +55,34 @@ public class FieldBuilder<V, F extends Field<V>, B extends FieldBuilder<V, F, B>
     }
 
     public B onChange(Consumer<V> listener) {
-        component.addValueChangeListener(e -> listener.accept((V) e.getProperty().getValue()));
+        target.addValueChangeListener(e -> listener.accept((V) e.getProperty().getValue()));
         return (B) this;
     }
 
     public B converter(Class<?> datamodelType) {
-        if (component instanceof AbstractField) {
-            ((AbstractField) component).setConverter(datamodelType);
+        if (target instanceof AbstractField) {
+            ((AbstractField) target).setConverter(datamodelType);
         }
         return (B) this;
     }
 
     public B converter(Converter<V, ?> converter) {
-        if (component instanceof AbstractField) {
-            ((AbstractField) component).setConverter(converter);
+        if (target instanceof AbstractField) {
+            ((AbstractField) target).setConverter(converter);
         }
         return (B) this;
     }
 
     public B conversionError(String error) {
-        if (component instanceof AbstractField) {
-            ((AbstractField) component).setConversionError(error);
+        if (target instanceof AbstractField) {
+            ((AbstractField) target).setConversionError(error);
         }
         return (B) this;
     }
 
     public B convertedValue(Object value) {
-        if (component instanceof AbstractField) {
-            ((AbstractField) component).setConvertedValue(value);
+        if (target instanceof AbstractField) {
+            ((AbstractField) target).setConvertedValue(value);
         }
         return (B) this;
     }

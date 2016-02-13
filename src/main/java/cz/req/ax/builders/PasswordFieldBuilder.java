@@ -9,19 +9,11 @@ import com.vaadin.ui.PasswordField;
 public class PasswordFieldBuilder extends AbstractTextFieldBuilder<PasswordField, PasswordFieldBuilder> {
 
     public PasswordFieldBuilder() {
-        super(new PasswordField());
+        super(new PasswordField(), true);
     }
 
-    public PasswordFieldBuilder(String caption) {
-        super(new PasswordField(caption));
-    }
-
-    public PasswordFieldBuilder(PasswordField field) {
-        super(field);
-    }
-
-    public PasswordFieldBuilder(PasswordField field, boolean useDefaults) {
-        super(field, useDefaults);
+    public PasswordFieldBuilder(PasswordField target, boolean useDefaults) {
+        super(target, useDefaults);
     }
 
 }

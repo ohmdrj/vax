@@ -1,0 +1,25 @@
+package cz.req.ax.builders;
+
+/**
+ * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
+ *         Date: 7.2.2016
+ */
+public class AxBuilder<T, B extends AxBuilder<T, B>> {
+
+    protected T target;
+
+    public AxBuilder(T target, boolean useDefaults) {
+        this.target = target;
+        if (useDefaults) {
+            applyDefaults();
+        }
+    }
+
+    protected void applyDefaults() {
+    }
+
+    public T get() {
+        return target;
+    }
+
+}

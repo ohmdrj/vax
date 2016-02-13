@@ -9,19 +9,11 @@ import com.vaadin.ui.TextField;
 public class TextFieldBuilder extends AbstractTextFieldBuilder<TextField, TextFieldBuilder> {
 
     public TextFieldBuilder() {
-        super(new TextField());
+        super(new TextField(), true);
     }
 
-    public TextFieldBuilder(TextField field) {
-        super(field);
-    }
-
-    public TextFieldBuilder(String caption) {
-        super(new TextField(caption));
-    }
-
-    public TextFieldBuilder(TextField field, boolean useDefaults) {
-        super(field, useDefaults);
+    public TextFieldBuilder(TextField target, boolean useDefaults) {
+        super(target, useDefaults);
     }
 
 }

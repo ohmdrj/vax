@@ -9,33 +9,25 @@ import com.vaadin.ui.ComboBox;
 public class ComboBoxBuilder extends AbstractSelectBuilder<ComboBox, ComboBoxBuilder> {
 
     public ComboBoxBuilder() {
-        super(new ComboBox());
+        super(new ComboBox(), true);
     }
 
-    public ComboBoxBuilder(String caption) {
-        super(new ComboBox(caption));
-    }
-
-    public ComboBoxBuilder(ComboBox field) {
-        super(field);
-    }
-
-    public ComboBoxBuilder(ComboBox field, boolean useDefaults) {
-        super(field, useDefaults);
+    public ComboBoxBuilder(ComboBox target, boolean useDefaults) {
+        super(target, useDefaults);
     }
 
     public ComboBoxBuilder inputPrompt(String inputPrompt) {
-        component.setInputPrompt(inputPrompt);
+        target.setInputPrompt(inputPrompt);
         return this;
     }
 
     public ComboBoxBuilder pageLength(int pageLength) {
-        component.setPageLength(pageLength);
+        target.setPageLength(pageLength);
         return this;
     }
 
     public ComboBoxBuilder textInputAllowed(boolean allowed) {
-        component.setTextInputAllowed(allowed);
+        target.setTextInputAllowed(allowed);
         return this;
     }
 

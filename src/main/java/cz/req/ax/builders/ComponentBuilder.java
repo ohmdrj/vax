@@ -3,6 +3,7 @@ package cz.req.ax.builders;
 import com.vaadin.data.Validator;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.server.Resource;
+import com.vaadin.server.Sizeable;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
@@ -14,49 +15,79 @@ import java.util.function.Consumer;
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
  *         Date: 7.2.2016
  */
-public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C, B>> {
+public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C, B>> extends AxBuilder<C, B> {
 
-    protected C component;
-
-    public ComponentBuilder(C component) {
-        this(component, true);
-    }
-
-    public ComponentBuilder(C component, boolean useDefaults) {
-        this.component = component;
-        if (useDefaults) {
-            applyDefaults();
-        }
+    public ComponentBuilder(C target, boolean useDefaults) {
+        super(target, useDefaults);
     }
 
     protected void applyDefaults() {
+        super.applyDefaults();
         immediate();
     }
 
-    public C component() {
-        return component;
-    }
-
     public B caption(String caption) {
-        component.setCaption(caption);
+        target.setCaption(caption);
         return (B) this;
     }
 
     public B icon(Resource icon) {
-        component.setIcon(icon);
+        target.setIcon(icon);
         return (B) this;
     }
 
     public B style(String style) {
-        component.setStyleName(style);
+        target.setStyleName(style);
         return (B) this;
     }
 
     public B enabled(boolean enabled) {
-        component.setEnabled(enabled);
+        target.setEnabled(enabled);
         return (B) this;
     }
 
+    public B width(int width) {
+        target.setWidth(width, Sizeable.Unit.PIXELS);
+        return (B) this;
+    }
+
+    public B widthUndefined() {
+        target.setWidthUndefined();
+        return (B) this;
+    }
+
+    public B widthFull() {
+        target.setWidth(100, Sizeable.Unit.PERCENTAGE);
+        return (B) this;
+    }
+
+    public B height(int height) {
+        target.setHeight(height, Sizeable.Unit.PIXELS);
+        return (B) this;
+    }
+
+    public B heightUndefined() {
+        target.setHeightUndefined();
+        return (B) this;
+    }
+
+    public B heightFull() {
+        target.setHeight(100, Sizeable.Unit.PERCENTAGE);
+        return (B) this;
+    }
+
+    public B size(int width, int height) {
+        return width(width).height(height);
+    }
+
+    public B sizeUndefined() {
+        return widthUndefined().heightUndefined();
+    }
+
+    public B sizeFull() {
+        return widthFull().heightFull();
+    }
+    
     public B enabled() {
         return enabled(true);
     }
@@ -66,7 +97,7 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
     }
 
     public B visible(boolean visible) {
-        component.setVisible(visible);
+        target.setVisible(visible);
         return (B) this;
     }
 
@@ -79,7 +110,7 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
     }
 
     public B readOnly(boolean readOnly) {
-        component.setReadOnly(readOnly);
+        target.setReadOnly(readOnly);
         return (B) this;
     }
 
@@ -88,22 +119,22 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
     }
 
     public B focus() {
-        if (component instanceof Component.Focusable) {
-            ((Component.Focusable) component).focus();
+        if (target instanceof Component.Focusable) {
+            ((Component.Focusable) target).focus();
         }
         return (B) this;
     }
 
     public B tabIndex(int index) {
-        if (component instanceof Component.Focusable) {
-            ((Component.Focusable) component).setTabIndex(index);
+        if (target instanceof Component.Focusable) {
+            ((Component.Focusable) target).setTabIndex(index);
         }
         return (B) this;
     }
 
     public B immediate(boolean immediate) {
-        if (component instanceof AbstractComponent) {
-            ((AbstractComponent) component).setImmediate(immediate);
+        if (target instanceof AbstractComponent) {
+            ((AbstractComponent) target).setImmediate(immediate);
         }
         return (B) this;
     }
@@ -113,22 +144,22 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
     }
 
     public B description(String description) {
-        if (component instanceof AbstractComponent) {
-            ((AbstractComponent) component).setDescription(description);
+        if (target instanceof AbstractComponent) {
+            ((AbstractComponent) target).setDescription(description);
         }
         return (B) this;
     }
 
     public B onFocus(Consumer<C> listener) {
-        if (component instanceof FieldEvents.FocusNotifier) {
-            ((FieldEvents.FocusNotifier) component).addFocusListener(e -> listener.accept((C) e.getComponent()));
+        if (target instanceof FieldEvents.FocusNotifier) {
+            ((FieldEvents.FocusNotifier) target).addFocusListener(e -> listener.accept((C) e.getComponent()));
         }
         return (B) this;
     }
 
     public B onBlur(Consumer<C> listener) {
-        if (component instanceof FieldEvents.BlurNotifier) {
-            ((FieldEvents.BlurNotifier) component).addBlurListener(e -> listener.accept((C) e.getComponent()));
+        if (target instanceof FieldEvents.BlurNotifier) {
+            ((FieldEvents.BlurNotifier) target).addBlurListener(e -> listener.accept((C) e.getComponent()));
         }
         return (B) this;
     }

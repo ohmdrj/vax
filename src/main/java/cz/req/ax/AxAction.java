@@ -45,6 +45,13 @@ public class AxAction<T> implements Cloneable {
         return new AxAction<T>().value(value);
     }
 
+    public AxAction() {
+    }
+
+    public AxAction(String caption) {
+        this.caption = caption;
+    }
+
     //TODO DescribedFunctionInterface
     public AxAction<T> caption(String caption) {
         this.caption = caption;

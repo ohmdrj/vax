@@ -9,19 +9,11 @@ import com.vaadin.ui.RichTextArea;
 public class RichTextAreaBuilder extends FieldBuilder<String, RichTextArea, RichTextAreaBuilder> {
 
     public RichTextAreaBuilder() {
-        super(new RichTextArea());
+        super(new RichTextArea(), true);
     }
 
-    public RichTextAreaBuilder(String caption) {
-        super(new RichTextArea(caption));
-    }
-
-    public RichTextAreaBuilder(RichTextArea field) {
-        super(field);
-    }
-
-    public RichTextAreaBuilder(RichTextArea field, boolean useDefaults) {
-        super(field, useDefaults);
+    public RichTextAreaBuilder(RichTextArea target, boolean useDefaults) {
+        super(target, useDefaults);
     }
 
     @Override
@@ -32,7 +24,7 @@ public class RichTextAreaBuilder extends FieldBuilder<String, RichTextArea, Rich
     }
 
     public RichTextAreaBuilder nullAllowed(boolean allowed) {
-        component.setNullSettingAllowed(allowed);
+        target.setNullSettingAllowed(allowed);
         return this;
     }
 
@@ -45,7 +37,7 @@ public class RichTextAreaBuilder extends FieldBuilder<String, RichTextArea, Rich
     }
 
     public RichTextAreaBuilder nullRepresentation(String representation) {
-        component.setNullRepresentation(representation);
+        target.setNullRepresentation(representation);
         return this;
     }
 

@@ -17,15 +17,11 @@ import java.util.function.Function;
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
  *         Date: 7.2.2016
  */
-public class AbstractSelectBuilder<F extends AbstractSelect, B extends AbstractSelectBuilder<F, B>> 
-        extends FieldBuilder<Object, F, AbstractSelectBuilder<F, B>> {
+public class AbstractSelectBuilder<F extends AbstractSelect, B extends AbstractSelectBuilder<F, B>>
+        extends FieldBuilder<Object, F, B> {
 
-    public AbstractSelectBuilder(F field) {
-        super(field);
-    }
-
-    public AbstractSelectBuilder(F field, boolean useDefaults) {
-        super(field, useDefaults);
+    public AbstractSelectBuilder(F target, boolean useDefaults) {
+        super(target, useDefaults);
     }
 
     @Override
@@ -37,7 +33,7 @@ public class AbstractSelectBuilder<F extends AbstractSelect, B extends AbstractS
     }
 
     public B container(Container container) {
-        component.setContainerDataSource(container);
+        target.setContainerDataSource(container);
         return (B) this;
     }
 
@@ -46,12 +42,12 @@ public class AbstractSelectBuilder<F extends AbstractSelect, B extends AbstractS
     }
 
     public B select(Object value) {
-        component.select(value);
+        target.select(value);
         return (B) this;
     }
 
     public B multiSelect(boolean multiSelect) {
-        component.setMultiSelect(multiSelect);
+        target.setMultiSelect(multiSelect);
         return (B) this;
     }
 
@@ -64,7 +60,7 @@ public class AbstractSelectBuilder<F extends AbstractSelect, B extends AbstractS
     }
 
     public B nullAllowed(boolean nullSelection) {
-        component.setNullSelectionAllowed(nullSelection);
+        target.setNullSelectionAllowed(nullSelection);
         return (B) this;
     }
 
@@ -77,37 +73,37 @@ public class AbstractSelectBuilder<F extends AbstractSelect, B extends AbstractS
     }
 
     public B nullItem(Object itemId) {
-        component.setNullSelectionItemId(itemId);
+        target.setNullSelectionItemId(itemId);
         return (B) this;
     }
 
     public B itemCaption(Object propertyId) {
-        component.setItemCaptionMode(AbstractSelect.ItemCaptionMode.PROPERTY);
-        component.setItemCaptionPropertyId(propertyId);
+        target.setItemCaptionMode(AbstractSelect.ItemCaptionMode.PROPERTY);
+        target.setItemCaptionPropertyId(propertyId);
         return (B) this;
     }
 
     public <V> B itemCaption(Function<V, String> converter) {
-        if (component instanceof AxComboBox) {
-            ((AxComboBox<V>) component).setItemCaptionFunction(converter);
+        if (target instanceof AxComboBox) {
+            ((AxComboBox<V>) target).setItemCaptionFunction(converter);
         }
         return (B) this;
     }
 
     public B itemIcon(Object propertyId) {
-        component.setItemIconPropertyId(propertyId);
+        target.setItemIconPropertyId(propertyId);
         return (B) this;
     }
 
     public <V> B itemIcon(Function<V, Resource> converter) {
-        if (component instanceof AxComboBox) {
-            ((AxComboBox<V>) component).setItemIconFunction(converter);
+        if (target instanceof AxComboBox) {
+            ((AxComboBox<V>) target).setItemIconFunction(converter);
         }
         return (B) this;
     }
 
     public B newItemsAllowed(boolean allowed) {
-        component.setNewItemsAllowed(allowed);
+        target.setNewItemsAllowed(allowed);
         return (B) this;
     }
 
@@ -120,18 +116,18 @@ public class AbstractSelectBuilder<F extends AbstractSelect, B extends AbstractS
     }
 
     public B newItemHandler(AbstractSelect.NewItemHandler handler) {
-        component.setNewItemHandler(handler);
+        target.setNewItemHandler(handler);
         return (B) this;
     }
 
     public B newItemHandler(BiConsumer<F, String> handler) {
-        component.setNewItemHandler(caption -> handler.accept(component, caption));
+        target.setNewItemHandler(caption -> handler.accept(target, caption));
         return (B) this;
     }
 
     public B filteringMode(FilteringMode filteringMode) {
-        if (component instanceof AbstractSelect.Filtering) {
-            ((AbstractSelect.Filtering) component).setFilteringMode(filteringMode);
+        if (target instanceof AbstractSelect.Filtering) {
+            ((AbstractSelect.Filtering) target).setFilteringMode(filteringMode);
         }
         return (B) this;
     }

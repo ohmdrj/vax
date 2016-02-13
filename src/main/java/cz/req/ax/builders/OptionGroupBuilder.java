@@ -9,23 +9,15 @@ import com.vaadin.ui.OptionGroup;
 public class OptionGroupBuilder extends AbstractSelectBuilder<OptionGroup, OptionGroupBuilder> {
 
     public OptionGroupBuilder() {
-        super(new OptionGroup());
+        super(new OptionGroup(), true);
     }
 
-    public OptionGroupBuilder(String caption) {
-        super(new OptionGroup(caption));
-    }
-
-    public OptionGroupBuilder(OptionGroup field) {
-        super(field);
-    }
-
-    public OptionGroupBuilder(OptionGroup field, boolean useDefaults) {
-        super(field, useDefaults);
+    public OptionGroupBuilder(OptionGroup target, boolean useDefaults) {
+        super(target, useDefaults);
     }
 
     public OptionGroupBuilder htmlContent() {
-        component.setHtmlContentAllowed(true);
+        target.setHtmlContentAllowed(true);
         return this;
     }
 

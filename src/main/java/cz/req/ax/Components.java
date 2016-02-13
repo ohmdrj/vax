@@ -12,12 +12,20 @@ public interface Components {
 
     String getId();
 
+    /**
+     * @deprecated use {@link Ax#cssLayout(Component...)}
+     */
+    @Deprecated
     default CssLayout cssLayout(Component... components) {
         CssLayout layout = new CssLayout(components);
         layout.setSizeUndefined();
         return layout;
     }
 
+    /**
+     * @deprecated use {@link Ax#cssLayout(Component...)}
+     */
+    @Deprecated
     default CssLayout cssLayout(String name, Component... components) {
         CssLayout layout = cssLayout(components);
         layout.setStyleName(name);
@@ -46,10 +54,18 @@ public interface Components {
         return label;
     }
 
+    /**
+     * @deprecated use {@link Ax#label(String)}
+     */
+    @Deprecated
     default Label newLabel(String content) {
         return newLabel(content, null);
     }
 
+    /**
+     * @deprecated use {@link Ax#label(String)}
+     */
+    @Deprecated
     default Label newLabel(String content, String style) {
         Label label = new Label(content);
         label.setSizeUndefined();
@@ -57,6 +73,10 @@ public interface Components {
         return label;
     }
 
+    /**
+     * @deprecated use {@link Ax#label(String)}
+     */
+    @Deprecated
     default Label newLabel(FontAwesome icon, String content, String style) {
         Label label = new Label(content);
         label.setIcon(icon);
@@ -65,6 +85,10 @@ public interface Components {
         return label;
     }
 
+    /**
+     * @deprecated use {@link Ax#label(String)} (Ax.label(caption).style("v-caption").get())
+     */
+    @Deprecated
     default Label newCaption(String content) {
         return newLabel(content, "v-caption");
     }

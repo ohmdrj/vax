@@ -9,7 +9,6 @@ import com.vaadin.ui.*;
 import cz.req.ax.*;
 import cz.req.ax.builders.*;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.util.Assert;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -69,7 +68,9 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
             throw new BindException("Unable to build a field of type " + fieldType.getName()
                     + " for editing " + propertyType.getName());
         }
-        field.setCaption(caption);
+        if (caption != null) {
+            field.setCaption(caption);
+        }
         return field;
     }
 
@@ -133,18 +134,18 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
 
     public <V, F extends Field<V>, B extends FieldBuilder<V, F, B>> FieldBuilder<V, F, B> addField(F field, Object propetyId) {
         bind(field, propetyId);
-        return new FieldBuilder<>(field);
+        return new FieldBuilder<>(field, false);
     }
 
     public FieldBuilder addField(Object propertyId) {
         return new FieldBuilder(buildAndBind(null, propertyId), false);
     }
 
-    public TextFieldBuilder addText(Object propertyId) {
+    public TextFieldBuilder addTextField(Object propertyId) {
         return new TextFieldBuilder(buildAndBind(null, propertyId, TextField.class), false);
     }
 
-    public PasswordFieldBuilder addPassword(Object propertyId) {
+    public PasswordFieldBuilder addPasswordField(Object propertyId) {
         return new PasswordFieldBuilder(buildAndBind(null, propertyId, PasswordField.class), false);
     }
 
@@ -152,32 +153,32 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
         return new TextAreaBuilder(buildAndBind(null, propertyId, TextArea.class), false);
     }
 
-    public RichTextAreaBuilder addRichText(Object propertyId) {
+    public RichTextAreaBuilder addRichTextArea(Object propertyId) {
         return new RichTextAreaBuilder(buildAndBind(null, propertyId, RichTextArea.class), false);
     }
 
-    public ComboBoxBuilder addCombo(Object propertyId) {
+    public ComboBoxBuilder addComboBox(Object propertyId) {
         return new ComboBoxBuilder(buildAndBind(null, propertyId, AxComboBox.class), false);
     }
 
-    public OptionGroupBuilder addOption(Object propertyId) {
+    public OptionGroupBuilder addOptionGroup(Object propertyId) {
         return new OptionGroupBuilder(buildAndBind(null, propertyId, OptionGroup.class), false);
     }
 
-    public CheckBoxBuilder addCheck(Object propertyId) {
+    public CheckBoxBuilder addCheckBox(Object propertyId) {
         return new CheckBoxBuilder(buildAndBind(null, propertyId, CheckBox.class), false);
     }
 
-    public LocalDateFieldBuilder addDate(Object propertyId) {
-        return new LocalDateFieldBuilder(buildAndBind(null, propertyId, LocalDateField.class), false);
+    public DateFieldBuilder addDateField(Object propertyId) {
+        return new DateFieldBuilder(buildAndBind(null, propertyId, LocalDateField.class), false);
     }
 
-    public LocalTimeFieldBuilder addTime(Object propertyId) {
-        return new LocalTimeFieldBuilder(buildAndBind(null, propertyId, LocalTimeField.class), false);
+    public TimeFieldBuilder addTimeField(Object propertyId) {
+        return new TimeFieldBuilder(buildAndBind(null, propertyId, LocalTimeField.class), false);
     }
 
-    public LocalDateTimeFieldBuilder addDateTime(Object propertyId) {
-        return new LocalDateTimeFieldBuilder(buildAndBind(null, propertyId, LocalDateTimeField.class), false);
+    public DateTimeFieldBuilder addDateTimeField(Object propertyId) {
+        return new DateTimeFieldBuilder(buildAndBind(null, propertyId, LocalDateTimeField.class), false);
     }
 
     public <LAYOUT extends Layout> LAYOUT fillLayout(LAYOUT layout) {
@@ -185,12 +186,8 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
         return layout;
     }
 
-    public <LAYOUT extends Layout> LAYOUT createLayout(Class<LAYOUT> type) {
-        return fillLayout(AxUtils.newInstance(type));
-    }
-
     public AxFormLayout createFormLayout() {
-        return createLayout(AxFormLayout.class);
+        return fillLayout(new AxFormLayout());
     }
 
     public static class CommitException extends RuntimeException {

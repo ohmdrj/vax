@@ -9,15 +9,11 @@ import java.util.function.Consumer;
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
  *         Date: 7.2.2016
  */
-public class AbstractTextFieldBuilder<F extends AbstractTextField, B extends AbstractTextFieldBuilder<F, B>> 
-        extends FieldBuilder<String, F, AbstractTextFieldBuilder<F, B>> {
+public class AbstractTextFieldBuilder<F extends AbstractTextField, B extends AbstractTextFieldBuilder<F, B>>
+        extends FieldBuilder<String, F, B> {
 
-    public AbstractTextFieldBuilder(F field) {
-        super(field);
-    }
-
-    public AbstractTextFieldBuilder(F field, boolean useDefaults) {
-        super(field, useDefaults);
+    public AbstractTextFieldBuilder(F target, boolean useDefaults) {
+        super(target, useDefaults);
     }
 
     @Override
@@ -28,7 +24,7 @@ public class AbstractTextFieldBuilder<F extends AbstractTextField, B extends Abs
     }
 
     public B nullAllowed(boolean allowed) {
-        component.setNullSettingAllowed(allowed);
+        target.setNullSettingAllowed(allowed);
         return (B) this;
     }
     
@@ -41,32 +37,32 @@ public class AbstractTextFieldBuilder<F extends AbstractTextField, B extends Abs
     }
 
     public B nullRepresentation(String representation) {
-        component.setNullRepresentation(representation);
+        target.setNullRepresentation(representation);
         return (B) this;
     }
     
     public B maxLength(int maxLength) {
-        component.setMaxLength(maxLength);
+        target.setMaxLength(maxLength);
         return (B) this;
     }
 
     public B columns(int columns) {
-        component.setColumns(columns);
+        target.setColumns(columns);
         return (B) this;
     }
 
     public B maxLength(Integer length) {
-        component.setMaxLength(length);
+        target.setMaxLength(length);
         return (B) this;
     }
 
     public B inputPrompt(String prompt) {
-        component.setInputPrompt(prompt);
+        target.setInputPrompt(prompt);
         return (B) this;
     }
     
     public B onTextChange(Consumer<String> listener) {
-        component.addTextChangeListener(e -> listener.accept(e.getText()));
+        target.addTextChangeListener(e -> listener.accept(e.getText()));
         return (B) this;
     }
 

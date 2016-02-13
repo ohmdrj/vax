@@ -9,19 +9,19 @@ import com.vaadin.ui.CheckBox;
 public class CheckBoxBuilder extends FieldBuilder<Boolean, CheckBox, CheckBoxBuilder> {
 
     public CheckBoxBuilder() {
-        super(new CheckBox());
+        super(new CheckBox(), true);
     }
 
-    public CheckBoxBuilder(String caption) {
-        super(new CheckBox(caption));
+    public CheckBoxBuilder(CheckBox target, boolean useDefaults) {
+        super(target, useDefaults);
     }
 
-    public CheckBoxBuilder(CheckBox field) {
-        super(field);
+    public CheckBoxBuilder checked() {
+        return value(true);
     }
 
-    public CheckBoxBuilder(CheckBox field, boolean useDefaults) {
-        super(field, useDefaults);
+    public CheckBoxBuilder unchecked() {
+        return value(false);
     }
 
 }
