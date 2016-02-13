@@ -30,6 +30,11 @@ public class AxFieldFactory extends DefaultFieldGroupFieldFactory {
 
     @Override
     public <T extends Field> T createField(Class<?> type, Class<T> fieldType) {
+        if (AxComboBox.class.equals(type)) {
+            AxComboBox<Object> comboBox = new AxComboBox<>();
+            comboBox.setImmediate(true);
+            return (T) comboBox;
+        }
         if (LocalDate.class.equals(type) && fieldType.isAssignableFrom(LocalDateField.class)) {
             return (T) new LocalDateField();
         }
