@@ -31,7 +31,9 @@ public class AxFieldFactory extends DefaultFieldGroupFieldFactory {
     @Override
     public <T extends Field> T createField(Class<?> propertyType, Class<T> fieldType) {
         T field = instantiateField(propertyType, fieldType);
-        configureField(propertyType, field);
+        if (field != null) {
+            configureField(propertyType, field);
+        }
         return field;
     }
 
@@ -39,9 +41,8 @@ public class AxFieldFactory extends DefaultFieldGroupFieldFactory {
         T field = instantiateField(bean, propertyType, propertyId, fieldType);
         if (field != null) {
             configureField(bean, propertyType, propertyId, field);
-            return field;
         }
-        return createField(propertyType, fieldType);
+        return field;
     }
 
     protected <T extends Field> T instantiateField(Object bean, Class<?> propertyType, Object propertyId, Class<T> fieldType) {

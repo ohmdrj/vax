@@ -4,6 +4,7 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Label;
 import cz.req.ax.builders.*;
 import cz.req.ax.data.AxBinder;
 
@@ -31,6 +32,10 @@ public class Ax {
 
     public static ButtonBuilder button(String caption) {
         return button().caption(caption);
+    }
+
+    public static ButtonBuilder button(Resource icon) {
+        return button().icon(icon);
     }
 
     public static CheckBoxBuilder checkBox() {
@@ -71,6 +76,10 @@ public class Ax {
 
     public static DateTimeFieldBuilder dateTimeField(String caption) {
         return dateTimeField().caption(caption);
+    }
+
+    public static Label hr() {
+        return label("<hr>").html().widthFull().get();
     }
 
     public static LabelBuilder icon(Resource icon) {
