@@ -37,7 +37,7 @@ public class AxAction<T> implements Cloneable {
     private Resource icon;
     private Runnable run, runBefore, runAfter;
     private Consumer<T> action;
-    private Consumer<ActionException> exception = this::defaultExceptionHandler;
+    private Consumer<ActionException> exception = e -> AxUtils.exceptionHandler(e);
     private Supplier<T> variable;
     private List<AxAction> submenu;
 
@@ -163,27 +163,6 @@ public class AxAction<T> implements Cloneable {
     public AxAction<T> exception(Consumer<ActionException> exception) {
         this.exception = exception;
         return this;
-    }
-
-    private void defaultExceptionHandler(AxAction.ActionException exception) {
-        Validator.InvalidValueException invalidValueException = findInvalidValueCause(exception);
-        if (invalidValueException != null) {
-            // Validační chyby formuláře nezobrazujeme
-            logger.debug("Uživatel zadal nevalidní hodnotu: " + invalidValueException.getMessage());
-        } else {
-            logger.error(exception.getMessage(), exception);
-            new AxMessage("Nastala chyba při vykonávání akce.").error(exception.getCause()).show();
-        }
-    }
-
-    private Validator.InvalidValueException findInvalidValueCause(Throwable throwable) {
-        while (throwable != null) {
-            if (throwable instanceof Validator.InvalidValueException) {
-                return (Validator.InvalidValueException) throwable;
-            }
-            throwable = throwable.getCause();
-        }
-        return null;
     }
 
     public AxAction<T> run(Runnable run) {

@@ -7,13 +7,17 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 
+/**
+ * @deprecated use {@link Ax} methods
+ */
+@Deprecated
 @FunctionalInterface
 public interface Components {
 
     String getId();
 
     /**
-     * @deprecated use {@link Ax#cssLayout(Component...)}
+     * @deprecated use {@link Ax#cssLayout(Component...)} - Ax.layout(components)
      */
     @Deprecated
     default CssLayout cssLayout(Component... components) {
@@ -23,7 +27,7 @@ public interface Components {
     }
 
     /**
-     * @deprecated use {@link Ax#cssLayout(Component...)}
+     * @deprecated use {@link Ax#cssLayout(Component...)} - Ax.cssLayout(components).style(style).get()
      */
     @Deprecated
     default CssLayout cssLayout(String name, Component... components) {
@@ -44,6 +48,10 @@ public interface Components {
         }
     }
 
+    /**
+     * @deprecated use {@link Ax#icon(Resource)} - Ax.icon(resource).style("image").get()
+     */
+    @Deprecated
     default Component newImage(Resource resource) {
 //        Image image = new Image("", resource);
 //        return image;
@@ -55,7 +63,7 @@ public interface Components {
     }
 
     /**
-     * @deprecated use {@link Ax#label(String)}
+     * @deprecated use {@link Ax#label(String)} - Ax.label(value).get()
      */
     @Deprecated
     default Label newLabel(String content) {
@@ -63,7 +71,7 @@ public interface Components {
     }
 
     /**
-     * @deprecated use {@link Ax#label(String)}
+     * @deprecated use {@link Ax#label(String)} - Ax.label(value).style(style).get()
      */
     @Deprecated
     default Label newLabel(String content, String style) {
@@ -74,7 +82,7 @@ public interface Components {
     }
 
     /**
-     * @deprecated use {@link Ax#label(String)}
+     * @deprecated use {@link Ax#label(String)} - Ax.label(value).icon(icon).style(style).get()
      */
     @Deprecated
     default Label newLabel(FontAwesome icon, String content, String style) {
@@ -86,7 +94,7 @@ public interface Components {
     }
 
     /**
-     * @deprecated use {@link Ax#label(String)} (Ax.label(caption).style("v-caption").get())
+     * @deprecated use {@link Ax#caption(String)} - Ax.caption(value).get()
      */
     @Deprecated
     default Label newCaption(String content) {

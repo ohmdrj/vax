@@ -13,18 +13,6 @@ import cz.req.ax.data.AxBinder;
  */
 public class Ax {
 
-    public static AxAction action() {
-        return new AxAction();
-    }
-
-    public static AxAction action(String caption) {
-        return new AxAction().caption(caption);
-    }
-
-    public static <T> AxAction action(Class<T> type) {
-        return new AxAction<>();
-    }
-
     public static <T> AxBinder<T> binder(Class<T> beanType) {
         return new AxBinder<>(beanType);
     }
@@ -42,15 +30,19 @@ public class Ax {
     }
 
     public static ButtonBuilder button(String caption) {
-        return new ButtonBuilder().caption(caption);
+        return button().caption(caption);
     }
 
     public static CheckBoxBuilder checkBox() {
         return new CheckBoxBuilder();
     }
 
+    public static LabelBuilder caption(String caption) {
+        return label().caption(caption);
+    }
+
     public static CheckBoxBuilder checkBox(String caption) {
-        return new CheckBoxBuilder().caption(caption);
+        return checkBox().caption(caption);
     }
 
     public static ComboBoxBuilder comboBox() {
@@ -58,7 +50,7 @@ public class Ax {
     }
 
     public static ComboBoxBuilder comboBox(String caption) {
-        return new ComboBoxBuilder().caption(caption);
+        return comboBox().caption(caption);
     }
 
     public static CssLayoutBuilder cssLayout(Component... components) {
@@ -70,7 +62,7 @@ public class Ax {
     }
 
     public static DateFieldBuilder dateField(String caption) {
-        return new DateFieldBuilder().caption(caption);
+        return dateField().caption(caption);
     }
 
     public static DateTimeFieldBuilder dateTimeField() {
@@ -78,19 +70,19 @@ public class Ax {
     }
 
     public static DateTimeFieldBuilder dateTimeField(String caption) {
-        return new DateTimeFieldBuilder().caption(caption);
+        return dateTimeField().caption(caption);
+    }
+
+    public static LabelBuilder icon(Resource icon) {
+        return label().icon(icon);
     }
 
     public static LabelBuilder label() {
         return new LabelBuilder();
     }
 
-    public static LabelBuilder label(String caption) {
-        return new LabelBuilder().caption(caption);
-    }
-
-    public static LabelBuilder label(Resource icon) {
-        return label().icon(icon);
+    public static LabelBuilder label(String value) {
+        return label().value(value);
     }
 
     public static CssLayout layout(Component... components) {
@@ -102,7 +94,7 @@ public class Ax {
     }
 
     public static OptionGroupBuilder optionGroup(String caption) {
-        return new OptionGroupBuilder().caption(caption);
+        return optionGroup().caption(caption);
     }
 
     public static PasswordFieldBuilder passwordField() {
@@ -110,7 +102,7 @@ public class Ax {
     }
 
     public static PasswordFieldBuilder passwordField(String caption) {
-        return new PasswordFieldBuilder().caption(caption);
+        return passwordField().caption(caption);
     }
 
     public RichTextAreaBuilder richTextArea() {
@@ -118,7 +110,7 @@ public class Ax {
     }
 
     public RichTextAreaBuilder richTextArea(String caption) {
-        return new RichTextAreaBuilder().caption(caption);
+        return richTextArea().caption(caption);
     }
 
     public static TextAreaBuilder textArea() {
@@ -126,7 +118,7 @@ public class Ax {
     }
 
     public static TextAreaBuilder textArea(String caption) {
-        return new TextAreaBuilder().caption(caption);
+        return textArea().caption(caption);
     }
 
     public static TextFieldBuilder textField() {
@@ -134,7 +126,7 @@ public class Ax {
     }
 
     public static TextFieldBuilder textField(String caption) {
-        return new TextFieldBuilder().caption(caption);
+        return textField().caption(caption);
     }
 
     public static TimeFieldBuilder timeField() {
@@ -142,7 +134,7 @@ public class Ax {
     }
 
     public static TimeFieldBuilder timeField(String caption) {
-        return new TimeFieldBuilder().caption(caption);
+        return timeField().caption(caption);
     }
 
 }

@@ -10,7 +10,7 @@ import java.util.Map;
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
  *         Date: 8.1.2016
  */
-public class AxFormLayout extends CssLayout implements Components {
+public class AxFormLayout extends CssLayout {
 
     private String captionSuffix;
     private Map<Component, Component> rowMap = new HashMap<>(); // Value component -> Row
@@ -90,7 +90,7 @@ public class AxFormLayout extends CssLayout implements Components {
         }
 
         public void value(String value) {
-            component(newLabel(value));
+            component(Ax.label(value).get());
         }
 
         public void field(Field field) {
@@ -100,7 +100,7 @@ public class AxFormLayout extends CssLayout implements Components {
         }
 
         public void component(Component component) {
-            Label captionLabel = newLabel(caption);
+            Label captionLabel = Ax.label(caption).get();
             captionLabel.addStyleName("form-caption");
             if (required) {
                 captionLabel.addStyleName("required");
@@ -129,7 +129,7 @@ public class AxFormLayout extends CssLayout implements Components {
             row.setVisible(!(hideEmpty && isEmpty(component)));
             rowMap.put(component, row);
 
-            AxFormLayout.this.addComponent(row);
+            AxFormLayout.super.addComponent(row);
         }
 
     }

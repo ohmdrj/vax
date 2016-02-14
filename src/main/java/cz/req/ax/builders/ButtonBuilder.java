@@ -1,6 +1,7 @@
 package cz.req.ax.builders;
 
 import com.vaadin.ui.Button;
+import cz.req.ax.AxUtils;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
@@ -16,7 +17,7 @@ public class ButtonBuilder extends ComponentBuilder<Button, ButtonBuilder> {
         super(target, useDefaults);
     }
 
-    public ButtonBuilder htmlContent() {
+    public ButtonBuilder htmlAllowed() {
         target.setHtmlContentAllowed(true);
         return this;
     }
@@ -27,7 +28,7 @@ public class ButtonBuilder extends ComponentBuilder<Button, ButtonBuilder> {
     }
 
     public ButtonBuilder onClick(Runnable listener) {
-        target.addClickListener(e -> listener.run());
+        target.addClickListener(e -> AxUtils.safeRun(listener));
         return this;
     }
 

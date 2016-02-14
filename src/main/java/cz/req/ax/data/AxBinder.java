@@ -186,8 +186,8 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
         return layout;
     }
 
-    public AxFormLayout createFormLayout() {
-        return fillLayout(new AxFormLayout());
+    public FormLayout createFormLayout() {
+        return fillLayout(new FormLayout());
     }
 
     public static class CommitException extends RuntimeException {

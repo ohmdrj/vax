@@ -24,8 +24,18 @@ public class LabelBuilder extends ComponentBuilder<Label, LabelBuilder> {
         sizeUndefined();
     }
 
-    public LabelBuilder htmlContent() {
+    public LabelBuilder value(String value) {
+        target.setValue(value);
+        return this;
+    }
+
+    public LabelBuilder html() {
         target.setContentMode(ContentMode.HTML);
+        return this;
+    }
+
+    public LabelBuilder preformatted() {
+        target.setContentMode(ContentMode.PREFORMATTED);
         return this;
     }
 

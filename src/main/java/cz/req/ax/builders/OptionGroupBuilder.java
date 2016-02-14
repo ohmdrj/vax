@@ -16,7 +16,7 @@ public class OptionGroupBuilder extends AbstractSelectBuilder<OptionGroup, Optio
         super(target, useDefaults);
     }
 
-    public OptionGroupBuilder htmlContent() {
+    public OptionGroupBuilder htmlAllowed() {
         target.setHtmlContentAllowed(true);
         return this;
     }
