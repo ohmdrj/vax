@@ -21,4 +21,9 @@ public class OptionGroupBuilder extends AbstractSelectBuilder<OptionGroup, Optio
         return this;
     }
 
+    public OptionGroupBuilder horizontal() {
+        target.addStyleName("horizontal");
+        return this;
+    }
+
 }
