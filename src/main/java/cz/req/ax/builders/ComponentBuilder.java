@@ -19,14 +19,24 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
         super(target, useDefaults);
     }
 
+    private String captionSuffix;
+
     protected void applyDefaults() {
         super.applyDefaults();
         immediate();
+        captionSuffix(AxUtils.DEFAULT_CAPTION_SUFFIX);
     }
 
     public B caption(String caption) {
         target.setCaption(caption);
-        AxUtils.appendCaptionSuffix(target, ":");
+        AxUtils.appendCaptionSuffix(target, captionSuffix);
+        return (B) this;
+    }
+
+    public B captionSuffix(String suffix) {
+        AxUtils.removeCaptionSuffix(target, captionSuffix);
+        captionSuffix = suffix;
+        AxUtils.appendCaptionSuffix(target, captionSuffix);
         return (B) this;
     }
 

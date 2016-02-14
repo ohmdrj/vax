@@ -16,6 +16,7 @@ public class AxUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(AxUtils.class);
     public static ErrorHandler EMPTY_ERROR_HANDLER = event -> System.err.println(event);
+    public static String DEFAULT_CAPTION_SUFFIX = ":";
 
     public static String readCookie(String name) {
         for (Cookie cookie : VaadinService.getCurrentRequest().getCookies()) {
@@ -132,8 +133,15 @@ public class AxUtils {
 
     public static void appendCaptionSuffix(Component component, String suffix) {
         String caption = component.getCaption();
-        if (caption != null && !caption.endsWith(suffix)) {
+        if (caption != null && suffix != null && !caption.endsWith(suffix)) {
             component.setCaption(caption + suffix);
+        }
+    }
+
+    public static void removeCaptionSuffix(Component component, String suffix) {
+        String caption = component.getCaption();
+        if (caption != null && suffix != null && caption.endsWith(suffix)) {
+            component.setCaption(caption.substring(0, caption.length() - suffix.length()));
         }
     }
 
