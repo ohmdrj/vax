@@ -355,8 +355,14 @@ $form-row-spacing: 0.4em;
   .v-formlayout {
     box-sizing: border-box;
     padding: 0 20px 10px;
+    tbody > .v-formlayout-firstrow > td {
+      padding-top: 0;
+    }
     tbody > .v-formlayout-row:not(:first-child) > td {
       padding-top: $form-row-spacing;
+    }
+    tbody > .v-formlayout-lastrow > td {
+      padding-bottom: 0;
     }
   }
 
