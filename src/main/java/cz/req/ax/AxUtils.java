@@ -130,4 +130,11 @@ public class AxUtils {
         return null;
     }
 
+    public static void appendCaptionSuffix(Component component, String suffix) {
+        String caption = component.getCaption();
+        if (caption != null && !caption.endsWith(suffix)) {
+            component.setCaption(caption + suffix);
+        }
+    }
+
 }

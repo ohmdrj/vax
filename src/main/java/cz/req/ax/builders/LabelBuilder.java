@@ -39,4 +39,9 @@ public class LabelBuilder extends ComponentBuilder<Label, LabelBuilder> {
         return this;
     }
 
+    public LabelBuilder header(int level) {
+        style("h" + level);
+        return this;
+    }
+
 }

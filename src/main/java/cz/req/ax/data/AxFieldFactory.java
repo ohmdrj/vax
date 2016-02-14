@@ -35,16 +35,16 @@ public class AxFieldFactory extends DefaultFieldGroupFieldFactory {
         return field;
     }
 
-    public <T extends Field> T createField(Class<?> beanType, Class<?> propertyType, Object propertyId, Class<T> fieldType) {
-        T field = instantiateField(beanType, propertyType, propertyId, fieldType);
+    public <T extends Field> T createField(Object bean, Class<?> propertyType, Object propertyId, Class<T> fieldType) {
+        T field = instantiateField(bean, propertyType, propertyId, fieldType);
         if (field != null) {
-            configureField(beanType, propertyType, propertyId, field);
+            configureField(bean, propertyType, propertyId, field);
             return field;
         }
         return createField(propertyType, fieldType);
     }
 
-    protected <T extends Field> T instantiateField(Class<?> beanType, Class<?> propertyType, Object propertyId, Class<T> fieldType) {
+    protected <T extends Field> T instantiateField(Object bean, Class<?> propertyType, Object propertyId, Class<T> fieldType) {
         return instantiateField(propertyType, fieldType);
     }
 
@@ -68,7 +68,7 @@ public class AxFieldFactory extends DefaultFieldGroupFieldFactory {
         return super.createField(propertyType, fieldType);
     }
 
-    protected <T extends Field> void configureField(Class<?> beanType, Class<?> propertyType, Object propertyId, T field) {
+    protected <T extends Field> void configureField(Object bean, Class<?> propertyType, Object propertyId, T field) {
         configureField(propertyType, field);
     }
 
