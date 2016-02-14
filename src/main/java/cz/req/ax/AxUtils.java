@@ -1,9 +1,12 @@
 package cz.req.ax;
 
+import com.vaadin.data.Validator;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ErrorHandler;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import java.util.ArrayList;
@@ -11,6 +14,7 @@ import java.util.Iterator;
 
 public class AxUtils {
 
+    private static final Logger logger = LoggerFactory.getLogger(AxUtils.class);
     public static ErrorHandler EMPTY_ERROR_HANDLER = event -> System.err.println(event);
 
     public static String readCookie(String name) {
@@ -86,6 +90,44 @@ public class AxUtils {
             }
         }
         return sb.toString();
+    }
+
+    public static <T> T newInstance(Class<T> beanType) {
+        try {
+            return beanType.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void safeRun(Runnable runnable) {
+        try {
+            runnable.run();
+        } catch (Exception e) {
+            exceptionHandler(e);
+        }
+    }
+
+    public static void exceptionHandler(Exception exception) {
+        // TODO AxUI ErrorHandler ???
+        Validator.InvalidValueException invalidValueException = findInvalidValueCause(exception);
+        if (invalidValueException != null) {
+            // Validační chyby formuláře nezobrazujeme
+            logger.debug("Uživatel zadal nevalidní hodnotu: " + invalidValueException.getMessage());
+        } else {
+            logger.error(exception.getMessage(), exception);
+            new AxMessage("Nastala chyba při vykonávání akce.").error(exception.getCause()).show();
+        }
+    }
+
+    private static Validator.InvalidValueException findInvalidValueCause(Throwable throwable) {
+        while (throwable != null) {
+            if (throwable instanceof Validator.InvalidValueException) {
+                return (Validator.InvalidValueException) throwable;
+            }
+            throwable = throwable.getCause();
+        }
+        return null;
     }
 
 }
