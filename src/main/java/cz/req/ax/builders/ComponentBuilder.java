@@ -1,13 +1,11 @@
 package cz.req.ax.builders;
 
-import com.vaadin.data.Validator;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.server.Resource;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
+import cz.req.ax.AxUtils;
 
 import java.util.function.Consumer;
 
@@ -28,6 +26,7 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
 
     public B caption(String caption) {
         target.setCaption(caption);
+        AxUtils.appendCaptionSuffix(target, ":");
         return (B) this;
     }
 
@@ -37,7 +36,7 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
     }
 
     public B style(String style) {
-        target.setStyleName(style);
+        target.addStyleName(style);
         return (B) this;
     }
 

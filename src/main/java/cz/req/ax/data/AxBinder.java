@@ -40,27 +40,29 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
     }
 
     public <T> T getFieldValue(Class<T> propertyType, Object propertyId) {
+        return (T) getFieldValue(propertyId);
+    }
+
+    public Object getFieldValue(Object propertyId) {
         Field<?> field = getField(propertyId);
         Objects.requireNonNull(field, "Property " + propertyId + " not bound");
-        return (T) field.getValue();
+        return field.getValue();
     }
 
     @Override
     public <T extends Field> T buildAndBind(String caption, Object propertyId, Class<T> fieldType) throws BindException {
-        Class<?> beanType = getBean().getClass();
         Class<?> propertyType = getPropertyType(propertyId);
 
-        T field = build(caption, beanType, propertyType, propertyId, fieldType);
+        T field = build(caption, propertyType, propertyId, fieldType);
         bind(field, propertyId);
 
         return field;
     }
 
-    private <T extends Field> T build(String caption, Class<?> beanType, Class<?> propertyType, Object propertyId,
-                                      Class<T> fieldType) throws BindException {
+    private <T extends Field> T build(String caption, Class<?> propertyType, Object propertyId, Class<T> fieldType) throws BindException {
         T field;
         if (getFieldFactory() instanceof AxFieldFactory) {
-            field = ((AxFieldFactory) getFieldFactory()).createField(beanType, propertyType, propertyId, fieldType);
+            field = ((AxFieldFactory) getFieldFactory()).createField(getBean(), propertyType, propertyId, fieldType);
         } else {
             field = getFieldFactory().createField(propertyType, fieldType);
         }
@@ -71,6 +73,7 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
         if (caption != null) {
             field.setCaption(caption);
         }
+        AxUtils.appendCaptionSuffix(field, ":");
         return field;
     }
 
@@ -137,7 +140,7 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
         return new FieldBuilder<>(field, false);
     }
 
-    public FieldBuilder addField(Object propertyId) {
+    public <B extends FieldBuilder<Object, Field<Object>, B>> FieldBuilder<Object, Field<Object>, B> addField(Object propertyId) {
         return new FieldBuilder(buildAndBind(null, propertyId), false);
     }
 

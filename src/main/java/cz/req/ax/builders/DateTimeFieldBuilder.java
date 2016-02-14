@@ -40,7 +40,7 @@ public class DateTimeFieldBuilder extends FieldBuilder<LocalDateTime, LocalDateT
         return value(LocalDateTime.now());
     }
 
-    public DateTimeFieldBuilder dateTime() {
+    public DateTimeFieldBuilder dateNow() {
         return value(LocalDate.now().atStartOfDay());
     }
 

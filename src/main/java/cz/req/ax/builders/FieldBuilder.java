@@ -59,6 +59,11 @@ public class FieldBuilder<V, F extends Field<V>, B extends FieldBuilder<V, F, B>
         return (B) this;
     }
 
+    public B onChange(Runnable listener) {
+        target.addValueChangeListener(e -> listener.run());
+        return (B) this;
+    }
+
     public B converter(Class<?> datamodelType) {
         if (target instanceof AbstractField) {
             ((AbstractField) target).setConverter(datamodelType);

@@ -37,4 +37,9 @@ public class ButtonBuilder extends ComponentBuilder<Button, ButtonBuilder> {
         return this;
     }
 
+    public ButtonBuilder link() {
+        style("link");
+        return this;
+    }
+
 }
