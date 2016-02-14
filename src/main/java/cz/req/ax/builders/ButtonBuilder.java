@@ -17,6 +17,12 @@ public class ButtonBuilder extends ComponentBuilder<Button, ButtonBuilder> {
         super(target, useDefaults);
     }
 
+    @Override
+    protected void applyDefaults() {
+        super.applyDefaults();
+        captionSuffix(null);
+    }
+
     public ButtonBuilder htmlAllowed() {
         target.setHtmlContentAllowed(true);
         return this;

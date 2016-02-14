@@ -73,7 +73,7 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
         if (caption != null) {
             field.setCaption(caption);
         }
-        AxUtils.appendCaptionSuffix(field, ":");
+        AxUtils.appendCaptionSuffix(field, AxUtils.DEFAULT_CAPTION_SUFFIX);
         return field;
     }
 
