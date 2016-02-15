@@ -50,11 +50,6 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
         return (B) this;
     }
 
-    public B enabled(boolean enabled) {
-        target.setEnabled(enabled);
-        return (B) this;
-    }
-
     public B width(int width) {
         target.setWidth(width, Sizeable.Unit.PIXELS);
         return (B) this;
@@ -96,7 +91,12 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
     public B sizeFull() {
         return widthFull().heightFull();
     }
-    
+
+    public B enabled(boolean enabled) {
+        target.setEnabled(enabled);
+        return (B) this;
+    }
+
     public B enabled() {
         return enabled(true);
     }
