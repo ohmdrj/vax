@@ -44,8 +44,15 @@ public class ButtonBuilder extends ComponentBuilder<Button, ButtonBuilder> {
     }
 
     public ButtonBuilder link() {
-        style("link");
-        return this;
+        return style("link");
+    }
+
+    public ButtonBuilder primary() {
+        return style("primary");
+    }
+
+    public ButtonBuilder small() {
+        return style("small");
     }
 
 }

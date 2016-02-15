@@ -146,4 +146,20 @@ public class Ax {
         return timeField().caption(caption);
     }
 
+    public static UploadBuilder upload() {
+        return new UploadBuilder();
+    }
+
+    public static UploadBuilder upload(String caption) {
+        return upload().caption(caption);
+    }
+
+//    public static AxWindowBuilder window() {
+//        return new AxWindowBuilder();
+//    }
+//
+//    public static AxWindowBuilder window(String caption) {
+//        return window().caption(caption);
+//    }
+
 }

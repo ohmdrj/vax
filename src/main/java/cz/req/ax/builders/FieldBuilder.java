@@ -35,6 +35,10 @@ public class FieldBuilder<V, F extends Field<V>, B extends FieldBuilder<V, F, B>
         return required(true);
     }
 
+    public B optional() {
+        return required(false);
+    }
+
     public B requiredError(String error) {
         target.setRequiredError(error);
         return (B) this;
