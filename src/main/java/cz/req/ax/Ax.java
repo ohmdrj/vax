@@ -5,6 +5,7 @@ import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.MenuBar;
 import cz.req.ax.builders.*;
 import cz.req.ax.data.AxBinder;
 
@@ -13,6 +14,18 @@ import cz.req.ax.data.AxBinder;
  *         Date: 13.2.2016
  */
 public class Ax {
+
+    public static AxActionBuilder<Object> action() {
+        return new AxActionBuilder<>();
+    }
+
+    public static AxActionBuilder<Object> action(String caption) {
+        return action().caption(caption);
+    }
+
+    public static <T> AxActionBuilder<T> action(T input) {
+        return action().input(input);
+    }
 
     public static <T> AxBinder<T> binder(Class<T> beanType) {
         return new AxBinder<>(beanType);
@@ -96,6 +109,14 @@ public class Ax {
 
     public static CssLayout layout(Component... components) {
         return cssLayout(components).get();
+    }
+
+    public static MenuItemBuilder menuItem(MenuBar menuBar) {
+        return new MenuItemBuilder(menuBar);
+    }
+
+    public static MenuItemBuilder menuItem(MenuBar.MenuItem parentItem) {
+        return new MenuItemBuilder(parentItem);
     }
 
     public static OptionGroupBuilder optionGroup() {

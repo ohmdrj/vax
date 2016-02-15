@@ -109,15 +109,15 @@ public class AxUtils {
         }
     }
 
-    public static void exceptionHandler(Exception exception) {
+    public static void exceptionHandler(Throwable throwable) {
         // TODO AxUI ErrorHandler ???
-        Validator.InvalidValueException invalidValueException = findInvalidValueCause(exception);
+        Validator.InvalidValueException invalidValueException = findInvalidValueCause(throwable);
         if (invalidValueException != null) {
             // Validační chyby formuláře nezobrazujeme
             logger.debug("Uživatel zadal nevalidní hodnotu: " + invalidValueException.getMessage());
         } else {
-            logger.error(exception.getMessage(), exception);
-            new AxMessage("Nastala chyba při vykonávání akce.").error(exception.getCause()).show();
+            logger.error(throwable.getMessage(), throwable);
+            new AxMessage("Nastala chyba při vykonávání akce.").error(throwable.getCause()).show();
         }
     }
 
