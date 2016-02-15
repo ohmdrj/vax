@@ -3,6 +3,8 @@ package cz.req.ax;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.BeanItem;
 
+import java.util.Collection;
+
 
 public class AxBeanContainer<T> extends BeanContainer<Integer, T> {
 
@@ -15,6 +17,16 @@ public class AxBeanContainer<T> extends BeanContainer<Integer, T> {
     protected AxBeanContainer(Class<T> type) {
         super(type);
         this.type = type;
+    }
+
+    /**
+     * Nahradí všechny itemy v kontejneru tak, že kontejner smaže a naplní ho předanou kolekcí.
+     *
+     * @param items (přenačtená) kolekce itemů
+     */
+    public void replaceAllItems(Collection<? extends T> items) {
+        removeAllItems();
+        if (items != null) addAll(items);
     }
 
     public Class<T> getType() {
