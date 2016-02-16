@@ -19,12 +19,11 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
         super(target, useDefaults);
     }
 
-    private String captionSuffix;
+    private String captionSuffix = AxUtils.DEFAULT_CAPTION_SUFFIX;
 
     protected void applyDefaults() {
         super.applyDefaults();
         immediate();
-        captionSuffix(AxUtils.DEFAULT_CAPTION_SUFFIX);
     }
 
     public B caption(String caption) {
@@ -55,6 +54,11 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
         return (B) this;
     }
 
+    public B width(String width) {
+        target.setWidth(width);
+        return (B) this;
+    }
+
     public B widthUndefined() {
         target.setWidthUndefined();
         return (B) this;
@@ -70,6 +74,11 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
         return (B) this;
     }
 
+    public B height(String height) {
+        target.setHeight(height);
+        return (B) this;
+    }
+
     public B heightUndefined() {
         target.setHeightUndefined();
         return (B) this;
@@ -81,6 +90,10 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
     }
 
     public B size(int width, int height) {
+        return width(width).height(height);
+    }
+
+    public B size(String width, String height) {
         return width(width).height(height);
     }
 

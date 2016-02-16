@@ -13,7 +13,7 @@ public class AxProperties {
 
     private String viewMain = "Main";
     private String viewUser;
-    private String viewError = "Exception";
+    private String viewError;
     private String test;
 
     public String getTest() {

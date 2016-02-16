@@ -8,10 +8,13 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.MenuBar;
 import cz.req.ax.Ax;
-import cz.req.ax.AxUtils;
+import cz.req.ax.builders.AbstractButtonBuilder;
+import cz.req.ax.builders.AxWindowButtonBuilder;
 import cz.req.ax.builders.ButtonBuilder;
 import cz.req.ax.builders.MenuItemBuilder;
 import cz.req.ax.util.ToBooleanFunction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +25,9 @@ import java.util.function.Consumer;
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
  *         Date: 15.2.2016
  */
-public class AxAction<T> {
+public class AxAction<T> implements Cloneable {
+
+    private static final Logger logger = LoggerFactory.getLogger(AxAction.class);
 
     private String caption;
     private Resource icon;
@@ -33,7 +38,7 @@ public class AxAction<T> {
     private boolean visible = true;
 
     private List<Object> createdComponents = new ArrayList<>();
-    private Consumer<Throwable> exceptionHandler = AxUtils::exceptionHandler;
+    private Consumer<RuntimeException> errorHandler;
 
     private List<Object> startPhases = new ArrayList<>();
     private Supplier<? extends T> inputPhase;
@@ -172,24 +177,25 @@ public class AxAction<T> {
         endPhases.add(cancelableRunnable);
     }
 
-    public void setExceptionHandler(Consumer<Throwable> exceptionHandler) {
-        this.exceptionHandler = exceptionHandler;
+    public void setErrorHandler(Consumer<RuntimeException> setErrorHandler) {
+        this.errorHandler = setErrorHandler;
     }
 
     public boolean execute() {
         try {
             return executeUnsafe();
-        } catch (Throwable exception) {
-            if (exceptionHandler != null) {
+        } catch (RuntimeException throwable) {
+            if (errorHandler != null) {
                 try {
-                    exceptionHandler.accept(exception);
-                } catch (Throwable handlerEception) {
-                    throw new RuntimeException("Exception handler exceution failed", handlerEception);
+                    errorHandler.accept(throwable);
+                    return false;
+                } catch (Throwable handlerThrowable) {
+                    logger.error("AxAction error handler failed", handlerThrowable);
+                    throw throwable;
                 }
             } else {
-                throw new RuntimeException("Action execution failed", exception);
+                throw throwable;
             }
-            return false;
         }
     }
 
@@ -230,7 +236,20 @@ public class AxAction<T> {
     }
 
     public ButtonBuilder createButton() {
-        ButtonBuilder builder = Ax.button(caption).icon(icon).description(description).onClick(this::execute);
+        return createButton(Ax.button());
+    }
+
+    public AxWindowButtonBuilder createWindowButton() {
+        return createButton(Ax.windowButton());
+    }
+
+    public <B extends AbstractButtonBuilder> B createButton(B builder) {
+        builder.caption(caption).icon(icon).description(description);
+        if (builder instanceof AxWindowButtonBuilder) {
+            ((AxWindowButtonBuilder) builder).onClick((BooleanSupplier) this::execute);
+        } else {
+            builder.onClick((Runnable) this::execute);
+        }
         if (shortcutKey >= 0) {
             builder.clickShortcut(shortcutKey, shortcutModifiers);
         }
@@ -249,6 +268,23 @@ public class AxAction<T> {
     private MenuItemBuilder createMenuItem(MenuItemBuilder builder) {
         return builder.caption(Strings.nullToEmpty(caption)).icon(icon)
                 .description(description).command(this::execute);
+    }
+
+    @Override
+    public AxAction<T> clone() {
+        AxAction<T> copy = new AxAction<>();
+        copy.caption = caption;
+        copy.icon = icon;
+        copy.description = description;
+        copy.shortcutKey = shortcutKey;
+        copy.shortcutModifiers = shortcutModifiers;
+        copy.createdComponents = new ArrayList<>(createdComponents);
+        copy.errorHandler = errorHandler;
+        copy.startPhases = new ArrayList<>(startPhases);
+        copy.inputPhase = inputPhase;
+        copy.mainPhase = mainPhase;
+        copy.endPhases = new ArrayList<>(endPhases);
+        return copy;
     }
 
 }

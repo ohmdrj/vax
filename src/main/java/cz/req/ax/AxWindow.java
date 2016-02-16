@@ -40,7 +40,7 @@ public class AxWindow extends RootLayout implements Navigation, Components {
     public AxWindow show(UI ui) {
         ui.addWindow(window);
         if (!manualFocus) {
-            if (!AxUtils.focusFirst(mainPanel())) {
+            if (!AxUtils.focusOnFirstField(mainPanel())) {
                 focus();
             }
         }
