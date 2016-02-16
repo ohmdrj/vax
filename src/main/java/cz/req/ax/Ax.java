@@ -2,10 +2,7 @@ package cz.req.ax;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.server.Resource;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.*;
 import cz.req.ax.builders.*;
 import cz.req.ax.data.AxBinder;
 
@@ -91,12 +88,20 @@ public class Ax {
         return dateTimeField().caption(caption);
     }
 
+    public static NotificationBuilder error(String message) {
+        return new NotificationBuilder(message, Notification.Type.ERROR_MESSAGE).topCenter();
+    }
+
     public static Label hr() {
         return label("<hr>").html().widthFull().get();
     }
 
     public static LabelBuilder icon(Resource icon) {
         return label().icon(icon);
+    }
+
+    public static NotificationBuilder info(String message) {
+        return new NotificationBuilder(message, Notification.Type.HUMANIZED_MESSAGE).topCenter();
     }
 
     public static LabelBuilder label() {
@@ -121,6 +126,10 @@ public class Ax {
 
     public static AxMessageBuilder message(String message) {
         return new AxMessageBuilder(message);
+    }
+
+    public static NotificationBuilder notify(String message) {
+        return tray(message).topCenter();
     }
 
     public static OptionGroupBuilder optionGroup() {
@@ -171,12 +180,20 @@ public class Ax {
         return timeField().caption(caption);
     }
 
+    public static NotificationBuilder tray(String message) {
+        return new NotificationBuilder(message, Notification.Type.TRAY_NOTIFICATION);
+    }
+
     public static UploadBuilder upload() {
         return new UploadBuilder();
     }
 
     public static UploadBuilder upload(String caption) {
         return upload().caption(caption);
+    }
+
+    public static NotificationBuilder warning(String message) {
+        return new NotificationBuilder(message, Notification.Type.WARNING_MESSAGE).topCenter();
     }
 
     public static AxWindowBuilder window() {

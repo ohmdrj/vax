@@ -137,20 +137,20 @@ public class AxAction<T> implements Cloneable {
         }
     }
 
-    public void addInput(T input) {
-        addInput(() -> input);
-    }
-
-    public void addInput(Supplier<? extends T> inputSupplier) {
-        inputPhase = inputSupplier;
-    }
-
     public void addRunBefore(Runnable runnable) {
         startPhases.add(0, runnable);
     }
 
     public void addRunBefore(BooleanSupplier cancelableRunnable) {
         startPhases.add(0, cancelableRunnable);
+    }
+
+    public void setInput(T input) {
+        setInput(() -> input);
+    }
+
+    public void setInput(Supplier<? extends T> inputSupplier) {
+        inputPhase = inputSupplier;
     }
 
     public void setRun(Runnable runnable) {

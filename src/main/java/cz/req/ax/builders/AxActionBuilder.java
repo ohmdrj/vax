@@ -69,16 +69,6 @@ public class AxActionBuilder<T> extends AxBuilder<AxAction<T>, AxActionBuilder<T
         return visible(false);
     }
 
-    public <NT extends T> AxActionBuilder<NT> input(NT input) {
-        target.addInput(input);
-        return (AxActionBuilder<NT>) this;
-    }
-
-    public <NT extends T> AxActionBuilder<NT> input(Supplier<NT> inputSupplier) {
-        target.addInput(inputSupplier);
-        return (AxActionBuilder<NT>) this;
-    }
-
     public AxActionBuilder<T> runBefore(Runnable runnable) {
         target.addRunBefore(runnable);
         return this;
@@ -87,6 +77,16 @@ public class AxActionBuilder<T> extends AxBuilder<AxAction<T>, AxActionBuilder<T
     public AxActionBuilder<T> runBefore(BooleanSupplier cancelableRunnable) {
         target.addRunBefore(cancelableRunnable);
         return this;
+    }
+
+    public <NT extends T> AxActionBuilder<NT> input(NT input) {
+        target.setInput(input);
+        return (AxActionBuilder<NT>) this;
+    }
+
+    public <NT extends T> AxActionBuilder<NT> input(Supplier<NT> inputSupplier) {
+        target.setInput(inputSupplier);
+        return (AxActionBuilder<NT>) this;
     }
 
     public AxActionBuilder<T> run(Runnable runnable) {
