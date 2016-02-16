@@ -22,17 +22,17 @@ public class AxWindowBuilder extends WindowBuilder<AxWindow, AxWindowBuilder> {
     @Override
     protected void applyDefaults() {
         super.applyDefaults();
-        focusOnFirstField();
+        autoFocusOnFirstField();
         closeButton();
     }
 
-    public AxWindowBuilder focusOnFirstField() {
-        target.setFocusOnFirstField(true);
+    public AxWindowBuilder autoFocusOnFirstField() {
+        target.setAutoFocusMode(AxWindow.AutoFocusMode.FIRST_FIELD_OR_WINDOW);
         return this;
     }
 
-    public AxWindowBuilder manualFieldFocus() {
-        target.setFocusOnFirstField(false);
+    public AxWindowBuilder disableAutoFocus() {
+        target.setAutoFocusMode(AxWindow.AutoFocusMode.DISABLED);
         return this;
     }
 

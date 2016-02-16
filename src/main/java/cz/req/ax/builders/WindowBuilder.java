@@ -17,12 +17,12 @@ public class WindowBuilder<W extends Window, B extends WindowBuilder<W, B>> exte
 
     public WindowBuilder(W target, boolean useDefaults) {
         super(target, useDefaults);
+        captionSuffix(null);
     }
 
     @Override
     protected void applyDefaults() {
         super.applyDefaults();
-        captionSuffix(null);
         modal();
         undraggable();
         uncloseable();

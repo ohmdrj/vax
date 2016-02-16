@@ -12,11 +12,6 @@ public class AbstractButtonBuilder<C extends Button, B extends AbstractButtonBui
 
     public AbstractButtonBuilder(C target, boolean useDefaults) {
         super(target, useDefaults);
-    }
-
-    @Override
-    protected void applyDefaults() {
-        super.applyDefaults();
         captionSuffix(null);
     }
 
@@ -31,7 +26,7 @@ public class AbstractButtonBuilder<C extends Button, B extends AbstractButtonBui
     }
 
     public B onClick(Runnable listener) {
-        target.addClickListener(e -> AxUtils.safeRun(listener));
+        target.addClickListener(e -> listener.run());
         return (B) this;
     }
 

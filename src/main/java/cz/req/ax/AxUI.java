@@ -3,8 +3,6 @@ package cz.req.ax;
 import com.google.common.eventbus.EventBus;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.DefaultErrorHandler;
-import com.vaadin.server.ErrorHandler;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
@@ -46,21 +44,16 @@ public abstract class AxUI extends UI implements ViewChangeListener {
         return environment;
     }
 
-    private ErrorHandler errorHandler = new DefaultErrorHandler() {
-        @Override
-        public void error(com.vaadin.server.ErrorEvent event) {
-            super.error(event);
-            UI.getCurrent().getSession().setAttribute(Throwable.class, event.getThrowable());
-            UI.getCurrent().getNavigator().navigateTo(properties.getViewError());
-        }
-    };
-
     @Override
     protected void init(VaadinRequest request) {
+        AxErrorHandler errorHandler = new AxErrorHandler();
+        errorHandler.setErrorView(properties.getViewError());
         setErrorHandler(errorHandler);
+
         DiscoveryNavigator navigator = new DiscoveryNavigator(this, this);
         navigator.addViewChangeListener(this);
         setNavigator(navigator);
+
         try {
             if (StringUtils.isEmpty(navigator.getState())) {
                 navigate();

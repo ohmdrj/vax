@@ -119,8 +119,8 @@ public class AxActionBuilder<T> extends AxBuilder<AxAction<T>, AxActionBuilder<T
         return this;
     }
 
-    public AxActionBuilder<T> exceptionHandler(Consumer<Throwable> handler) {
-        target.setExceptionHandler(handler);
+    public AxActionBuilder<T> onError(Consumer<Throwable> handler) {
+        target.setErrorHandler(handler);
         return this;
     }
 

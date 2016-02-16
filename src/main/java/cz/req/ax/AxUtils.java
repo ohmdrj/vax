@@ -1,12 +1,7 @@
 package cz.req.ax;
 
-import com.vaadin.data.Validator;
-import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.ErrorHandler;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import java.util.ArrayList;
@@ -14,8 +9,6 @@ import java.util.Iterator;
 
 public class AxUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(AxUtils.class);
-    public static ErrorHandler EMPTY_ERROR_HANDLER = event -> System.err.println(event);
     public static String DEFAULT_CAPTION_SUFFIX = ":";
 
     public static String readCookie(String name) {
@@ -57,12 +50,12 @@ public class AxUtils {
         }
     }
 
-    public static boolean focusFirst(Component component) {
+    public static boolean focusOnFirstField(Component component) {
         if (component == null) return false;
         if (component instanceof HasComponents) {
             Iterator<Component> iterator = ((HasComponents) component).iterator();
             while (iterator.hasNext()) {
-                if (focusFirst(iterator.next())) {
+                if (focusOnFirstField(iterator.next())) {
                     return true;
                 }
             }
@@ -71,14 +64,6 @@ public class AxUtils {
             return true;
         }
         return false;
-    }
-
-    public static Integer getParameterInteger(ViewChangeListener.ViewChangeEvent event) {
-        try {
-            return Integer.parseInt(event.getParameters());
-        } catch (Exception ex) {
-            return null;
-        }
     }
 
     public static String makeURL(String base, Object... parameters) {
@@ -99,45 +84,6 @@ public class AxUtils {
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static void safeRun(Runnable runnable) {
-        try {
-            runnable.run();
-        } catch (Throwable exception) {
-            try {
-                exceptionHandler(exception);
-            } catch (Throwable handlerEception) {
-                logger.error(exception.getMessage(), exception);
-                throw new RuntimeException("Exception handler exceution failed", handlerEception);
-            }
-        }
-    }
-
-    public static void exceptionHandler(Throwable exception) {
-        // TODO AxUI ErrorHandler ???
-        Validator.InvalidValueException invalidValueException = findInvalidValueCause(exception);
-        if (invalidValueException != null) {
-            // Validační chyby formuláře nezobrazujeme
-            logger.debug("Uživatel zadal nevalidní hodnotu: " + invalidValueException.getMessage());
-        } else {
-            logger.error(exception.getMessage(), exception);
-            Throwable cause = exception;
-            if (exception instanceof AxAction.ActionException) {
-                cause = exception.getCause();
-            }
-            new AxMessage("Nastala chyba při vykonávání akce.").error(cause).show();
-        }
-    }
-
-    private static Validator.InvalidValueException findInvalidValueCause(Throwable throwable) {
-        while (throwable != null) {
-            if (throwable instanceof Validator.InvalidValueException) {
-                return (Validator.InvalidValueException) throwable;
-            }
-            throwable = throwable.getCause();
-        }
-        return null;
     }
 
     public static void appendCaptionSuffix(Component component, String suffix) {

@@ -2,19 +2,19 @@ package cz.req.ax.ui;
 
 import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
-import com.google.common.util.concurrent.Runnables;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.MenuBar;
 import cz.req.ax.Ax;
-import cz.req.ax.AxUtils;
 import cz.req.ax.builders.AbstractButtonBuilder;
 import cz.req.ax.builders.AxWindowButtonBuilder;
 import cz.req.ax.builders.ButtonBuilder;
 import cz.req.ax.builders.MenuItemBuilder;
 import cz.req.ax.util.ToBooleanFunction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +27,8 @@ import java.util.function.Consumer;
  */
 public class AxAction<T> {
 
+    private static final Logger logger = LoggerFactory.getLogger(AxAction.class);
+
     private String caption;
     private Resource icon;
     private String description;
@@ -36,7 +38,7 @@ public class AxAction<T> {
     private boolean visible = true;
 
     private List<Object> createdComponents = new ArrayList<>();
-    private Consumer<Throwable> exceptionHandler = AxUtils::exceptionHandler;
+    private Consumer<Throwable> errorHandler;
 
     private List<Object> startPhases = new ArrayList<>();
     private Supplier<? extends T> inputPhase;
@@ -175,22 +177,21 @@ public class AxAction<T> {
         endPhases.add(cancelableRunnable);
     }
 
-    public void setExceptionHandler(Consumer<Throwable> exceptionHandler) {
-        this.exceptionHandler = exceptionHandler;
+    public void setErrorHandler(Consumer<Throwable> setErrorHandler) {
+        this.errorHandler = setErrorHandler;
     }
 
     public boolean execute() {
         try {
             return executeUnsafe();
-        } catch (Throwable exception) {
-            if (exceptionHandler != null) {
+        } catch (Throwable throwable) {
+            if (errorHandler != null) {
                 try {
-                    exceptionHandler.accept(exception);
-                } catch (Throwable handlerEception) {
-                    throw new RuntimeException("Exception handler exceution failed", handlerEception);
+                    errorHandler.accept(throwable);
+                } catch (Throwable handlerThrowable) {
+                    logger.error("AxAction error handler failed", handlerThrowable);
+                    throw throwable;
                 }
-            } else {
-                throw new RuntimeException("Action execution failed", exception);
             }
             return false;
         }

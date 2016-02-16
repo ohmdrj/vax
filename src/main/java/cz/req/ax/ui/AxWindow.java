@@ -15,7 +15,7 @@ public class AxWindow extends Window {
     private CssLayout rootLayout;
     private CssLayout footerLayout;
     private Button closeButton;
-    private boolean focusOnFirstField;
+    private AutoFocusMode autoFocusMode;
 
     public AxWindow() {
         this(null, true);
@@ -39,12 +39,12 @@ public class AxWindow extends Window {
         }
     }
 
-    public boolean isFocusOnFirstField() {
-        return focusOnFirstField;
+    public AutoFocusMode getAutoFocusMode() {
+        return autoFocusMode;
     }
 
-    public void setFocusOnFirstField(boolean focusOnFirstField) {
-        this.focusOnFirstField = focusOnFirstField;
+    public void setAutoFocusMode(AutoFocusMode autoFocusMode) {
+        this.autoFocusMode = autoFocusMode;
     }
 
     @Override
@@ -146,15 +146,23 @@ public class AxWindow extends Window {
         Assert.notNull(ui, "Vaadin UI not available");
         ui.addWindow(this);
 
-        if (focusOnFirstField) {
-            AxUtils.focusFirst(rootLayout);
-        } else {
+        if (autoFocusMode == AutoFocusMode.FIRST_FIELD_OR_WINDOW) {
+            if (!AxUtils.focusOnFirstField(rootLayout)) {
+                focus();
+            }
+        } else if (autoFocusMode == AutoFocusMode.WINDOW) {
             focus();
         }
     }
 
     public void show() {
         show(null);
+    }
+
+    public enum AutoFocusMode {
+        FIRST_FIELD_OR_WINDOW,
+        WINDOW,
+        DISABLED
     }
 
 }
