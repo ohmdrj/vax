@@ -9,7 +9,11 @@ import java.util.Iterator;
 
 public class AxUtils {
 
+    // TODO message.properties
     public static String DEFAULT_CAPTION_SUFFIX = ":";
+    public static String DEFAULT_REQUIRED_ERROR = "Není vyplněna povinná hodnota.";
+    public static String DEFAULT_INVALID_VALUE_ERROR = "Byla zadána neplatná hodnota.";
+    public static String FALLBACK_COMMIT_ERROR = "Nelze potvrdit formulářová data.";
 
     public static String readCookie(String name) {
         for (Cookie cookie : VaadinService.getCurrentRequest().getCookies()) {

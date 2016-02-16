@@ -15,9 +15,6 @@ import java.util.function.Consumer;
  */
 public class AxWindowButtonBuilder extends AbstractButtonBuilder<AxWindowButton, AxWindowButtonBuilder> {
 
-    public static final String LEFT_ALIGNED = "left-aligned";
-    public static final String RIGHT_ALIGNED = "right-aligned";
-
     public AxWindowButtonBuilder() {
         this(new AxWindowButton(), true);
     }
@@ -64,13 +61,13 @@ public class AxWindowButtonBuilder extends AbstractButtonBuilder<AxWindowButton,
     }
 
     public AxWindowButtonBuilder rightAligned() {
-        target.removeStyleName(LEFT_ALIGNED);
-        return style(RIGHT_ALIGNED);
+        target.setAlignment(AxWindowButton.Alignment.RIGHT);
+        return this;
     }
 
     public AxWindowButtonBuilder leftAligned() {
-        target.removeStyleName(RIGHT_ALIGNED);
-        return style(LEFT_ALIGNED);
+        target.setAlignment(AxWindowButton.Alignment.LEFT);
+        return this;
     }
 
     public AxWindowButtonBuilder button() {

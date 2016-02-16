@@ -25,7 +25,7 @@ import java.util.function.Consumer;
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
  *         Date: 15.2.2016
  */
-public class AxAction<T> {
+public class AxAction<T> implements Cloneable {
 
     private static final Logger logger = LoggerFactory.getLogger(AxAction.class);
 
@@ -38,7 +38,7 @@ public class AxAction<T> {
     private boolean visible = true;
 
     private List<Object> createdComponents = new ArrayList<>();
-    private Consumer<Throwable> errorHandler;
+    private Consumer<RuntimeException> errorHandler;
 
     private List<Object> startPhases = new ArrayList<>();
     private Supplier<? extends T> inputPhase;
@@ -177,23 +177,25 @@ public class AxAction<T> {
         endPhases.add(cancelableRunnable);
     }
 
-    public void setErrorHandler(Consumer<Throwable> setErrorHandler) {
+    public void setErrorHandler(Consumer<RuntimeException> setErrorHandler) {
         this.errorHandler = setErrorHandler;
     }
 
     public boolean execute() {
         try {
             return executeUnsafe();
-        } catch (Throwable throwable) {
+        } catch (RuntimeException throwable) {
             if (errorHandler != null) {
                 try {
                     errorHandler.accept(throwable);
+                    return false;
                 } catch (Throwable handlerThrowable) {
                     logger.error("AxAction error handler failed", handlerThrowable);
                     throw throwable;
                 }
+            } else {
+                throw throwable;
             }
-            return false;
         }
     }
 
@@ -266,6 +268,23 @@ public class AxAction<T> {
     private MenuItemBuilder createMenuItem(MenuItemBuilder builder) {
         return builder.caption(Strings.nullToEmpty(caption)).icon(icon)
                 .description(description).command(this::execute);
+    }
+
+    @Override
+    public AxAction<T> clone() {
+        AxAction<T> copy = new AxAction<>();
+        copy.caption = caption;
+        copy.icon = icon;
+        copy.description = description;
+        copy.shortcutKey = shortcutKey;
+        copy.shortcutModifiers = shortcutModifiers;
+        copy.createdComponents = new ArrayList<>(createdComponents);
+        copy.errorHandler = errorHandler;
+        copy.startPhases = new ArrayList<>(startPhases);
+        copy.inputPhase = inputPhase;
+        copy.mainPhase = mainPhase;
+        copy.endPhases = new ArrayList<>(endPhases);
+        return copy;
     }
 
 }

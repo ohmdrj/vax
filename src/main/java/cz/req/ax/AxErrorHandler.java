@@ -5,7 +5,10 @@ import com.vaadin.data.Validator;
 import com.vaadin.event.ListenerMethod;
 import com.vaadin.server.ErrorEvent;
 import com.vaadin.server.ErrorHandler;
+import com.vaadin.server.Page;
 import com.vaadin.server.ServerRpcManager;
+import com.vaadin.shared.Position;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,28 +34,18 @@ public class AxErrorHandler implements ErrorHandler {
         Throwable throwable = findRelevantThrowable(event.getThrowable());
         try {
             Validator.InvalidValueException invalidValueCause = findInvalidValueCause(throwable);
-            if (invalidValueCause instanceof Validator.EmptyValueException) {
-                Ax.message("Není vyplněna povinná hodnota.").show();
-            } else if (invalidValueCause != null) {
-                Ax.message("Byla zadána neplatná hodnota.").show();
+            if (invalidValueCause != null) {
+                handleInvalidValue(invalidValueCause);
             } else {
-                logger.error("Vaadin error: ", throwable);
-                if (Strings.isNullOrEmpty(errorView)) {
-                    Ax.message("Nastala chyba při vykonávání operace.").error(throwable).show();
-                } else {
-                    UI ui = UI.getCurrent();
-                    ui.getSession().setAttribute(Throwable.class, throwable);
-                    ui.getNavigator().navigateTo(errorView);
-                }
+                handleUnknownError(throwable);
             }
         } catch (Throwable handlerThrowable) {
             logger.error("Vaadin error: ", throwable);
             logger.error("Ax error handler failed",  handlerThrowable);
         }
-
     }
 
-    private static Throwable findRelevantThrowable(Throwable t) {
+    protected static Throwable findRelevantThrowable(Throwable t) {
         // From DefaultErrorHandler
         try {
             if ((t instanceof ServerRpcManager.RpcInvocationException)
@@ -84,6 +77,24 @@ public class AxErrorHandler implements ErrorHandler {
             throwable = throwable.getCause();
         }
         return null;
+    }
+
+    protected void handleInvalidValue(Validator.InvalidValueException exception) {
+        Notification notification = new Notification(exception.getMessage(), null, Notification.Type.TRAY_NOTIFICATION);
+        notification.setDelayMsec(3000);
+        notification.setPosition(Position.TOP_CENTER);
+        notification.show(Page.getCurrent());
+    }
+
+    protected void handleUnknownError(Throwable throwable) {
+        logger.error("Vaadin error: ", throwable);
+        if (Strings.isNullOrEmpty(errorView)) {
+            Ax.message("Nastala chyba při vykonávání operace.").error(throwable).show();
+        } else {
+            UI ui = UI.getCurrent();
+            ui.getSession().setAttribute(Throwable.class, throwable);
+            ui.getNavigator().navigateTo(errorView);
+        }
     }
 
 }

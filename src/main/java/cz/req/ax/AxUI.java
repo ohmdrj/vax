@@ -3,10 +3,14 @@ package cz.req.ax;
 import com.google.common.eventbus.EventBus;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.ErrorHandler;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 import ru.xpoft.vaadin.DiscoveryNavigator;
@@ -15,12 +19,16 @@ import java.lang.reflect.Field;
 
 public abstract class AxUI extends UI implements ViewChangeListener {
 
+    private static final Logger logger = LoggerFactory.getLogger(AxUI.class);
+
     @Autowired
     EventBus eventBus;
     @Autowired
     AxProperties properties;
     @Autowired
     Environment environment;
+    @Autowired
+    ApplicationContext context;
 
     //TODO Implement Navigation?
     public static void nav() {
@@ -46,10 +54,36 @@ public abstract class AxUI extends UI implements ViewChangeListener {
 
     @Override
     protected void init(VaadinRequest request) {
+        initErrorHandler();
+        initNavigation();
+    }
+
+    private void initErrorHandler() {
+        ErrorHandler errorHandler = findCustomErrorHandler();
+        if (errorHandler == null) {
+            errorHandler = createDefaultErrorHandler();
+        }
+        setErrorHandler(errorHandler);
+    }
+
+    private ErrorHandler findCustomErrorHandler() {
+        for (String beanName: context.getBeanNamesForType(ErrorHandler.class)) {
+            try {
+                return context.getBean(beanName, ErrorHandler.class);
+            } catch (Exception e) {
+                logger.error("Failed to create error handler " + beanName, e);
+            }
+        }
+        return null;
+    }
+
+    private ErrorHandler createDefaultErrorHandler() {
         AxErrorHandler errorHandler = new AxErrorHandler();
         errorHandler.setErrorView(properties.getViewError());
-        setErrorHandler(errorHandler);
+        return errorHandler;
+    }
 
+    private void initNavigation() {
         DiscoveryNavigator navigator = new DiscoveryNavigator(this, this);
         navigator.addViewChangeListener(this);
         setNavigator(navigator);
@@ -126,14 +160,14 @@ public abstract class AxUI extends UI implements ViewChangeListener {
             try {
                 eventBus.unregister(event.getOldView());
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Unable to unregister eventBus", e);
             }
         }
         if (event.getNewView() != null) {
             try {
                 eventBus.register(event.getNewView());
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Unable to register eventBus", e);
             }
         }
 

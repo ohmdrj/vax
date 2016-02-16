@@ -78,7 +78,7 @@ public class AxFieldFactory extends DefaultFieldGroupFieldFactory {
             ((AbstractComponent) field).setImmediate(true);
         }
         if (field instanceof AbstractField) {
-            ((AbstractField) field).setConversionError("Neplatná hodnota.");
+            ((AbstractField) field).setConversionError(AxUtils.DEFAULT_INVALID_VALUE_ERROR);
         }
         if (field instanceof AbstractTextField) {
             ((AbstractTextField) field).setNullSettingAllowed(false);
