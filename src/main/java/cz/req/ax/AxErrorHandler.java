@@ -80,10 +80,18 @@ public class AxErrorHandler implements ErrorHandler {
     }
 
     protected void handleInvalidValue(Validator.InvalidValueException exception) {
-        Notification notification = new Notification(exception.getMessage(), null, Notification.Type.TRAY_NOTIFICATION);
-        notification.setDelayMsec(3000);
-        notification.setPosition(Position.TOP_CENTER);
-        notification.show(Page.getCurrent());
+        String message = getInvalidValueMessage(exception);
+        logger.debug("InvalidValueException: {}", message);
+        Ax.notify(message).show();
+    }
+
+    protected String getInvalidValueMessage(Validator.InvalidValueException exception) {
+        if (Strings.isNullOrEmpty(exception.getMessage())) {
+            return exception instanceof Validator.EmptyValueException
+                    ? AxUtils.DEFAULT_REQUIRED_ERROR
+                    : AxUtils.DEFAULT_INVALID_VALUE_ERROR;
+        }
+        return exception.getMessage();
     }
 
     protected void handleUnknownError(Throwable throwable) {

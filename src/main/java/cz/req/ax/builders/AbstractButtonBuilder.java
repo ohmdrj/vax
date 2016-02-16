@@ -15,7 +15,7 @@ public class AbstractButtonBuilder<C extends Button, B extends AbstractButtonBui
         captionSuffix(null);
     }
 
-    public B htmlAllowed() {
+    public B html() {
         target.setHtmlContentAllowed(true);
         return (B) this;
     }
