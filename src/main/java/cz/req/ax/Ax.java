@@ -119,6 +119,10 @@ public class Ax {
         return new MenuItemBuilder(parentItem);
     }
 
+    public static AxMessageBuilder message(String message) {
+        return new AxMessageBuilder(message);
+    }
+
     public static OptionGroupBuilder optionGroup() {
         return new OptionGroupBuilder();
     }
@@ -175,12 +179,20 @@ public class Ax {
         return upload().caption(caption);
     }
 
-//    public static AxWindowBuilder window() {
-//        return new AxWindowBuilder();
-//    }
-//
-//    public static AxWindowBuilder window(String caption) {
-//        return window().caption(caption);
-//    }
+    public static AxWindowBuilder window() {
+        return new AxWindowBuilder();
+    }
+
+    public static AxWindowBuilder window(String caption) {
+        return window().caption(caption);
+    }
+
+    public static AxWindowButtonBuilder windowButton() {
+        return new AxWindowButtonBuilder();
+    }
+
+    public static AxWindowButtonBuilder windowButton(String caption) {
+        return windowButton().caption(caption);
+    }
 
 }

@@ -1,0 +1,46 @@
+$ax-window-min-width: 10em;
+$ax-window-padding: 1em;
+$ax-window-close-button-background: black;
+$ax-window-close-button-color: white;
+
+@mixin ax-window {
+  .ax-window {
+    min-width: $ax-window-min-width;
+    .v-window-outerheader:after {
+      display: none; // Hide window header border
+    }
+    .v-window-header {
+      font-size: 1.5em;
+      color: $ax-main-focus;
+    }
+    .ax-window-root {
+      width: 100%;
+      padding: $ax-window-padding;
+      > .ax-window-footer {
+        width: 100%;
+        > .v-button {
+          margin-top: $ax-window-padding;
+          &.left-aligned {
+            margin-right: $ax-window-padding / 2;
+          }
+          &.right-aligned {
+            margin-left: $ax-window-padding / 2;
+          }
+        }
+        > .close-button {
+          background: $ax-window-close-button-background;
+          color: $ax-window-close-button-color;
+        }
+      }
+    }
+    &.headerless {
+      .v-window-outerheader {
+        display: none;
+      }
+      .v-window-contents {
+        margin-top: 0;
+        padding-top: 0;
+      }
+    }
+  }
+}

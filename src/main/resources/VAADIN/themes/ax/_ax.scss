@@ -1,3 +1,7 @@
+@import "common";
+@import "message";
+@import "window";
+
 /* Ax */
 $ax-main-focus: #197de1;
 $ax-main-bgrnd: #fff;
@@ -644,6 +648,10 @@ $form-row-spacing: 0.4em;
       display: none;
     }
   }
+
+  @include ax-common;
+  @include ax-window;
+  @include ax-messsage;
 
   .Aqua {
     background-color: #4FC1E9;

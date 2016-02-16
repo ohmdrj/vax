@@ -104,20 +104,29 @@ public class AxUtils {
     public static void safeRun(Runnable runnable) {
         try {
             runnable.run();
-        } catch (Exception e) {
-            exceptionHandler(e);
+        } catch (Throwable exception) {
+            try {
+                exceptionHandler(exception);
+            } catch (Throwable handlerEception) {
+                logger.error(exception.getMessage(), exception);
+                throw new RuntimeException("Exception handler exceution failed", handlerEception);
+            }
         }
     }
 
-    public static void exceptionHandler(Throwable throwable) {
+    public static void exceptionHandler(Throwable exception) {
         // TODO AxUI ErrorHandler ???
-        Validator.InvalidValueException invalidValueException = findInvalidValueCause(throwable);
+        Validator.InvalidValueException invalidValueException = findInvalidValueCause(exception);
         if (invalidValueException != null) {
             // Validační chyby formuláře nezobrazujeme
             logger.debug("Uživatel zadal nevalidní hodnotu: " + invalidValueException.getMessage());
         } else {
-            logger.error(throwable.getMessage(), throwable);
-            new AxMessage("Nastala chyba při vykonávání akce.").error(throwable.getCause()).show();
+            logger.error(exception.getMessage(), exception);
+            Throwable cause = exception;
+            if (exception instanceof AxAction.ActionException) {
+                cause = exception.getCause();
+            }
+            new AxMessage("Nastala chyba při vykonávání akce.").error(cause).show();
         }
     }
 

@@ -1,0 +1,88 @@
+package cz.req.ax.builders;
+
+import com.vaadin.ui.UI;
+import cz.req.ax.ui.AxAction;
+import cz.req.ax.ui.AxWindow;
+import cz.req.ax.ui.AxWindowButton;
+
+/**
+ * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
+ *         Date: 14.2.2016
+ */
+public class AxWindowBuilder extends WindowBuilder<AxWindow, AxWindowBuilder> {
+
+    public AxWindowBuilder() {
+        super(new AxWindow(null, false), true);
+    }
+
+    public AxWindowBuilder(AxWindow target, boolean useDefaults) {
+        super(target, useDefaults);
+    }
+
+    @Override
+    protected void applyDefaults() {
+        super.applyDefaults();
+        focusOnFirstField();
+        closeButton();
+    }
+
+    public AxWindowBuilder focusOnFirstField() {
+        target.setFocusOnFirstField(true);
+        return this;
+    }
+
+    public AxWindowBuilder manualFieldFocus() {
+        target.setFocusOnFirstField(false);
+        return this;
+    }
+
+    public AxWindowBuilder closeButton(String caption) {
+        target.removeCloseButton();
+        target.addCloseButton(caption);
+        return this;
+    }
+
+    public AxWindowBuilder closeButton() {
+        target.removeCloseButton();
+        target.addCloseButton();
+        return this;
+    }
+
+    public AxWindowBuilder hideCloseButton() {
+        target.removeCloseButton();
+        return this;
+    }
+
+    public AxWindowButtonBuilder button() {
+        return target.addButton();
+    }
+
+    public AxWindowButtonBuilder button(String caption) {
+        return button().caption(caption);
+    }
+
+    public AxWindowButtonBuilder button(AxWindowButton button) {
+        return target.addButton(button);
+    }
+
+    public AxWindowButtonBuilder button(AxWindowButtonBuilder builder) {
+        return button(builder.get());
+    }
+
+    public AxWindowButtonBuilder button(AxAction<?> action) {
+        return target.addButton(action);
+    }
+
+    public AxWindowButtonBuilder button(AxActionBuilder<?> builder) {
+        return button(builder.get());
+    }
+
+    public void show(UI ui) {
+        target.show(ui);
+    }
+
+    public void show() {
+        target.show();
+    }
+
+}

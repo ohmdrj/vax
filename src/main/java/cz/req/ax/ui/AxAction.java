@@ -2,6 +2,7 @@ package cz.req.ax.ui;
 
 import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
+import com.google.common.util.concurrent.Runnables;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
@@ -9,6 +10,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.MenuBar;
 import cz.req.ax.Ax;
 import cz.req.ax.AxUtils;
+import cz.req.ax.builders.AbstractButtonBuilder;
+import cz.req.ax.builders.AxWindowButtonBuilder;
 import cz.req.ax.builders.ButtonBuilder;
 import cz.req.ax.builders.MenuItemBuilder;
 import cz.req.ax.util.ToBooleanFunction;
@@ -230,7 +233,20 @@ public class AxAction<T> {
     }
 
     public ButtonBuilder createButton() {
-        ButtonBuilder builder = Ax.button(caption).icon(icon).description(description).onClick(this::execute);
+        return createButton(Ax.button());
+    }
+
+    public AxWindowButtonBuilder createWindowButton() {
+        return createButton(Ax.windowButton());
+    }
+
+    public <B extends AbstractButtonBuilder> B createButton(B builder) {
+        builder.caption(caption).icon(icon).description(description);
+        if (builder instanceof AxWindowButtonBuilder) {
+            ((AxWindowButtonBuilder) builder).onClick((BooleanSupplier) this::execute);
+        } else {
+            builder.onClick((Runnable) this::execute);
+        }
         if (shortcutKey >= 0) {
             builder.clickShortcut(shortcutKey, shortcutModifiers);
         }

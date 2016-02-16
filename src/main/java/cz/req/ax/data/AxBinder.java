@@ -60,10 +60,11 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
     }
 
     private <T extends Field> T build(String caption, Class<?> propertyType, Object propertyId, Class<T> fieldType) throws BindException {
-        T field;
+        T field = null;
         if (getFieldFactory() instanceof AxFieldFactory) {
             field = ((AxFieldFactory) getFieldFactory()).createField(getBean(), propertyType, propertyId, fieldType);
-        } else {
+        }
+        if (field == null) {
             field = getFieldFactory().createField(propertyType, fieldType);
         }
         if (field == null) {
