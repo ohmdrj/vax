@@ -1,11 +1,10 @@
 package cz.req.ax.builders;
 
-import com.google.common.base.Strings;
 import com.vaadin.data.Validator;
 import com.vaadin.data.util.converter.Converter;
-import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Field;
+import cz.req.ax.AxUtils;
 
 import java.util.function.Consumer;
 
@@ -22,8 +21,8 @@ public class FieldBuilder<V, F extends Field<V>, B extends FieldBuilder<V, F, B>
     @Override
     protected void applyDefaults() {
         super.applyDefaults();
-        requiredError("Není vyplněna hodnota.");
-        conversionError("Neplatná hodnota.");
+        requiredError(AxUtils.DEFAULT_REQUIRED_ERROR);
+        conversionError(AxUtils.DEFAULT_INVALID_VALUE_ERROR);
     }
 
     public B required(boolean required) {
