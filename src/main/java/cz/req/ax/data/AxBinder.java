@@ -1,25 +1,35 @@
 package cz.req.ax.data;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.converter.*;
+import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.*;
 import cz.req.ax.*;
 import cz.req.ax.builders.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
  *         Date: 13.1.2016
  */
 public class AxBinder<T> extends BeanFieldGroup<T> {
+
+    private static final Map<Class<? extends Number>, Class<? extends Converter>> NUMBER_CONVERTERS =
+            new ImmutableMap.Builder<Class<? extends Number>, Class<? extends Converter>>()
+                    .put(Integer.class, StringToIntegerConverter.class)
+                    .put(Long.class, StringToLongConverter.class)
+                    .put(Float.class, StringToFloatConverter.class)
+                    .put(Double.class, StringToDoubleConverter.class)
+                    .put(BigDecimal.class, StringToBigDecimalConverter.class)
+                    .build();
 
     public AxBinder(Class<T> beanType) {
         this(AxUtils.newInstance(beanType));
@@ -76,6 +86,39 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
         }
         AxUtils.appendCaptionSuffix(field, AxUtils.DEFAULT_CAPTION_SUFFIX);
         return field;
+    }
+
+    @Override
+    protected void configureField(Field<?> field) {
+        super.configureField(field);
+
+        if (field instanceof AbstractComponent) {
+            ((AbstractComponent) field).setImmediate(true);
+        }
+        if (field instanceof AbstractField) {
+            ((AbstractField) field).setConversionError(AxUtils.DEFAULT_INVALID_VALUE_ERROR);
+        }
+        if (field instanceof AbstractTextField) {
+            ((AbstractTextField) field).setNullSettingAllowed(false);
+            ((AbstractTextField) field).setNullRepresentation("");
+        }
+        if (field instanceof RichTextArea) {
+            ((RichTextArea) field).setNullSettingAllowed(false);
+            ((RichTextArea) field).setNullRepresentation("");
+        }
+        if (field instanceof AbstractSelect) {
+            ((AbstractSelect) field).setNullSelectionAllowed(true);
+            ((AbstractSelect) field).setNewItemsAllowed(false);
+        }
+        if (field instanceof AbstractSelect.Filtering) {
+            ((AbstractSelect.Filtering) field).setFilteringMode(FilteringMode.CONTAINS);
+        }
+        Class propertyType = field.getPropertyDataSource().getType();
+        if (NUMBER_CONVERTERS.containsKey(propertyType)) {
+            if (field instanceof AbstractTextField || field instanceof LabelField) {
+                ((AbstractField) field).setConverter(NUMBER_CONVERTERS.get(propertyType));
+            }
+        }
     }
 
     @Override
