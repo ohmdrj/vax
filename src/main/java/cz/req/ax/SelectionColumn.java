@@ -247,6 +247,11 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator {
         return checkBoxMap.entrySet().stream().allMatch(e -> e.getValue().getValue());
     }
 
+    public ID getFirstSelectedItemId() {
+        List<ID> selectedItemIds = getSelectedItemIds();
+        return selectedItemIds.isEmpty() ? null : selectedItemIds.get(0);
+    }
+
     public List<ID> getSelectedItemIds() {
         return checkBoxMap.entrySet().stream()
                 .filter(e -> e.getValue().getValue())

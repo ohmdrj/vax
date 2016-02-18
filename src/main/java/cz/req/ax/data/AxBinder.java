@@ -109,9 +109,16 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
 
     @Override
     public void commit() throws FieldGroup.CommitException {
+        // V zakladu maji vsechny fieldy vypnuto zobrazeni validacnich chyb (AxFieldFactory#configureField),
+        // Viditelnost chyb zapneme az po prvnim potvrzeni formulare, aby uzivatel do te doby videl cisty
+        // formular (bez chyb). Toto udelame pouze pro viditelne fieldy
         for (Field field: getFields()) {
             if (field instanceof AbstractField) {
-                ((AbstractField) field).setValidationVisible(true);
+                AbstractField abstractField = (AbstractField) field;
+                if (field.isVisible()) {
+                    // Netestovat zda ma jiz priznak nastaven, nektere slozitejsi komponenty to vyzaduji!
+                    abstractField.setValidationVisible(true);
+                }
             }
         }
         super.commit();

@@ -117,7 +117,7 @@ public class AxWindow extends Window {
 
     public AxWindowButtonBuilder addCloseButton(String caption) {
         if (closeButton != null) {
-            throw new IllegalStateException("Window has already a close button!");
+            removeCloseButton();
         }
         AxWindowButtonBuilder builder = new AxWindowButtonBuilder();
         closeButton = addButton(builder, true).caption(caption).style("close-button")

@@ -1,8 +1,7 @@
 package cz.req.ax.data;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.vaadin.data.fieldgroup.DefaultFieldGroupFieldFactory;
-import com.vaadin.data.util.converter.*;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Field;
@@ -12,7 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
@@ -20,18 +19,12 @@ import java.util.Map;
  */
 public class AxFieldFactory extends DefaultFieldGroupFieldFactory implements BeanFieldFactory, BeanFieldConfigurer {
 
-    private static final Map<Class<? extends Number>, Class<? extends Converter>> NUMBER_CONVERTERS =
-            new ImmutableMap.Builder<Class<? extends Number>, Class<? extends Converter>>()
-                    .put(Integer.class, StringToIntegerConverter.class)
-                    .put(Long.class, StringToLongConverter.class)
-                    .put(Float.class, StringToFloatConverter.class)
-                    .put(Double.class, StringToDoubleConverter.class)
-                    .put(BigDecimal.class, StringToBigDecimalConverter.class)
-                    .build();
+    private static final Set<Class<?>> TO_STRING_CONVERTIBLE_TYPES = ImmutableSet.of(Integer.class, Long.class,
+            Float.class, Double.class, BigDecimal.class);
 
     @Override
     public <T extends Field> T createField(Object bean, Class<?> propertyType, Object propertyId, Class<T> fieldType) {
-        return super.createField(propertyType, fieldType);
+        return createField(propertyType, fieldType);
     }
 
     @Override
@@ -64,9 +57,9 @@ public class AxFieldFactory extends DefaultFieldGroupFieldFactory implements Bea
             ((AbstractField) field).setValidationVisible(false); // Zapneme až při prvním commitu v AxBinder
         }
 
-        if (NUMBER_CONVERTERS.containsKey(propertyType)) {
+        if (TO_STRING_CONVERTIBLE_TYPES.contains(propertyType)) {
             if (field instanceof AbstractTextField || field instanceof LabelField) {
-                ((AbstractField) field).setConverter(NUMBER_CONVERTERS.get(propertyType));
+                ((AbstractField) field).setConverter(propertyType);
             }
         }
     }
