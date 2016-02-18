@@ -1,15 +1,13 @@
 package cz.req.ax.util;
 
-import com.google.common.base.Strings;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.*;
-import cz.req.ax.AxUtils;
 import cz.req.ax.ui.AxWindow;
 import cz.req.ax.ui.AxWindowButton;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -27,7 +25,7 @@ public class AxDefaults {
         return instance;
     }
 
-    private Map<Class<?>, Consumer<Object>> configurers = new HashMap<>();
+    private List<Configurer> configurers = new ArrayList<>();
 
     // TODO message.properties
     public String requiredError = "Není vyplněna povinná hodnota.";
@@ -97,12 +95,21 @@ public class AxDefaults {
         return captionSuffix;
     }
 
-    public void clear() {
+    public void clearAll() {
         configurers.clear();
     }
 
+    public void clear(Class<?> type) {
+        configurers.removeIf(c -> c.type.equals(type));
+    }
+
+    public <T> void redefine(Class<T> type, Consumer<T> configurer) {
+        clear(type);
+        define(type, configurer);
+    }
+
     public <T> void define(Class<T> type, Consumer<T> configurer) {
-        configurers.put(type, (Consumer<Object>) configurer);
+        configurers.add(new Configurer(type, configurer));
     }
 
     public <T> T apply(T object) {
@@ -110,12 +117,24 @@ public class AxDefaults {
             return null;
         }
         Class<?> objectType = object.getClass();
-        configurers.forEach((type, configurer) -> {
-            if (type.isAssignableFrom(objectType)) {
-                configurer.accept(object);
+        for (Configurer configurer: configurers) {
+            if (configurer.type.isAssignableFrom(objectType)) {
+                configurer.callback.accept(object);
             }
-        });
+        }
         return object;
+    }
+
+    private static class Configurer<T> {
+
+        private Class<T> type;
+        private Consumer<T> callback;
+
+        public Configurer(Class<T> type, Consumer<T> callback) {
+            this.type = type;
+            this.callback = callback;
+        }
+
     }
 
 }

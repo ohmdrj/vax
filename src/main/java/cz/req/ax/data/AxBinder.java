@@ -20,15 +20,6 @@ import java.util.*;
  */
 public class AxBinder<T> extends BeanFieldGroup<T> {
 
-    private static final Map<Class<? extends Number>, Class<? extends Converter>> NUMBER_CONVERTERS =
-            new ImmutableMap.Builder<Class<? extends Number>, Class<? extends Converter>>()
-                    .put(Integer.class, StringToIntegerConverter.class)
-                    .put(Long.class, StringToLongConverter.class)
-                    .put(Float.class, StringToFloatConverter.class)
-                    .put(Double.class, StringToDoubleConverter.class)
-                    .put(BigDecimal.class, StringToBigDecimalConverter.class)
-                    .build();
-
     public AxBinder(Class<T> beanType) {
         this(AxUtils.newInstance(beanType));
     }
@@ -69,8 +60,8 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
 
     private <T extends Field> T build(String caption, Class<?> propertyType, Object propertyId, Class<T> fieldType) throws BindException {
         T field = null;
-        if (getFieldFactory() instanceof AxFieldFactory) {
-            field = ((AxFieldFactory) getFieldFactory()).createField(getBean(), propertyType, propertyId, fieldType);
+        if (getFieldFactory() instanceof BeanFieldFactory) {
+            field = ((BeanFieldFactory) getFieldFactory()).createField(getBean(), propertyType, propertyId, fieldType);
         }
         if (field == null) {
             field = getFieldFactory().createField(propertyType, fieldType);
@@ -109,19 +100,10 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
     @Override
     protected void configureField(Field<?> field) {
         super.configureField(field);
-
-        Ax.defaults(field);
-        AxUtils.appendCaptionSuffix(field, Ax.defaults().getCaptionSuffix());
-
-        if (field instanceof AbstractField) {
-            ((AbstractField) field).setValidationVisible(false); // Zapneme až při prvním commitu
-        }
-
-        Class propertyType = field.getPropertyDataSource().getType();
-        if (NUMBER_CONVERTERS.containsKey(propertyType)) {
-            if (field instanceof AbstractTextField || field instanceof LabelField) {
-                ((AbstractField) field).setConverter(NUMBER_CONVERTERS.get(propertyType));
-            }
+        if (getFieldFactory() instanceof BeanFieldConfigurer) {
+            Class propertyType = field.getPropertyDataSource().getType();
+            Object propertyId = getPropertyId(field);
+            ((BeanFieldConfigurer) getFieldFactory()).configureField(getBean(), propertyType, propertyId, field);
         }
     }
 
