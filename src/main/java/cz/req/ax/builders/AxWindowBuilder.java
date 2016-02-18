@@ -19,13 +19,6 @@ public class AxWindowBuilder extends WindowBuilder<AxWindow, AxWindowBuilder> {
         super(target, useDefaults);
     }
 
-    @Override
-    protected void applyDefaults() {
-        super.applyDefaults();
-        autoFocusOnFirstField();
-        closeButton();
-    }
-
     public AxWindowBuilder autoFocusOnFirstField() {
         target.setAutoFocusMode(AxWindow.AutoFocusMode.FIRST_FIELD_OR_WINDOW);
         return this;

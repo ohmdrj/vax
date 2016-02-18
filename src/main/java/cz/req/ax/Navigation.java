@@ -35,23 +35,43 @@ public interface Navigation {
         return action;
     }
 
+    /**
+     * @deprecated use {@link Ax#navigate(Class, Object...)}
+     */
+    @Deprecated
     default void navigate(Class<? extends AxView> viewClass) {
         navigate(viewName(viewClass), null);
     }
 
+    /**
+     * @deprecated use {@link Ax#navigate(Class, Object...)}
+     */
+    @Deprecated
     default void navigate(Class<? extends AxView> viewClass, Object... parameter) {
         navigate(viewName(viewClass), parameter);
     }
 
+    /**
+     * @deprecated use {@link Ax#navigate(String, Object...)}
+     */
+    @Deprecated
     default void navigate(String viewName) {
         navigate(viewName, null);
     }
 
+    /**
+     * @deprecated use {@link Ax#navigate(String, Object...)}
+     */
+    @Deprecated
     default void navigate(String viewName, Object... parameters) {
         String viewState = AxUtils.makeURL(viewName, parameters);
         UI.getCurrent().getNavigator().navigateTo(viewState);
     }
 
+    /**
+     * @deprecated use {@link Ax#navigate()} - {@code Ax.navigate().back()}
+     */
+    @Deprecated
     default void navigateBack() {
         JavaScript.eval("window.history.back();");
     }

@@ -17,12 +17,6 @@ public class UploadBuilder extends ComponentBuilder<Upload, UploadBuilder> {
     }
 
     @Override
-    protected void applyDefaults() {
-        super.applyDefaults();
-        caption("Nahrát soubor");
-    }
-
-    @Override
     public UploadBuilder caption(String caption) {
         target.setButtonCaption(caption);
         return this;

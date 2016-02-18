@@ -18,12 +18,6 @@ public class LabelBuilder extends ComponentBuilder<Label, LabelBuilder> {
         super(target, useDefaults);
     }
 
-    @Override
-    protected void applyDefaults() {
-        super.applyDefaults();
-        sizeUndefined();
-    }
-
     public LabelBuilder value(String value) {
         target.setValue(value);
         return this;

@@ -246,9 +246,9 @@ public class AxAction<T> implements Cloneable {
     public <B extends AbstractButtonBuilder> B createButton(B builder) {
         builder.caption(caption).icon(icon).description(description);
         if (builder instanceof AxWindowButtonBuilder) {
-            ((AxWindowButtonBuilder) builder).onClick((BooleanSupplier) this::execute);
+            ((AxWindowButtonBuilder) builder).onClick(this::execute);
         } else {
-            builder.onClick((Runnable) this::execute);
+            builder.onClick(this::execute);
         }
         if (shortcutKey >= 0) {
             builder.clickShortcut(shortcutKey, shortcutModifiers);

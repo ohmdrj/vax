@@ -23,12 +23,6 @@ public class AxWindowButtonBuilder extends AbstractButtonBuilder<AxWindowButton,
         super(target, useDefaults);
     }
 
-    @Override
-    protected void applyDefaults() {
-        super.applyDefaults();
-        rightAligned();
-    }
-
     public AxWindowButtonBuilder closesWindow(boolean closes) {
         target.setCloseAfterClick(closes);
         return this;

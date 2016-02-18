@@ -1,10 +1,14 @@
 package cz.req.ax;
 
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.navigator.View;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.*;
 import cz.req.ax.builders.*;
 import cz.req.ax.data.AxBinder;
+import cz.req.ax.util.AxDefaults;
+import cz.req.ax.util.AxNavigator;
+import cz.req.ax.util.AxPolling;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
@@ -48,12 +52,12 @@ public class Ax {
         return button().icon(icon);
     }
 
-    public static CheckBoxBuilder checkBox() {
-        return new CheckBoxBuilder();
-    }
-
     public static LabelBuilder caption(String caption) {
         return label().caption(caption);
+    }
+
+    public static CheckBoxBuilder checkBox() {
+        return new CheckBoxBuilder();
     }
 
     public static CheckBoxBuilder checkBox(String caption) {
@@ -86,6 +90,14 @@ public class Ax {
 
     public static DateTimeFieldBuilder dateTimeField(String caption) {
         return dateTimeField().caption(caption);
+    }
+
+    public static AxDefaults defaults() {
+        return AxDefaults.getInstance();
+    }
+
+    public static <T> T defaults(T object) {
+        return defaults().apply(object);
     }
 
     public static NotificationBuilder error(String message) {
@@ -128,6 +140,18 @@ public class Ax {
         return new AxMessageBuilder(message);
     }
 
+    public static AxNavigator navigate() {
+        return AxNavigator.getCurrent();
+    }
+
+    public static void navigate(Class<? extends View> viewClass, Object... params) {
+        navigate().to(viewClass, params);
+    }
+
+    public static void navigate(String viewName, Object... params) {
+        navigate().to(viewName, params);
+    }
+
     public static NotificationBuilder notify(String message) {
         return tray(message).topCenter();
     }
@@ -146,6 +170,10 @@ public class Ax {
 
     public static PasswordFieldBuilder passwordField(String caption) {
         return passwordField().caption(caption);
+    }
+
+    public static AxPolling polling() {
+        return AxPolling.getCurrent();
     }
 
     public RichTextAreaBuilder richTextArea() {

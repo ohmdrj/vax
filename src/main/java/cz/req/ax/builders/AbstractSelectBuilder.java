@@ -24,14 +24,6 @@ public class AbstractSelectBuilder<F extends AbstractSelect, B extends AbstractS
         super(target, useDefaults);
     }
 
-    @Override
-    protected void applyDefaults() {
-        super.applyDefaults();
-        nullAllowed();
-        newItemsProhibited();
-        filteringMode(FilteringMode.CONTAINS);
-    }
-
     public B container(Container container) {
         target.setContainerDataSource(container);
         return (B) this;

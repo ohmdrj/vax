@@ -7,6 +7,10 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
+/**
+ * @deprecated use {@link Ax#window()} or {@link cz.req.ax.ui.AxWindow}
+ */
+@Deprecated
 public class AxWindow extends RootLayout implements Navigation, Components {
 
     Window window;

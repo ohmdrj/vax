@@ -1,13 +1,11 @@
 package cz.req.ax.data;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.*;
-import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.*;
 import cz.req.ax.*;
 import cz.req.ax.builders.*;
@@ -84,35 +82,41 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
         if (caption != null) {
             field.setCaption(caption);
         }
-        AxUtils.appendCaptionSuffix(field, AxUtils.DEFAULT_CAPTION_SUFFIX);
         return field;
+    }
+
+    @Override
+    public void bind(Field field, Object propertyId) {
+        super.bind(field, propertyId);
+    }
+
+    public boolean isPropertyIdBound(Object propertyId) {
+        return getBoundPropertyIds().contains(propertyId);
+    }
+
+    public boolean isBound(Field<?> field) {
+        return getBoundPropertyIds().contains(getPropertyId(field));
+    }
+
+    public void setBound(Field<?> field, Object propertyId, boolean shouldBeBound) {
+        if (!isBound(field) && !isPropertyIdBound(propertyId) && shouldBeBound) {
+            bind(field, propertyId);
+        } else if (isBound(field) && !shouldBeBound) {
+            unbind(field);
+        }
     }
 
     @Override
     protected void configureField(Field<?> field) {
         super.configureField(field);
 
-        if (field instanceof AbstractComponent) {
-            ((AbstractComponent) field).setImmediate(true);
-        }
+        Ax.defaults(field);
+        AxUtils.appendCaptionSuffix(field, Ax.defaults().getCaptionSuffix());
+
         if (field instanceof AbstractField) {
-            ((AbstractField) field).setConversionError(AxUtils.DEFAULT_INVALID_VALUE_ERROR);
+            ((AbstractField) field).setValidationVisible(false); // Zapneme až při prvním commitu
         }
-        if (field instanceof AbstractTextField) {
-            ((AbstractTextField) field).setNullSettingAllowed(false);
-            ((AbstractTextField) field).setNullRepresentation("");
-        }
-        if (field instanceof RichTextArea) {
-            ((RichTextArea) field).setNullSettingAllowed(false);
-            ((RichTextArea) field).setNullRepresentation("");
-        }
-        if (field instanceof AbstractSelect) {
-            ((AbstractSelect) field).setNullSelectionAllowed(true);
-            ((AbstractSelect) field).setNewItemsAllowed(false);
-        }
-        if (field instanceof AbstractSelect.Filtering) {
-            ((AbstractSelect.Filtering) field).setFilteringMode(FilteringMode.CONTAINS);
-        }
+
         Class propertyType = field.getPropertyDataSource().getType();
         if (NUMBER_CONVERTERS.containsKey(propertyType)) {
             if (field instanceof AbstractTextField || field instanceof LabelField) {
@@ -124,8 +128,8 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
     @Override
     public void commit() throws FieldGroup.CommitException {
         for (Field field: getFields()) {
-            if (field.isRequired() && Strings.isNullOrEmpty(field.getRequiredError())) {
-                field.setRequiredError("Není vyplněna hodnota.");
+            if (field instanceof AbstractField) {
+                ((AbstractField) field).setValidationVisible(true);
             }
         }
         super.commit();

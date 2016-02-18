@@ -20,6 +20,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * @deprecated use {@link Ax#action()} or {@link cz.req.ax.ui.AxAction}
+ */
+@Deprecated
 public class AxAction<T> implements Cloneable {
 
     public static AxAction SEPARATOR = new AxAction();

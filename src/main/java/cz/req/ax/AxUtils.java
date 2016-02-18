@@ -1,19 +1,16 @@
 package cz.req.ax;
 
+import com.vaadin.data.Property;
+import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.*;
 
 import javax.servlet.http.Cookie;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 public class AxUtils {
-
-    // TODO message.properties
-    public static String DEFAULT_CAPTION_SUFFIX = ":";
-    public static String DEFAULT_REQUIRED_ERROR = "Není vyplněna povinná hodnota.";
-    public static String DEFAULT_INVALID_VALUE_ERROR = "Byla zadána neplatná hodnota.";
-    public static String FALLBACK_COMMIT_ERROR = "Nelze potvrdit formulářová data.";
 
     public static String readCookie(String name) {
         for (Cookie cookie : VaadinService.getCurrentRequest().getCookies()) {
