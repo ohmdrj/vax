@@ -1,55 +1,34 @@
 package cz.req.ax.data;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.vaadin.data.fieldgroup.DefaultFieldGroupFieldFactory;
-import com.vaadin.data.util.converter.*;
-import com.vaadin.shared.ui.combobox.FilteringMode;
-import com.vaadin.ui.*;
+import com.vaadin.ui.AbstractField;
+import com.vaadin.ui.AbstractTextField;
+import com.vaadin.ui.Field;
 import cz.req.ax.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
  *         Date: 12.1.2016
  */
-public class AxFieldFactory extends DefaultFieldGroupFieldFactory {
+public class AxFieldFactory extends DefaultFieldGroupFieldFactory implements BeanFieldFactory, BeanFieldConfigurer {
 
-    private static final Map<Class<? extends Number>, Class<? extends Converter>> NUMBER_CONVERTERS =
-            new ImmutableMap.Builder<Class<? extends Number>, Class<? extends Converter>>()
-                    .put(Integer.class, StringToIntegerConverter.class)
-                    .put(Long.class, StringToLongConverter.class)
-                    .put(Float.class, StringToFloatConverter.class)
-                    .put(Double.class, StringToDoubleConverter.class)
-                    .put(BigDecimal.class, StringToBigDecimalConverter.class)
-                    .build();
+    private static final Set<Class<?>> TO_STRING_CONVERTIBLE_TYPES = ImmutableSet.of(Integer.class, Long.class,
+            Float.class, Double.class, BigDecimal.class);
+
+    @Override
+    public <T extends Field> T createField(Object bean, Class<?> propertyType, Object propertyId, Class<T> fieldType) {
+        return createField(propertyType, fieldType);
+    }
 
     @Override
     public <T extends Field> T createField(Class<?> propertyType, Class<T> fieldType) {
-        T field = instantiateField(propertyType, fieldType);
-        if (field != null) {
-            configureField(propertyType, field);
-        }
-        return field;
-    }
-
-    public <T extends Field> T createField(Object bean, Class<?> propertyType, Object propertyId, Class<T> fieldType) {
-        T field = instantiateField(bean, propertyType, propertyId, fieldType);
-        if (field != null) {
-            configureField(bean, propertyType, propertyId, field);
-        }
-        return field;
-    }
-
-    protected <T extends Field> T instantiateField(Object bean, Class<?> propertyType, Object propertyId, Class<T> fieldType) {
-        return instantiateField(propertyType, fieldType);
-    }
-
-    protected <T extends Field> T instantiateField(Class<?> propertyType, Class<T> fieldType) {
         if (AxComboBox.class.equals(fieldType)) {
             AxComboBox<Object> comboBox = new AxComboBox<>();
             if (Enum.class.isAssignableFrom(fieldType)) {
@@ -69,35 +48,18 @@ public class AxFieldFactory extends DefaultFieldGroupFieldFactory {
         return super.createField(propertyType, fieldType);
     }
 
-    protected <T extends Field> void configureField(Object bean, Class<?> propertyType, Object propertyId, T field) {
-        configureField(propertyType, field);
-    }
+    @Override
+    public <T extends Field> void configureField(Object bean, Class<?> propertyType, Object propertyId, T field) {
+        Ax.defaults(field);
+        AxUtils.appendCaptionSuffix(field, Ax.defaults().getCaptionSuffix());
 
-    protected <T extends Field> void configureField(Class<?> propertyType, T field) {
-        if (field instanceof AbstractComponent) {
-            ((AbstractComponent) field).setImmediate(true);
-        }
         if (field instanceof AbstractField) {
-            ((AbstractField) field).setConversionError(AxUtils.DEFAULT_INVALID_VALUE_ERROR);
+            ((AbstractField) field).setValidationVisible(false); // Zapneme až při prvním commitu v AxBinder
         }
-        if (field instanceof AbstractTextField) {
-            ((AbstractTextField) field).setNullSettingAllowed(false);
-            ((AbstractTextField) field).setNullRepresentation("");
-        }
-        if (field instanceof RichTextArea) {
-            ((RichTextArea) field).setNullSettingAllowed(false);
-            ((RichTextArea) field).setNullRepresentation("");
-        }
-        if (field instanceof AbstractSelect) {
-            ((AbstractSelect) field).setNullSelectionAllowed(true);
-            ((AbstractSelect) field).setNewItemsAllowed(false);
-        }
-        if (field instanceof AbstractSelect.Filtering) {
-            ((AbstractSelect.Filtering) field).setFilteringMode(FilteringMode.CONTAINS);
-        }
-        if (NUMBER_CONVERTERS.containsKey(propertyType)) {
+
+        if (TO_STRING_CONVERTIBLE_TYPES.contains(propertyType)) {
             if (field instanceof AbstractTextField || field instanceof LabelField) {
-                ((AbstractField) field).setConverter(NUMBER_CONVERTERS.get(propertyType));
+                ((AbstractField) field).setConverter(propertyType);
             }
         }
     }

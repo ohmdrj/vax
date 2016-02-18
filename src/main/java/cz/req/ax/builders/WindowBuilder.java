@@ -20,17 +20,6 @@ public class WindowBuilder<W extends Window, B extends WindowBuilder<W, B>> exte
         captionSuffix(null);
     }
 
-    @Override
-    protected void applyDefaults() {
-        super.applyDefaults();
-        modal();
-        undraggable();
-        uncloseable();
-        unresizable();
-        closeOnEscape();
-        centered();
-    }
-
     public B content(Component component) {
         target.setContent(component);
         return (B) this;

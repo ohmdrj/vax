@@ -1,19 +1,18 @@
 package cz.req.ax.data;
 
-import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.converter.*;
 import com.vaadin.ui.*;
 import cz.req.ax.*;
 import cz.req.ax.builders.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
@@ -61,8 +60,8 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
 
     private <T extends Field> T build(String caption, Class<?> propertyType, Object propertyId, Class<T> fieldType) throws BindException {
         T field = null;
-        if (getFieldFactory() instanceof AxFieldFactory) {
-            field = ((AxFieldFactory) getFieldFactory()).createField(getBean(), propertyType, propertyId, fieldType);
+        if (getFieldFactory() instanceof BeanFieldFactory) {
+            field = ((BeanFieldFactory) getFieldFactory()).createField(getBean(), propertyType, propertyId, fieldType);
         }
         if (field == null) {
             field = getFieldFactory().createField(propertyType, fieldType);
@@ -74,15 +73,52 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
         if (caption != null) {
             field.setCaption(caption);
         }
-        AxUtils.appendCaptionSuffix(field, AxUtils.DEFAULT_CAPTION_SUFFIX);
         return field;
     }
 
     @Override
+    public void bind(Field field, Object propertyId) {
+        super.bind(field, propertyId);
+    }
+
+    public boolean isPropertyIdBound(Object propertyId) {
+        return getBoundPropertyIds().contains(propertyId);
+    }
+
+    public boolean isBound(Field<?> field) {
+        return getBoundPropertyIds().contains(getPropertyId(field));
+    }
+
+    public void setBound(Field<?> field, Object propertyId, boolean shouldBeBound) {
+        if (!isBound(field) && !isPropertyIdBound(propertyId) && shouldBeBound) {
+            bind(field, propertyId);
+        } else if (isBound(field) && !shouldBeBound) {
+            unbind(field);
+        }
+    }
+
+    @Override
+    protected void configureField(Field<?> field) {
+        super.configureField(field);
+        if (getFieldFactory() instanceof BeanFieldConfigurer) {
+            Class propertyType = field.getPropertyDataSource().getType();
+            Object propertyId = getPropertyId(field);
+            ((BeanFieldConfigurer) getFieldFactory()).configureField(getBean(), propertyType, propertyId, field);
+        }
+    }
+
+    @Override
     public void commit() throws FieldGroup.CommitException {
+        // V zakladu maji vsechny fieldy vypnuto zobrazeni validacnich chyb (AxFieldFactory#configureField),
+        // Viditelnost chyb zapneme az po prvnim potvrzeni formulare, aby uzivatel do te doby videl cisty
+        // formular (bez chyb). Toto udelame pouze pro viditelne fieldy
         for (Field field: getFields()) {
-            if (field.isRequired() && Strings.isNullOrEmpty(field.getRequiredError())) {
-                field.setRequiredError("Není vyplněna hodnota.");
+            if (field instanceof AbstractField) {
+                AbstractField abstractField = (AbstractField) field;
+                if (field.isVisible()) {
+                    // Netestovat zda ma jiz priznak nastaven, nektere slozitejsi komponenty to vyzaduji!
+                    abstractField.setValidationVisible(true);
+                }
             }
         }
         super.commit();

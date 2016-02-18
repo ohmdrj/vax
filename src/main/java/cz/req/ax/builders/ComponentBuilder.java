@@ -5,7 +5,9 @@ import com.vaadin.server.Resource;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
+import cz.req.ax.Ax;
 import cz.req.ax.AxUtils;
+import cz.req.ax.util.AxDefaults;
 
 import java.util.function.Consumer;
 
@@ -19,12 +21,7 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
         super(target, useDefaults);
     }
 
-    private String captionSuffix = AxUtils.DEFAULT_CAPTION_SUFFIX;
-
-    protected void applyDefaults() {
-        super.applyDefaults();
-        immediate();
-    }
+    private String captionSuffix = Ax.defaults().getCaptionSuffix();
 
     public B caption(String caption) {
         target.setCaption(caption);

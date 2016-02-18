@@ -12,18 +12,11 @@ import cz.req.ax.ui.AxWindowButton;
 public class AxWindowBuilder extends WindowBuilder<AxWindow, AxWindowBuilder> {
 
     public AxWindowBuilder() {
-        super(new AxWindow(null, false), true);
+        super(new AxWindow(), true);
     }
 
     public AxWindowBuilder(AxWindow target, boolean useDefaults) {
         super(target, useDefaults);
-    }
-
-    @Override
-    protected void applyDefaults() {
-        super.applyDefaults();
-        autoFocusOnFirstField();
-        closeButton();
     }
 
     public AxWindowBuilder autoFocusOnFirstField() {

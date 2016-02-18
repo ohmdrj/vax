@@ -16,13 +16,6 @@ public class AbstractTextFieldBuilder<F extends AbstractTextField, B extends Abs
         super(target, useDefaults);
     }
 
-    @Override
-    protected void applyDefaults() {
-        super.applyDefaults();
-        nullProhibited();
-        nullRepresentation("");
-    }
-
     public B nullAllowed(boolean allowed) {
         target.setNullSettingAllowed(allowed);
         return (B) this;

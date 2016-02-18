@@ -16,13 +16,6 @@ public class RichTextAreaBuilder extends FieldBuilder<String, RichTextArea, Rich
         super(target, useDefaults);
     }
 
-    @Override
-    protected void applyDefaults() {
-        super.applyDefaults();
-        nullProhibited();
-        nullRepresentation("");
-    }
-
     public RichTextAreaBuilder nullAllowed(boolean allowed) {
         target.setNullSettingAllowed(allowed);
         return this;

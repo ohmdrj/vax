@@ -11,9 +11,9 @@ import com.vaadin.ui.Label;
 
 
 /**
- * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
- *         Date: 29.4.2015
+ * @deprecated use {@link Ax#message(String)}
  */
+@Deprecated
 public class AxMessage extends AxWindow {
 
     private static final int DEFAULT_WIDTH = 500;

@@ -4,7 +4,10 @@ import com.vaadin.data.Validator;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Field;
+import cz.req.ax.Ax;
 import cz.req.ax.AxUtils;
+import cz.req.ax.util.AxDefaults;
+import cz.req.ax.util.ToBooleanFunction;
 
 import java.util.function.Consumer;
 
@@ -16,13 +19,6 @@ public class FieldBuilder<V, F extends Field<V>, B extends FieldBuilder<V, F, B>
 
     public FieldBuilder(F target, boolean useDefaults) {
         super(target, useDefaults);
-    }
-
-    @Override
-    protected void applyDefaults() {
-        super.applyDefaults();
-        requiredError(AxUtils.DEFAULT_REQUIRED_ERROR);
-        conversionError(AxUtils.DEFAULT_INVALID_VALUE_ERROR);
     }
 
     public B required(boolean required) {
@@ -53,8 +49,12 @@ public class FieldBuilder<V, F extends Field<V>, B extends FieldBuilder<V, F, B>
         return (B) this;
     }
 
-    public B validate(Consumer<V> validator) {
-        return validator(v -> validator.accept((V) v));
+    public B validate(ToBooleanFunction<V> validator) {
+        return validator(value -> {
+            if (value != null && !validator.applyAsBoolean((V) value)) {
+                throw new Validator.InvalidValueException(Ax.defaults().getInvalidValueError());
+            }
+        });
     }
 
     public B onChange(Consumer<V> listener) {

@@ -5,10 +5,7 @@ import com.vaadin.data.Validator;
 import com.vaadin.event.ListenerMethod;
 import com.vaadin.server.ErrorEvent;
 import com.vaadin.server.ErrorHandler;
-import com.vaadin.server.Page;
 import com.vaadin.server.ServerRpcManager;
-import com.vaadin.shared.Position;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,8 +85,8 @@ public class AxErrorHandler implements ErrorHandler {
     protected String getInvalidValueMessage(Validator.InvalidValueException exception) {
         if (Strings.isNullOrEmpty(exception.getMessage())) {
             return exception instanceof Validator.EmptyValueException
-                    ? AxUtils.DEFAULT_REQUIRED_ERROR
-                    : AxUtils.DEFAULT_INVALID_VALUE_ERROR;
+                    ? Ax.defaults().getRequiredError()
+                    : Ax.defaults().getInvalidValueError();
         }
         return exception.getMessage();
     }

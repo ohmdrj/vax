@@ -16,10 +16,4 @@ public class CssLayoutBuilder extends AbstractLayoutBuilder<CssLayout, CssLayout
         super(target, useDefaults);
     }
 
-    @Override
-    protected void applyDefaults() {
-        super.applyDefaults();
-        sizeUndefined();
-    }
-
 }
