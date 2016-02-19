@@ -1,5 +1,7 @@
 package cz.req.ax.builders;
 
+import com.vaadin.event.LayoutEvents;
+import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Component;
 
@@ -17,6 +19,21 @@ public class AbstractLayoutBuilder<L extends AbstractLayout, B extends AbstractL
     public B add(Component... components) {
         target.addComponents(components);
         return (B) this;
+    }
+
+    public B onClick(LayoutEvents.LayoutClickListener listener) {
+        if (target instanceof LayoutEvents.LayoutClickNotifier) {
+            ((LayoutEvents.LayoutClickNotifier) target).addLayoutClickListener(listener);
+        }
+        return (B) this;
+    }
+
+    public B onClick(Runnable listener) {
+        return onClick(e -> {
+            if (e.getButton() == MouseEventDetails.MouseButton.LEFT && !e.isDoubleClick()) {
+                listener.run();
+            }
+        });
     }
 
 }
