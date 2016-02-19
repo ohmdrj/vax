@@ -4,8 +4,9 @@ import cz.req.ax.AxUtils;
 import cz.req.ax.data.AxContainer;
 
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
@@ -27,6 +28,10 @@ public abstract class AxContainerBuilder<ID, BEAN, CONTAINER extends AxContainer
         CONTAINER container = get();
         container.addAll(collection);
         return container;
+    }
+
+    public CONTAINER of(Stream<? extends BEAN> stream) {
+        return of(stream.collect(Collectors.toList()));
     }
 
     public CONTAINER of(BEAN bean, BEAN... otherBeans) {
