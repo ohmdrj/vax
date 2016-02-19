@@ -23,8 +23,9 @@ public class AxBeanItemContainer<BEAN> extends BeanItemContainer<BEAN> implement
         Collection<ItemSetChangeListener> listeners = getItemSetChangeListeners();
         setItemSetChangeListeners(null);
         removeAllItems();
-        setItemSetChangeListeners(listeners);
         addAll(beans);
+        setItemSetChangeListeners(listeners);
+        fireItemSetChange();
     }
 
     @Override
