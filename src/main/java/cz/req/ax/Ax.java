@@ -148,6 +148,18 @@ public class Ax {
         return cssLayout(components).get();
     }
 
+    public static MenuBarBuilder menuBar() {
+        return new MenuBarBuilder();
+    }
+
+    public static MenuBuilder menu(MenuBar menuBar) {
+        return new MenuBuilder(menuBar);
+    }
+
+    public static MenuBuilder menu(MenuBar.MenuItem parentItem) {
+        return new MenuBuilder(parentItem);
+    }
+
     public static MenuItemBuilder menuItem(MenuBar menuBar) {
         return new MenuItemBuilder(menuBar);
     }
