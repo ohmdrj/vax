@@ -39,6 +39,16 @@ public class ObjectIdentity {
         } catch (IntrospectionException e) {
             throw new RuntimeException(e);
         }*/
+        PropertyDescriptor descriptor = property(clazz);
+        //TODO Burianek Id annotation on getter?
+        if (descriptor == null)
+            throw new IllegalArgumentException("Missing Id annotation at class " + clazz.getCanonicalName());
+        method = descriptor.getReadMethod();
+        map.put(clazz, method);
+        return method;
+    }
+
+    public static PropertyDescriptor property(Class clazz) {
         PropertyDescriptor descriptor = null;
 
         for (Field field : fields(new LinkedList<>(), clazz)) {
@@ -50,12 +60,7 @@ public class ObjectIdentity {
                 //Preskocime
             }
         }
-        //TODO Burianek Id annotation on getter?
-        if (descriptor == null)
-            throw new IllegalArgumentException("Missing Id annotation at class " + clazz.getCanonicalName());
-        method = descriptor.getReadMethod();
-        map.put(clazz, method);
-        return method;
+        return descriptor;
     }
 
     static List<Field> fields(List<Field> fields, Class<?> type) {

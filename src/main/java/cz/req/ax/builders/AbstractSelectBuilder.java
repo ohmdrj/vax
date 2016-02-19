@@ -1,16 +1,13 @@
 package cz.req.ax.builders;
 
 import com.vaadin.data.Container;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.AbstractSelect;
-import cz.req.ax.AxBinder;
+import cz.req.ax.Ax;
 import cz.req.ax.AxComboBox;
 
-import java.util.EnumSet;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -30,7 +27,7 @@ public class AbstractSelectBuilder<F extends AbstractSelect, B extends AbstractS
     }
 
     public <E extends Enum<E>> B container(Class<E> enumType) {
-        return container(new BeanItemContainer<E>(enumType, EnumSet.allOf(enumType)));
+        return container(Ax.enumContainer(enumType).ofAll());
     }
 
     public B select(Object value) {

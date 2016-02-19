@@ -72,6 +72,10 @@ public class Ax {
         return comboBox().caption(caption);
     }
 
+    public static <T> AxBeanItemContainerBuilder<T> container(Class<T> beanType) {
+        return new AxBeanItemContainerBuilder<>(beanType);
+    }
+
     public static CssLayoutBuilder cssLayout(Component... components) {
         return new CssLayoutBuilder().add(components);
     }
@@ -98,6 +102,10 @@ public class Ax {
 
     public static <T> T defaults(T object) {
         return defaults().apply(object);
+    }
+
+    public static <T extends Enum<T>> EnumContainerBuilder<T> enumContainer(Class<T> enumType) {
+        return new EnumContainerBuilder<>(enumType);
     }
 
     public static NotificationBuilder error(String message) {

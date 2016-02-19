@@ -14,8 +14,8 @@ public class AbstractLayoutBuilder<L extends AbstractLayout, B extends AbstractL
         super(target, useDefaults);
     }
 
-    public B add(Component... otherComponents) {
-        target.addComponents(otherComponents);
+    public B add(Component... components) {
+        target.addComponents(components);
         return (B) this;
     }
 

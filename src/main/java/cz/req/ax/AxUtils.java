@@ -1,14 +1,10 @@
 package cz.req.ax;
 
-import com.vaadin.data.Property;
-import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.*;
 
 import javax.servlet.http.Cookie;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
 public class AxUtils {
 
@@ -99,6 +95,13 @@ public class AxUtils {
         if (caption != null && suffix != null && caption.endsWith(suffix)) {
             component.setCaption(caption.substring(0, caption.length() - suffix.length()));
         }
+    }
+
+    public static <T> List<T> concat(T element, T... otherElements) {
+        Object[] array = new Object[otherElements.length + 1];
+        array[0] = element;
+        System.arraycopy(otherElements, 0, array, 1, otherElements.length);
+        return (List<T>) Arrays.asList(array);
     }
 
 }

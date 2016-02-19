@@ -26,7 +26,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 
-//TODO Refactor flow API
+/**
+ * @deprecated use {@link cz.req.ax.data.AxBinder} + {@link FormLayout}
+ */
+@Deprecated
 public class AxForm<T> extends CustomComponent {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());

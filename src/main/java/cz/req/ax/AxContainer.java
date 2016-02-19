@@ -77,4 +77,5 @@ public class AxContainer<T> extends AxBeanContainer<T> implements Refresh {
         removeAllItems();
         if (items != null) addAll(items);
     }
+
 }
