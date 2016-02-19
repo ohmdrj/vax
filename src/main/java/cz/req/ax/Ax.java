@@ -116,6 +116,18 @@ public class Ax {
         return label("<hr>").html().widthFull().get();
     }
 
+    public static Label h1(String caption) {
+        return label(caption).header(1).get();
+    }
+
+    public static Label h2(String caption) {
+        return label(caption).header(2).get();
+    }
+
+    public static Label h3(String caption) {
+        return label(caption).header(3).get();
+    }
+
     public static LabelBuilder icon(Resource icon) {
         return label().icon(icon);
     }
