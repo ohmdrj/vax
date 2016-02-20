@@ -3,6 +3,7 @@ package cz.req.ax.builders;
 import cz.req.ax.AxUtils;
 import cz.req.ax.data.AxContainer;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -32,14 +33,14 @@ public abstract class AxContainerBuilder<ID, BEAN, CONTAINER extends AxContainer
         return container;
     }
 
+    public CONTAINER of(BEAN... beans) {
+        return of(Arrays.asList(beans));
+    }
+
     public CONTAINER of(Stream<? extends BEAN> stream) {
         // Musi byt v promenne, jinak mi to javac neprelozi
         Collector<BEAN, ?, List<BEAN>> collector = Collectors.toList();
         return of(stream.collect(collector));
-    }
-
-    public CONTAINER of(BEAN bean, BEAN... otherBeans) {
-        return of(AxUtils.concat(bean, otherBeans));
     }
 
 }

@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.vaadin.ui.*;
 import cz.req.ax.*;
 import cz.req.ax.builders.*;
+import cz.req.ax.action.AxAction;
 import org.springframework.util.Assert;
 
 /**

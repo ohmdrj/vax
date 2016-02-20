@@ -41,4 +41,9 @@ public class MenuBuilder extends AbstractMenuItemBuilder<MenuBuilder> {
         return new MenuBuilder(target);
     }
 
+    public MenuBuilder separator() {
+        target.addSeparator();
+        return this;
+    }
+
 }
