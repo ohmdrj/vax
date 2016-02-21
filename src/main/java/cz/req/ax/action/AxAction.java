@@ -32,7 +32,7 @@ public class AxAction<T> implements Cloneable {
     private boolean visible = true;
 
     private AxAction<?> parent;
-    private List<AxAction<?>> subactions = new ArrayList<>();
+    private List<AxAction<?>> childeren = new ArrayList<>();
     private List<ComponentAdapter> adapters = new ArrayList<>();
     private Consumer<RuntimeException> errorHandler;
 
@@ -54,7 +54,7 @@ public class AxAction<T> implements Cloneable {
 
     public void setCaption(String caption) {
         this.caption = caption;
-        updateAdapters();
+        adapters.forEach(a -> a.setCaption(caption));
     }
 
     public Resource getIcon() {
@@ -63,7 +63,7 @@ public class AxAction<T> implements Cloneable {
 
     public void setIcon(Resource icon) {
         this.icon = icon;
-        updateAdapters();
+        adapters.forEach(a -> a.setIcon(icon));
     }
 
     public String getDescription() {
@@ -72,7 +72,7 @@ public class AxAction<T> implements Cloneable {
 
     public void setDescription(String description) {
         this.description = description;
-        updateAdapters();
+        adapters.forEach(a -> a.setDescription(description));
     }
 
     public int[] getShortcutModifiers() {
@@ -86,7 +86,9 @@ public class AxAction<T> implements Cloneable {
     public void setShortcut(int key, int... modifiers) {
         shortcutKey = key;
         shortcutModifiers = modifiers;
-        updateAdapters();
+        if (key > 0) {
+            adapters.forEach(a -> a.setKeyShortcut(key, modifiers));
+        }
     }
 
     public boolean isVisible() {
@@ -95,7 +97,7 @@ public class AxAction<T> implements Cloneable {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
-        updateAdapters();
+        adapters.forEach(a -> a.setVisible(visible));
     }
 
     public boolean isEnabled() {
@@ -104,7 +106,7 @@ public class AxAction<T> implements Cloneable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-        updateAdapters();
+        adapters.forEach(a -> a.setEnabled(enabled));
     }
 
     public void addRunBefore(Runnable runnable) {
@@ -223,13 +225,12 @@ public class AxAction<T> implements Cloneable {
         Assert.state(subaction.parent == null, "Cannot add subaction that already has a parent");
 
         subaction.parent = this;
-        subactions.add(subaction);
+        childeren.add(subaction);
 
         for (ComponentAdapter adapter: adapters) {
             ComponentAdapter childAdapter = adapter.createChild();
             if (childAdapter != null) {
-                childAdapter.updateState(subaction);
-                subaction.adapters.add(adapter);
+                subaction.addAdapter(childAdapter);
             }
         }
     }
@@ -250,6 +251,20 @@ public class AxAction<T> implements Cloneable {
         return addAdapter(Ax.windowButton());
     }
 
+    public MenuBarBuilder createMenuBar() {
+        MenuBarBuilder builder = Ax.menuBar();
+        createMenu(builder.get());
+        return builder;
+    }
+
+    public MenuBuilder createMenu(MenuBar menuBar) {
+        return addAdapter(Ax.menu(menuBar));
+    }
+
+    public MenuBuilder createMenu(MenuBar.MenuItem parentItem) {
+        return addAdapter(Ax.menu(parentItem));
+    }
+
     public MenuItemBuilder createMenuItem(MenuBar menuBar) {
         return addAdapter(Ax.menuItem(menuBar));
     }
@@ -259,14 +274,21 @@ public class AxAction<T> implements Cloneable {
     }
 
     private <T extends AxBuilder> T addAdapter(T builder) {
-        ComponentAdapter adapter = ComponentAdapter.create(builder.get());
-        adapter.updateState(this);
-        adapters.add(adapter);
+        addAdapter(ComponentAdapter.create(builder.get()));
         return builder;
     }
 
-    private void updateAdapters() {
-        adapters.forEach(a -> a.updateState(this));
+    private void addAdapter(ComponentAdapter adapter) {
+        adapter.setCaption(caption);
+        adapter.setIcon(icon);
+        adapter.setDescription(description);
+        if (shortcutKey > 0) {
+            adapter.setKeyShortcut(shortcutKey, shortcutModifiers);
+        }
+        adapter.setEnabled(enabled);
+        adapter.setVisible(visible);
+        adapter.setExecution(this::execute);
+        adapters.add(adapter);
     }
 
     @Override

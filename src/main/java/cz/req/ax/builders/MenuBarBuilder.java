@@ -46,4 +46,8 @@ public class MenuBarBuilder extends ComponentBuilder<MenuBar, MenuBarBuilder> {
         return menu().caption(caption);
     }
 
+    public MenuBarBuilder link() {
+        return style("link");
+    }
+
 }

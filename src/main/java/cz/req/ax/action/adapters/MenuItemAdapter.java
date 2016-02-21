@@ -1,6 +1,7 @@
 package cz.req.ax.action.adapters;
 
 import com.google.common.base.Strings;
+import com.vaadin.server.Resource;
 import com.vaadin.ui.MenuBar;
 import cz.req.ax.action.AxAction;
 
@@ -19,16 +20,36 @@ class MenuItemAdapter implements ComponentAdapter {
     }
 
     @Override
-    public void updateState(AxAction<?> action) {
-        menuItem.setText(Strings.nullToEmpty(action.getCaption()));
-        menuItem.setIcon(action.getIcon());
-        menuItem.setDescription(action.getDescription());
-        menuItem.setEnabled(action.isEnabled());
-        menuItem.setVisible(action.isVisible());
+    public void setCaption(String caption) {
+        menuItem.setText(Strings.nullToEmpty(caption));
     }
 
     @Override
-    public void setCallback(BooleanSupplier callback) {
+    public void setIcon(Resource icon) {
+        menuItem.setIcon(icon);
+    }
+
+    @Override
+    public void setDescription(String description) {
+        menuItem.setDescription(description);
+    }
+
+    @Override
+    public void setKeyShortcut(int key, int... modifiers) {
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        menuItem.setEnabled(enabled);
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        menuItem.setVisible(visible);
+    }
+
+    @Override
+    public void setExecution(BooleanSupplier callback) {
         menuItem.setCommand(e -> callback.getAsBoolean());
     }
 

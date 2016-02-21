@@ -1,6 +1,10 @@
 package cz.req.ax.builders;
 
+import com.vaadin.server.Resource;
 import com.vaadin.ui.ComboBox;
+import cz.req.ax.ui.AxComboBox;
+
+import java.util.function.Function;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
@@ -9,7 +13,7 @@ import com.vaadin.ui.ComboBox;
 public class ComboBoxBuilder extends AbstractSelectBuilder<ComboBox, ComboBoxBuilder> {
 
     public ComboBoxBuilder() {
-        super(new ComboBox(), true);
+        super(new AxComboBox<>(), true);
     }
 
     public ComboBoxBuilder(ComboBox target, boolean useDefaults) {
@@ -37,6 +41,20 @@ public class ComboBoxBuilder extends AbstractSelectBuilder<ComboBox, ComboBoxBui
 
     public ComboBoxBuilder textInputProhibited() {
         return textInputAllowed(false);
+    }
+
+    public <V> ComboBoxBuilder itemCaption(Function<V, String> function) {
+        if (target instanceof AxComboBox) {
+            ((AxComboBox<V>) target).setItemCaptionFunction(function);
+        }
+        return this;
+    }
+
+    public <V> ComboBoxBuilder itemIcon(Function<V, Resource> function) {
+        if (target instanceof AxComboBox) {
+            ((AxComboBox<V>) target).setItemIconFunction(function);
+        }
+        return this;
     }
 
 }

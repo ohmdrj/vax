@@ -1,18 +1,23 @@
 package cz.req.ax.data;
 
-import com.google.common.collect.ImmutableMap;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.converter.*;
 import com.vaadin.ui.*;
-import cz.req.ax.*;
+import cz.req.ax.AxUtils;
+import cz.req.ax.ObjectIdentity;
 import cz.req.ax.builders.*;
+import cz.req.ax.ui.AxComboBox;
+import cz.req.ax.ui.LocalDateField;
+import cz.req.ax.ui.LocalDateTimeField;
+import cz.req.ax.ui.LocalTimeField;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
@@ -209,16 +214,16 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
         return new CheckBoxBuilder(buildAndBind(null, propertyId, CheckBox.class), false);
     }
 
-    public DateFieldBuilder addDateField(Object propertyId) {
-        return new DateFieldBuilder(buildAndBind(null, propertyId, LocalDateField.class), false);
+    public LocalDateFieldBuilder addDateField(Object propertyId) {
+        return new LocalDateFieldBuilder(buildAndBind(null, propertyId, LocalDateField.class), false);
     }
 
-    public TimeFieldBuilder addTimeField(Object propertyId) {
-        return new TimeFieldBuilder(buildAndBind(null, propertyId, LocalTimeField.class), false);
+    public LocalTimeFieldBuilder addTimeField(Object propertyId) {
+        return new LocalTimeFieldBuilder(buildAndBind(null, propertyId, LocalTimeField.class), false);
     }
 
-    public DateTimeFieldBuilder addDateTimeField(Object propertyId) {
-        return new DateTimeFieldBuilder(buildAndBind(null, propertyId, LocalDateTimeField.class), false);
+    public LocalDateTimeFieldBuilder addDateTimeField(Object propertyId) {
+        return new LocalDateTimeFieldBuilder(buildAndBind(null, propertyId, LocalDateTimeField.class), false);
     }
 
     public <LAYOUT extends Layout> LAYOUT fillLayout(LAYOUT layout) {

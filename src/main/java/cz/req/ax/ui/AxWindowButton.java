@@ -50,8 +50,18 @@ public class AxWindowButton extends Button {
     }
 
     @Override
+    protected void fireClick() {
+        super.fireClick();
+        fireWindowClick();
+    }
+
+    @Override
     protected void fireClick(MouseEventDetails details) {
         super.fireClick(details);
+        fireWindowClick();
+    }
+
+    private void fireWindowClick() {
         if (window != null) {
             fireEvent(new ClickEvent(this, window));
             if (closeAfterClick) {

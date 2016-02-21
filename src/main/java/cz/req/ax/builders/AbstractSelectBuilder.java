@@ -5,7 +5,7 @@ import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.AbstractSelect;
 import cz.req.ax.Ax;
-import cz.req.ax.AxComboBox;
+import cz.req.ax.ui.AxComboBox;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -72,22 +72,8 @@ public class AbstractSelectBuilder<F extends AbstractSelect, B extends AbstractS
         return (B) this;
     }
 
-    public <V> B itemCaption(Function<V, String> converter) {
-        if (target instanceof AxComboBox) {
-            ((AxComboBox<V>) target).setItemCaptionFunction(converter);
-        }
-        return (B) this;
-    }
-
     public B itemIcon(Object propertyId) {
         target.setItemIconPropertyId(propertyId);
-        return (B) this;
-    }
-
-    public <V> B itemIcon(Function<V, Resource> converter) {
-        if (target instanceof AxComboBox) {
-            ((AxComboBox<V>) target).setItemIconFunction(converter);
-        }
         return (B) this;
     }
 

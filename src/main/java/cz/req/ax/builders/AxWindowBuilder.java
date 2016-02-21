@@ -30,7 +30,6 @@ public class AxWindowBuilder extends WindowBuilder<AxWindow, AxWindowBuilder> {
     }
 
     public AxWindowBuilder closeButton(String caption) {
-        target.removeCloseButton();
         target.addCloseButton(caption);
         return this;
     }

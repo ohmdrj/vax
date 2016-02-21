@@ -156,6 +156,18 @@ public class AxActionBuilder<T> extends AxBuilder<AxAction<T>, AxActionBuilder<T
         return target.createButton();
     }
 
+    public MenuBarBuilder menuBar() {
+        return target.createMenuBar();
+    }
+
+    public MenuBuilder menu(MenuBar menuBar) {
+        return target.createMenu(menuBar);
+    }
+
+    public MenuBuilder menu(MenuBar.MenuItem parentItem) {
+        return target.createMenu(parentItem);
+    }
+
     public MenuItemBuilder menuItem(MenuBar menuBar) {
         return target.createMenuItem(menuBar);
     }

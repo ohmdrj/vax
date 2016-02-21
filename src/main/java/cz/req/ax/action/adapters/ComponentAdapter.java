@@ -1,5 +1,6 @@
 package cz.req.ax.action.adapters;
 
+import com.vaadin.server.Resource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.MenuBar;
 import cz.req.ax.action.AxAction;
@@ -26,9 +27,19 @@ public interface ComponentAdapter {
         throw new IllegalArgumentException("Cannot adapt object of type " + component.getClass());
     }
 
-    void updateState(AxAction<?> action);
+    void setCaption(String caption);
 
-    void setCallback(BooleanSupplier callback);
+    void setIcon(Resource icon);
+
+    void setDescription(String description);
+
+    void setKeyShortcut(int key, int... modifiers);
+
+    void setEnabled(boolean enabled);
+
+    void setVisible(boolean visible);
+
+    void setExecution(BooleanSupplier callback);
 
     ComponentAdapter createChild();
 

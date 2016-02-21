@@ -18,7 +18,7 @@ class AxWindowButtonAdapter extends ButtonAdapter {
     }
 
     @Override
-    public void setCallback(BooleanSupplier callback) {
+    public void setExecution(BooleanSupplier callback) {
         button.addWindowClickListener(e -> {
             if (callback.getAsBoolean()) {
                 e.getWindow().close();
