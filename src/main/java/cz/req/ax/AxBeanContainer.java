@@ -5,7 +5,10 @@ import com.vaadin.data.util.BeanItem;
 
 import java.util.Collection;
 
-
+/**
+ * @deprecated use {@link Ax#container(Class)} or {@link cz.req.ax.data.AxBeanContainer}
+ */
+@Deprecated
 public class AxBeanContainer<T> extends BeanContainer<Integer, T> {
 
     Class<T> type;

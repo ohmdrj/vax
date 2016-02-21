@@ -9,6 +9,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * @deprecated use {@link Ax#container(Class)} or {@link cz.req.ax.data.AxBeanItemContainer}
+ */
+@Deprecated
 public class AxItemContainer<T> extends BeanItemContainer<T> {
 
     private Collection<Object> sortablePropertyIds;
