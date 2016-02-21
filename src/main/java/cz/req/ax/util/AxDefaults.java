@@ -1,6 +1,7 @@
 package cz.req.ax.util;
 
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.*;
 import cz.req.ax.ui.AxWindow;
@@ -64,7 +65,12 @@ public class AxDefaults {
             select.setFilteringMode(FilteringMode.CONTAINS);
         });
         define(Upload.class, upload -> {
-            upload.setCaption("Nahrát soubor");
+            upload.setButtonCaption("Nahrát soubor");
+        });
+        define(Table.class, table -> {
+            table.setColumnHeaderMode(Table.ColumnHeaderMode.EXPLICIT);
+            table.setWidth(100, Sizeable.Unit.PERCENTAGE);
+            table.setPageLength(0);
         });
         define(Window.class, window -> {
             window.setModal(true);
@@ -79,7 +85,7 @@ public class AxDefaults {
             window.addCloseButton();
         });
         define(AxWindowButton.class, button -> {
-            button.setAlignment(AxWindowButton.Alignment.RIGHT);
+            button.setAlignment(AxWindowButton.Align.RIGHT);
         });
     }
 

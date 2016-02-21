@@ -17,7 +17,7 @@ public class AxWindowButton extends Button {
 
     private AxWindow window;
     private boolean closeAfterClick;
-    private Alignment alignment;
+    private Align alignment;
 
     public AxWindow getWindow() {
         return window;
@@ -35,11 +35,11 @@ public class AxWindowButton extends Button {
         closeAfterClick = close;
     }
 
-    public Alignment getAlignment() {
+    public Align getAlignment() {
         return alignment;
     }
 
-    public void setAlignment(Alignment newAlignment) {
+    public void setAlignment(Align newAlignment) {
         removeStyleName(getAlignmentStyle());
         alignment = newAlignment;
         addStyleName(getAlignmentStyle());
@@ -101,7 +101,7 @@ public class AxWindowButton extends Button {
 
     }
 
-    public enum Alignment {
+    public enum Align {
         LEFT, RIGHT
     }
 

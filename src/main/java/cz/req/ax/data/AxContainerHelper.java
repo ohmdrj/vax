@@ -65,7 +65,7 @@ class AxContainerHelper<ID, BEAN> {
     }
 
     public Collection<?> getSortableContainerPropertyIds() {
-        return sortablePropertyIds != null ? sortablePropertyIds : container.getSortableContainerPropertyIds();
+        return sortablePropertyIds;
     }
 
 }

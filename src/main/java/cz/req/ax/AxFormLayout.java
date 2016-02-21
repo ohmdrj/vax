@@ -10,8 +10,8 @@ import java.util.Map;
  * <strong>Nepoužívat!</strong> Lze nahradit pomocí klasického {@link FormLayout} a {@link Ax}.
  * <pre>
  *      FormLayout layout = new FormLayout();
- *      layout.addComponent(Ax.caption("Popisek").value("Read-only hodnota"));
- *      layout.addComponent(Ax.textField("Popisek").value("Editovatelna hodnota"));
+ *      layout.addComponent(Ax.caption("Popisek").value("Read-only hodnota").get());
+ *      layout.addComponent(Ax.textField("Popisek").value("Editovatelna hodnota").get());
  *      layout.addComponent(binder.buildAndBind("Popisek", "Property"));
  * </pre>
  *

@@ -1,7 +1,12 @@
 package cz.req.ax;
 
 import com.vaadin.data.Property;
+import com.vaadin.data.util.AbstractBeanContainer;
 
+/**
+ * @deprecated use {@link Ax#table(AbstractBeanContainer)}
+ */
+@Deprecated
 public class AxItemTable<T> extends AxTable<T> {
 
     AxItemContainer<T> container;
