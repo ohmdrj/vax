@@ -55,6 +55,7 @@ class MenuItemAdapter implements ComponentAdapter {
 
     @Override
     public ComponentAdapter createChild() {
+        menuItem.setCommand(null);
         return new MenuItemAdapter(this.menuItem.addItem("", null));
     }
 

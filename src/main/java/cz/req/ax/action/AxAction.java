@@ -32,7 +32,7 @@ public class AxAction<T> implements Cloneable {
     private boolean visible = true;
 
     private AxAction<?> parent;
-    private List<AxAction<?>> childeren = new ArrayList<>();
+    private List<AxAction<?>> children = new ArrayList<>();
     private List<ComponentAdapter> adapters = new ArrayList<>();
     private Consumer<RuntimeException> errorHandler;
 
@@ -225,7 +225,7 @@ public class AxAction<T> implements Cloneable {
         Assert.state(subaction.parent == null, "Cannot add subaction that already has a parent");
 
         subaction.parent = this;
-        childeren.add(subaction);
+        children.add(subaction);
 
         for (ComponentAdapter adapter: adapters) {
             ComponentAdapter childAdapter = adapter.createChild();
@@ -289,6 +289,13 @@ public class AxAction<T> implements Cloneable {
         adapter.setVisible(visible);
         adapter.setExecution(this::execute);
         adapters.add(adapter);
+
+        for (AxAction<?> subaction: children) {
+            ComponentAdapter childAdapter = adapter.createChild();
+            if (childAdapter != null) {
+                subaction.addAdapter(childAdapter);
+            }
+        }
     }
 
     @Override
