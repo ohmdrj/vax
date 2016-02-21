@@ -59,11 +59,11 @@ public class AbstractButtonBuilder<C extends Button, B extends AbstractButtonBui
         return style("small");
     }
 
-    public B rightAligned() {
+    public B alignRight() {
         return style("right-aligned");
     }
 
-    public B leftAligned() {
+    public B alignLeft() {
         return style("left-aligned");
     }
 

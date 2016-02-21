@@ -68,7 +68,8 @@ public class AxBeanContainer<ID, BEAN> extends BeanContainer<ID, BEAN> implement
 
     @Override
     public Collection<?> getSortableContainerPropertyIds() {
-        return helper.getSortableContainerPropertyIds();
+        Collection<?> ids = helper.getSortableContainerPropertyIds();
+        return ids != null ? ids : super.getSortableContainerPropertyIds();
     }
 
 }

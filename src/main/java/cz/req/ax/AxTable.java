@@ -2,6 +2,7 @@ package cz.req.ax;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
+import com.vaadin.data.util.AbstractBeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.server.Sizeable;
@@ -13,7 +14,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import cz.req.ax.ui.SelectionColumn;
 
+/**
+ * @deprecated use {@link Ax#table(AbstractBeanContainer)}
+ */
+@Deprecated
 public abstract class AxTable<T> implements ComponentWrapper, Refresh {
 
     static final String HAS_ITEM_CLICK_LISTENER = "has-item-click-listener";

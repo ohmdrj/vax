@@ -1,5 +1,6 @@
 package cz.req.ax;
 
+import com.vaadin.data.util.AbstractBeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.navigator.View;
 import com.vaadin.server.Resource;
@@ -216,12 +217,16 @@ public class Ax {
         return AxPolling.getCurrent();
     }
 
-    public RichTextAreaBuilder richTextArea() {
+    public static RichTextAreaBuilder richTextArea() {
         return new RichTextAreaBuilder();
     }
 
-    public RichTextAreaBuilder richTextArea(String caption) {
+    public static RichTextAreaBuilder richTextArea(String caption) {
         return richTextArea().caption(caption);
+    }
+
+    public static <ID, BEAN> TableBuilder<ID, BEAN> table(AbstractBeanContainer<ID, BEAN> container) {
+        return new TableBuilder().container(container);
     }
 
     public static TextAreaBuilder textArea() {

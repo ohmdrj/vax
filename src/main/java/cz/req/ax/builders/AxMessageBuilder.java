@@ -30,7 +30,7 @@ public class AxMessageBuilder {
         if (USER_EXCEPTIONS.contains(throwable.getClass().getSimpleName())) {
             labelBuilder.value(throwable.getLocalizedMessage());
         }
-        Button showButton = windowBuilder.button("Zobrazit výpis chyby").leftAligned().get();
+        Button showButton = windowBuilder.button("Zobrazit výpis chyby").alignLeft().get();
         showButton.addClickListener(event -> {
             showButton.setVisible(false);
             StringWriter writer = new StringWriter();

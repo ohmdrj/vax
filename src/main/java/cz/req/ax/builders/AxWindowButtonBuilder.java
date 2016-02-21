@@ -54,13 +54,13 @@ public class AxWindowButtonBuilder extends AbstractButtonBuilder<AxWindowButton,
         });
     }
 
-    public AxWindowButtonBuilder rightAligned() {
-        target.setAlignment(AxWindowButton.Alignment.RIGHT);
+    public AxWindowButtonBuilder alignLeft() {
+        target.setAlignment(AxWindowButton.Align.LEFT);
         return this;
     }
 
-    public AxWindowButtonBuilder leftAligned() {
-        target.setAlignment(AxWindowButton.Alignment.LEFT);
+    public AxWindowButtonBuilder alignRight() {
+        target.setAlignment(AxWindowButton.Align.RIGHT);
         return this;
     }
 
