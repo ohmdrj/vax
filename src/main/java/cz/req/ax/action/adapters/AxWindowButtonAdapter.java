@@ -10,16 +10,13 @@ import java.util.function.BooleanSupplier;
  */
 class AxWindowButtonAdapter extends ButtonAdapter {
 
-    private AxWindowButton button;
-
-    public AxWindowButtonAdapter(AxWindowButton button) {
-        super(button);
-        this.button = button;
+    public AxWindowButtonAdapter(AxWindowButton target) {
+        super(target);
     }
 
     @Override
     public void setExecution(BooleanSupplier callback) {
-        button.addWindowClickListener(e -> {
+        ((AxWindowButton) target).addWindowClickListener(e -> {
             if (callback.getAsBoolean()) {
                 e.getWindow().close();
             }

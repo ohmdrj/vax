@@ -24,6 +24,9 @@ public interface ComponentAdapter {
         if (component instanceof MenuBar.MenuItem) {
             return new MenuItemAdapter((MenuBar.MenuItem) component);
         }
+        if (component instanceof MenuBar) {
+            return new MenuBarAdapter((MenuBar) component);
+        }
         throw new IllegalArgumentException("Cannot adapt object of type " + component.getClass());
     }
 

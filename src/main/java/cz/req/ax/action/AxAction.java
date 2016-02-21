@@ -252,6 +252,10 @@ public class AxAction<T> implements Cloneable {
     }
 
     public MenuBarBuilder createMenuBar() {
+        return addAdapter(Ax.menuBar());
+    }
+
+    public MenuBarBuilder createMenu() {
         MenuBarBuilder builder = Ax.menuBar();
         createMenu(builder.get());
         return builder;

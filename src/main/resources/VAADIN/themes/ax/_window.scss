@@ -23,10 +23,12 @@ $ax-window-header-color: $ax-main-focus;
       margin-top: $header-height;
     }
     .ax-window-root {
-      width: 100%;
+      display: block;
       padding: $ax-window-padding;
+      > * {
+        display: block;
+      }
       > .ax-window-footer {
-        width: 100%;
         > .v-button {
           margin-top: $ax-window-padding;
           &.left-aligned {
