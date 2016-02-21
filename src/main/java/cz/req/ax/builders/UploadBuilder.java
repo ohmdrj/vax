@@ -57,4 +57,8 @@ public class UploadBuilder extends ComponentBuilder<Upload, UploadBuilder> {
         return this;
     }
 
+    public UploadBuilder link() {
+        return style("link");
+    }
+
 }

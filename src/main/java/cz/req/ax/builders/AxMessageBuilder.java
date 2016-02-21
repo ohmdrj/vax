@@ -19,16 +19,16 @@ public class AxMessageBuilder {
     private static final Set<String> USER_EXCEPTIONS = ImmutableSet.of("UserException", "ConfigurationException");
 
     private AxWindowBuilder windowBuilder;
-    private LabelBuilder messageBuilder;
+    private LabelBuilder labelBuilder;
 
     public AxMessageBuilder(String message) {
-        messageBuilder = Ax.label(message);
-        windowBuilder = Ax.window().style("ax-message").content(messageBuilder.get()).closeButton();
+        labelBuilder = Ax.label(message);
+        windowBuilder = Ax.window().style("ax-message").content(labelBuilder.get());
     }
 
     public AxMessageBuilder error(Throwable throwable) {
         if (USER_EXCEPTIONS.contains(throwable.getClass().getSimpleName())) {
-            messageBuilder.value(throwable.getLocalizedMessage());
+            labelBuilder.value(throwable.getLocalizedMessage());
         }
         Button showButton = windowBuilder.button("Zobrazit výpis chyby").leftAligned().get();
         showButton.addClickListener(event -> {
@@ -43,7 +43,7 @@ public class AxMessageBuilder {
     }
 
     public AxMessageBuilder html() {
-        messageBuilder.html();
+        labelBuilder.html();
         return this;
     }
 

@@ -21,7 +21,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * @deprecated use {@link Ax#action()} or {@link cz.req.ax.ui.AxAction}
+ * @deprecated use {@link Ax#action()} or {@link cz.req.ax.action.AxAction}
  */
 @Deprecated
 public class AxAction<T> implements Cloneable {

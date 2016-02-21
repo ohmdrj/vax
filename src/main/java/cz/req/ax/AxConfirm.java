@@ -5,6 +5,10 @@ import com.vaadin.ui.Label;
 
 import java.util.Objects;
 
+/**
+ * @deprecated use {@link Ax#confirm(String)}
+ */
+@Deprecated
 public class AxConfirm extends AxWindow {
 
     private String message;

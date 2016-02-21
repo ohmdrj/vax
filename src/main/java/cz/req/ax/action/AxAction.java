@@ -1,23 +1,17 @@
-package cz.req.ax.ui;
+package cz.req.ax.action;
 
-import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
 import com.vaadin.server.Resource;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.MenuBar;
 import cz.req.ax.Ax;
-import cz.req.ax.builders.AbstractButtonBuilder;
-import cz.req.ax.builders.AxWindowButtonBuilder;
-import cz.req.ax.builders.ButtonBuilder;
-import cz.req.ax.builders.MenuItemBuilder;
+import cz.req.ax.action.adapters.*;
+import cz.req.ax.builders.*;
 import cz.req.ax.util.ToBooleanFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
@@ -37,7 +31,9 @@ public class AxAction<T> implements Cloneable {
     private boolean enabled = true;
     private boolean visible = true;
 
-    private List<Object> createdComponents = new ArrayList<>();
+    private AxAction<?> parent;
+    private List<AxAction<?>> children = new ArrayList<>();
+    private List<ComponentAdapter> adapters = new ArrayList<>();
     private Consumer<RuntimeException> errorHandler;
 
     private List<Object> startPhases = new ArrayList<>();
@@ -58,13 +54,7 @@ public class AxAction<T> implements Cloneable {
 
     public void setCaption(String caption) {
         this.caption = caption;
-        for (Object component: createdComponents) {
-            if (component instanceof Component) {
-                ((Component) component).setCaption(caption);
-            } else if (component instanceof MenuBar.MenuItem) {
-                ((MenuBar.MenuItem) component).setText(caption);
-            }
-        }
+        adapters.forEach(a -> a.setCaption(caption));
     }
 
     public Resource getIcon() {
@@ -73,13 +63,7 @@ public class AxAction<T> implements Cloneable {
 
     public void setIcon(Resource icon) {
         this.icon = icon;
-        for (Object component: createdComponents) {
-            if (component instanceof Component) {
-                ((Component) component).setIcon(icon);
-            } else if (component instanceof MenuBar.MenuItem) {
-                ((MenuBar.MenuItem) component).setIcon(icon);
-            }
-        }
+        adapters.forEach(a -> a.setIcon(icon));
     }
 
     public String getDescription() {
@@ -88,22 +72,22 @@ public class AxAction<T> implements Cloneable {
 
     public void setDescription(String description) {
         this.description = description;
-        for (Object component: createdComponents) {
-            if (component instanceof AbstractComponent) {
-                ((AbstractComponent) component).setDescription(description);
-            } else if (component instanceof MenuBar.MenuItem) {
-                ((MenuBar.MenuItem) component).setDescription(description);
-            }
-        }
+        adapters.forEach(a -> a.setDescription(description));
+    }
+
+    public int[] getShortcutModifiers() {
+        return shortcutModifiers;
+    }
+
+    public int getShortcutKey() {
+        return shortcutKey;
     }
 
     public void setShortcut(int key, int... modifiers) {
         shortcutKey = key;
         shortcutModifiers = modifiers;
-        for (Object component: createdComponents) {
-            if (component instanceof Button) {
-                ((Button) component).setClickShortcut(key, modifiers);
-            }
+        if (key > 0) {
+            adapters.forEach(a -> a.setKeyShortcut(key, modifiers));
         }
     }
 
@@ -113,13 +97,7 @@ public class AxAction<T> implements Cloneable {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
-        for (Object component: createdComponents) {
-            if (component instanceof Component) {
-                ((Component) component).setVisible(visible);
-            } else if (component instanceof MenuBar.MenuItem) {
-                ((MenuBar.MenuItem) component).setVisible(visible);
-            }
-        }
+        adapters.forEach(a -> a.setVisible(visible));
     }
 
     public boolean isEnabled() {
@@ -128,13 +106,7 @@ public class AxAction<T> implements Cloneable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-        for (Object component: createdComponents) {
-            if (component instanceof Component) {
-                ((Component) component).setEnabled(enabled);
-            } else if (component instanceof MenuBar.MenuItem) {
-                ((MenuBar.MenuItem) component).setEnabled(enabled);
-            }
-        }
+        adapters.forEach(a -> a.setEnabled(enabled));
     }
 
     public void addRunBefore(Runnable runnable) {
@@ -235,39 +207,99 @@ public class AxAction<T> implements Cloneable {
         return true;
     }
 
-    public ButtonBuilder createButton() {
-        return createButton(Ax.button());
+    public AxAction<?> getParent() {
+        return parent;
     }
 
-    public AxWindowButtonBuilder createWindowButton() {
-        return createButton(Ax.windowButton());
-    }
-
-    public <B extends AbstractButtonBuilder> B createButton(B builder) {
-        builder.caption(caption).icon(icon).description(description);
-        if (builder instanceof AxWindowButtonBuilder) {
-            ((AxWindowButtonBuilder) builder).onClick(this::execute);
-        } else {
-            builder.onClick(this::execute);
-        }
-        if (shortcutKey >= 0) {
-            builder.clickShortcut(shortcutKey, shortcutModifiers);
-        }
-        createdComponents.add(builder.get());
+    public AxActionBuilder<?> addSubaction() {
+        AxActionBuilder<Object> builder = Ax.action();
+        addSubaction(builder.get());
         return builder;
     }
 
+    public AxActionBuilder<?> addSubaction(String caption) {
+        return addSubaction().caption(caption);
+    }
+
+    public void addSubaction(AxAction<?> subaction) {
+        Assert.state(subaction.parent == null, "Cannot add subaction that already has a parent");
+
+        subaction.parent = this;
+        children.add(subaction);
+
+        for (ComponentAdapter adapter: adapters) {
+            ComponentAdapter childAdapter = adapter.createChild();
+            if (childAdapter != null) {
+                subaction.addAdapter(childAdapter);
+            }
+        }
+    }
+
+    public void addSubactions(Collection<? extends AxAction<?>> actions) {
+        actions.forEach(this::addSubaction);
+    }
+
+    public void addSubactions(AxAction<?>... actions) {
+        addSubactions(Arrays.asList(actions));
+    }
+
+    public ButtonBuilder createButton() {
+        return addAdapter(Ax.button());
+    }
+
+    public AxWindowButtonBuilder createWindowButton() {
+        return addAdapter(Ax.windowButton());
+    }
+
+    public MenuBarBuilder createMenuBar() {
+        return addAdapter(Ax.menuBar());
+    }
+
+    public MenuBarBuilder createMenu() {
+        MenuBarBuilder builder = Ax.menuBar();
+        createMenu(builder.get());
+        return builder;
+    }
+
+    public MenuBuilder createMenu(MenuBar menuBar) {
+        return addAdapter(Ax.menu(menuBar));
+    }
+
+    public MenuBuilder createMenu(MenuBar.MenuItem parentItem) {
+        return addAdapter(Ax.menu(parentItem));
+    }
+
     public MenuItemBuilder createMenuItem(MenuBar menuBar) {
-        return createMenuItem(Ax.menuItem(menuBar));
+        return addAdapter(Ax.menuItem(menuBar));
     }
 
     public MenuItemBuilder createMenuItem(MenuBar.MenuItem parentItem) {
-        return createMenuItem(Ax.menuItem(parentItem));
+        return addAdapter(Ax.menuItem(parentItem));
     }
 
-    private MenuItemBuilder createMenuItem(MenuItemBuilder builder) {
-        return builder.caption(Strings.nullToEmpty(caption)).icon(icon)
-                .description(description).command(this::execute);
+    private <T extends AxBuilder> T addAdapter(T builder) {
+        addAdapter(ComponentAdapter.create(builder.get()));
+        return builder;
+    }
+
+    private void addAdapter(ComponentAdapter adapter) {
+        adapter.setCaption(caption);
+        adapter.setIcon(icon);
+        adapter.setDescription(description);
+        if (shortcutKey > 0) {
+            adapter.setKeyShortcut(shortcutKey, shortcutModifiers);
+        }
+        adapter.setEnabled(enabled);
+        adapter.setVisible(visible);
+        adapter.setExecution(this::execute);
+        adapters.add(adapter);
+
+        for (AxAction<?> subaction: children) {
+            ComponentAdapter childAdapter = adapter.createChild();
+            if (childAdapter != null) {
+                subaction.addAdapter(childAdapter);
+            }
+        }
     }
 
     @Override
@@ -278,7 +310,7 @@ public class AxAction<T> implements Cloneable {
         copy.description = description;
         copy.shortcutKey = shortcutKey;
         copy.shortcutModifiers = shortcutModifiers;
-        copy.createdComponents = new ArrayList<>(createdComponents);
+        copy.adapters = new ArrayList<>();
         copy.errorHandler = errorHandler;
         copy.startPhases = new ArrayList<>(startPhases);
         copy.inputPhase = inputPhase;

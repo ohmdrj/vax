@@ -1,7 +1,6 @@
 @mixin ax-messsage {
   .ax-message {
     .ax-window-content {
-      width: 100%;
       &.v-label {
         font-size: 1.25em;
         min-width: 10em;

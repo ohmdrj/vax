@@ -72,6 +72,14 @@ public class Ax {
         return comboBox().caption(caption);
     }
 
+    public static AxConfirmBuilder confirm(String message) {
+        return new AxConfirmBuilder(message);
+    }
+
+    public static AxConfirmBuilder confirm(String message, Runnable callback) {
+        return new AxConfirmBuilder(message).onConfirm(callback);
+    }
+
     public static <T> AxBeanItemContainerBuilder<T> container(Class<T> beanType) {
         return new AxBeanItemContainerBuilder<>(beanType);
     }
@@ -80,19 +88,19 @@ public class Ax {
         return new CssLayoutBuilder().add(components);
     }
 
-    public static DateFieldBuilder dateField() {
-        return new DateFieldBuilder();
+    public static LocalDateFieldBuilder dateField() {
+        return new LocalDateFieldBuilder();
     }
 
-    public static DateFieldBuilder dateField(String caption) {
+    public static LocalDateFieldBuilder dateField(String caption) {
         return dateField().caption(caption);
     }
 
-    public static DateTimeFieldBuilder dateTimeField() {
-        return new DateTimeFieldBuilder();
+    public static LocalDateTimeFieldBuilder dateTimeField() {
+        return new LocalDateTimeFieldBuilder();
     }
 
-    public static DateTimeFieldBuilder dateTimeField(String caption) {
+    public static LocalDateTimeFieldBuilder dateTimeField(String caption) {
         return dateTimeField().caption(caption);
     }
 
@@ -146,6 +154,18 @@ public class Ax {
 
     public static CssLayout layout(Component... components) {
         return cssLayout(components).get();
+    }
+
+    public static MenuBarBuilder menuBar() {
+        return new MenuBarBuilder();
+    }
+
+    public static MenuBuilder menu(MenuBar menuBar) {
+        return new MenuBuilder(menuBar);
+    }
+
+    public static MenuBuilder menu(MenuBar.MenuItem parentItem) {
+        return new MenuBuilder(parentItem);
     }
 
     public static MenuItemBuilder menuItem(MenuBar menuBar) {
@@ -220,11 +240,11 @@ public class Ax {
         return textField().caption(caption);
     }
 
-    public static TimeFieldBuilder timeField() {
-        return new TimeFieldBuilder();
+    public static LocalTimeFieldBuilder timeField() {
+        return new LocalTimeFieldBuilder();
     }
 
-    public static TimeFieldBuilder timeField(String caption) {
+    public static LocalTimeFieldBuilder timeField(String caption) {
         return timeField().caption(caption);
     }
 

@@ -3,9 +3,11 @@ package cz.req.ax.builders;
 import com.google.common.base.Supplier;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.MenuBar;
-import cz.req.ax.ui.AxAction;
+import cz.req.ax.Ax;
+import cz.req.ax.action.AxAction;
 import cz.req.ax.util.ToBooleanFunction;
 
+import java.util.Collection;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
@@ -124,12 +126,50 @@ public class AxActionBuilder<T> extends AxBuilder<AxAction<T>, AxActionBuilder<T
         return this;
     }
 
+    public AxActionBuilder<?> subaction() {
+        return target.addSubaction();
+    }
+
+    public AxActionBuilder<?> subaction(String caption) {
+        return target.addSubaction(caption);
+    }
+
+    public AxActionBuilder<?> subactions(Collection<? extends AxAction<?>> actions) {
+        target.addSubactions(actions);
+        return this;
+    }
+
+    public AxActionBuilder<?> subactions(AxAction<?>... actions) {
+        target.addSubactions(actions);
+        return this;
+    }
+
+    public AxActionBuilder<?> parent() {
+        return new AxActionBuilder<>(target.getParent(), false);
+    }
+
     public AxActionBuilder<T> clone() {
         return new AxActionBuilder<>(target.clone(), false);
     }
 
     public ButtonBuilder button() {
         return target.createButton();
+    }
+
+    public MenuBarBuilder menuBar() {
+        return target.createMenuBar();
+    }
+
+    public MenuBarBuilder menu() {
+        return target.createMenu();
+    }
+
+    public MenuBuilder menu(MenuBar menuBar) {
+        return target.createMenu(menuBar);
+    }
+
+    public MenuBuilder menu(MenuBar.MenuItem parentItem) {
+        return target.createMenu(parentItem);
     }
 
     public MenuItemBuilder menuItem(MenuBar menuBar) {

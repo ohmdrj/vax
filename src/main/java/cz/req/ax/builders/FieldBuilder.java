@@ -17,6 +17,8 @@ import java.util.function.Consumer;
  */
 public class FieldBuilder<V, F extends Field<V>, B extends FieldBuilder<V, F, B>> extends ComponentBuilder<F, B> {
 
+    private String invalidError = Ax.defaults().getInvalidValueError();
+
     public FieldBuilder(F target, boolean useDefaults) {
         super(target, useDefaults);
     }
@@ -52,9 +54,14 @@ public class FieldBuilder<V, F extends Field<V>, B extends FieldBuilder<V, F, B>
     public B validate(ToBooleanFunction<V> validator) {
         return validator(value -> {
             if (value != null && !validator.applyAsBoolean((V) value)) {
-                throw new Validator.InvalidValueException(Ax.defaults().getInvalidValueError());
+                throw new Validator.InvalidValueException(invalidError);
             }
         });
+    }
+
+    public B invalidError(String invalidError) {
+        this.invalidError = invalidError;
+        return (B) this;
     }
 
     public B onChange(Consumer<V> listener) {

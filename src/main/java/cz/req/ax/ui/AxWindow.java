@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.vaadin.ui.*;
 import cz.req.ax.*;
 import cz.req.ax.builders.*;
+import cz.req.ax.action.AxAction;
 import org.springframework.util.Assert;
 
 /**
@@ -120,8 +121,7 @@ public class AxWindow extends Window {
             removeCloseButton();
         }
         AxWindowButtonBuilder builder = new AxWindowButtonBuilder();
-        closeButton = addButton(builder, true).caption(caption).style("close-button")
-                .escKeyShortcut().closesWindow().get();
+        closeButton = addButton(builder, true).caption(caption).secondary().escKeyShortcut().closesWindow().get();
         return builder;
     }
 

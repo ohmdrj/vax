@@ -97,11 +97,4 @@ public class AxUtils {
         }
     }
 
-    public static <T> List<T> concat(T element, T... otherElements) {
-        Object[] array = new Object[otherElements.length + 1];
-        array[0] = element;
-        System.arraycopy(otherElements, 0, array, 1, otherElements.length);
-        return (List<T>) Arrays.asList(array);
-    }
-
 }

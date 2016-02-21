@@ -1,7 +1,7 @@
 package cz.req.ax.builders;
 
 import com.vaadin.ui.UI;
-import cz.req.ax.ui.AxAction;
+import cz.req.ax.action.AxAction;
 import cz.req.ax.ui.AxWindow;
 import cz.req.ax.ui.AxWindowButton;
 
@@ -30,7 +30,6 @@ public class AxWindowBuilder extends WindowBuilder<AxWindow, AxWindowBuilder> {
     }
 
     public AxWindowBuilder closeButton(String caption) {
-        target.removeCloseButton();
         target.addCloseButton(caption);
         return this;
     }

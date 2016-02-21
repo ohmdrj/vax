@@ -2,8 +2,6 @@ $ax-window-min-width: 10em;
 $ax-window-padding: 1rem;
 $ax-window-header-font-size: 1.5rem;
 $ax-window-header-color: $ax-main-focus;
-$ax-window-close-button-background: black;
-$ax-window-close-button-color: white;
 
 @mixin ax-window {
   .ax-window {
@@ -25,10 +23,12 @@ $ax-window-close-button-color: white;
       margin-top: $header-height;
     }
     .ax-window-root {
-      width: 100%;
+      display: block;
       padding: $ax-window-padding;
+      > * {
+        display: block;
+      }
       > .ax-window-footer {
-        width: 100%;
         > .v-button {
           margin-top: $ax-window-padding;
           &.left-aligned {
@@ -37,10 +37,6 @@ $ax-window-close-button-color: white;
           &.right-aligned {
             margin-left: $ax-window-padding / 2;
           }
-        }
-        > .close-button {
-          background: $ax-window-close-button-background;
-          color: $ax-window-close-button-color;
         }
       }
     }
