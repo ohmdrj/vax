@@ -79,7 +79,10 @@ public class AxFormLayout extends CssLayout {
 
         public RowBuilder caption(String caption) {
             if (!Strings.isNullOrEmpty(caption)) {
-                this.caption = caption + Strings.nullToEmpty(captionSuffix);
+                this.caption = caption;
+                if (!Strings.isNullOrEmpty(captionSuffix) && !caption.endsWith(captionSuffix)) {
+                    this.caption += captionSuffix;
+                }
             }
             return this;
         }
