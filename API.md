@@ -13,7 +13,7 @@ Vaadin Ax:
 
     Button button = Ax.button("OK").icon(FA.CHECK).onClick(provedAkci).get();
 
-# Zakladní komponenty
+## Zakladní komponenty
 
 | Název | Popis |
 |-------| ------|
@@ -26,7 +26,7 @@ Vaadin Ax:
 | Ax.menuItem() | Builder pro koncový `MenuItem` |
 | Ax.upload() | Builder pro upload `Upload` |
 
-# Pole
+## Pole
 
 | Název | Popis |
 |-------| ------|
@@ -41,13 +41,13 @@ Vaadin Ax:
 | Ax.dateField() | Builder pro datumové pole `DateField` |
 | Ax.timeField() | Builder pro časové pole `TimeField` |
 
-# Tvorba akcí
+## Tvorba akcí
 
 | Název | Popis |
 |-------| ------|
 | Ax.action() | Builder pro akci `AxAction` |
 
-# Databinding
+## Databinding
 
 | Název | Popis |
 |-------| ------|
@@ -55,20 +55,20 @@ Vaadin Ax:
 | Ax.container() | Builder pro kontejnery `AxBeanContainer` / `AxBeanItemContainer` |
 | Ax.enumContainer() | Speciální builder pro kontejner s `enum` |
 
-# Layout
+## Layout
 
 | Název | Popis |
 |-------| ------|
 | Ax.cssLayout() | Builder pro `CssLayout` |
 
-# Tabulky
+## Tabulky
 
 | Název | Popis |
 |-------| ------|
 | Ax.table() | Builder pro tabulku `Table` |
 | SelectionColumn | Generátor pro výběrový sloupec v tabulce |
 
-# Tvorba oken
+## Tvorba oken
 
 | Název | Popis |
 |-------| ------|
@@ -80,7 +80,7 @@ Vaadin Ax:
 
 *Poznámka:* volání ukončuji `.show()`
 
-# Pop-up notifikace
+## Pop-up notifikace
 
 | Název | Popis |
 |-------| ------|
@@ -92,7 +92,7 @@ Vaadin Ax:
 
 *Poznámka:* volání ukončuji `.show()`
 
-# Utility
+## Utility
 
 | Název | Popis |
 |-------| ------|
