@@ -182,7 +182,7 @@ public class TableBuilder<ID, BEAN> extends AbstractSelectBuilder<Table, TableBu
 
     public TableBuilder<ID, BEAN> onClick(BiConsumer<ID, BEAN> listener) {
         target.addItemClickListener(e -> {
-            if (e.getButton() == MouseEventDetails.MouseButton.LEFT && e.isDoubleClick()) {
+            if (e.getButton() == MouseEventDetails.MouseButton.LEFT && !e.isDoubleClick()) {
                 listener.accept((ID) e.getItemId(), ((BeanItem<BEAN>) e.getItem()).getBean());
             }
         });
