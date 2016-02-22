@@ -14,6 +14,7 @@ public class CheckBoxBuilder extends FieldBuilder<Boolean, CheckBox, CheckBoxBui
 
     public CheckBoxBuilder(CheckBox target, boolean useDefaults) {
         super(target, useDefaults);
+        captionSuffix(null);
     }
 
     public CheckBoxBuilder checked() {
