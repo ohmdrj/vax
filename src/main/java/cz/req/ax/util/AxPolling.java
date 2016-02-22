@@ -16,6 +16,7 @@ import java.util.UUID;
 public class AxPolling {
 
     private static final Logger logger = LoggerFactory.getLogger(AxPolling.class);
+    public static final int DEFAULT_INTERVAL_MS = 500;
 
     public static AxPolling getCurrent() {
         UI ui = UI.getCurrent();
@@ -33,6 +34,10 @@ public class AxPolling {
 
     private AxPolling(UI ui) {
         this.ui = ui;
+    }
+
+    public Object request() {
+        return request(DEFAULT_INTERVAL_MS);
     }
 
     public Object request(int intervalMillis) {
