@@ -29,16 +29,17 @@ public class AxMessageBuilder {
     public AxMessageBuilder error(Throwable throwable) {
         if (USER_EXCEPTIONS.contains(throwable.getClass().getSimpleName())) {
             labelBuilder.value(throwable.getLocalizedMessage());
+        } else {
+            Button showButton = windowBuilder.button("Zobrazit výpis chyby").alignLeft().get();
+            showButton.addClickListener(event -> {
+                showButton.setVisible(false);
+                StringWriter writer = new StringWriter();
+                throwable.printStackTrace(new PrintWriter(writer));
+                TextArea stacktrace = Ax.textArea().value(writer.toString()).rows(20)
+                        .wordwrap(false).readOnly().style("stacktrace").get();
+                windowBuilder.content(stacktrace).centered();
+            });
         }
-        Button showButton = windowBuilder.button("Zobrazit výpis chyby").alignLeft().get();
-        showButton.addClickListener(event -> {
-            showButton.setVisible(false);
-            StringWriter writer = new StringWriter();
-            throwable.printStackTrace(new PrintWriter(writer));
-            TextArea stacktrace = Ax.textArea().value(writer.toString()).rows(20)
-                    .wordwrap(false).readOnly().style("stacktrace").get();
-            windowBuilder.content(stacktrace).centered();
-        });
         return this;
     }
 
