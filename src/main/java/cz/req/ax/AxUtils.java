@@ -48,17 +48,17 @@ public class AxUtils {
     }
 
     public static boolean focusOnFirstField(Component component) {
-        if (component == null) return false;
-        if (component instanceof HasComponents) {
+        if (component instanceof Field) {
+            // Field musíme testovat první, protože může zároveň implementovat HasComponents
+            ((Field) component).focus();
+            return true;
+        } else if (component instanceof HasComponents) {
             Iterator<Component> iterator = ((HasComponents) component).iterator();
             while (iterator.hasNext()) {
                 if (focusOnFirstField(iterator.next())) {
                     return true;
                 }
             }
-        } else if (component instanceof Field) {
-            ((Field) component).focus();
-            return true;
         }
         return false;
     }
