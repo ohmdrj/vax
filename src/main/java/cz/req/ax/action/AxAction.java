@@ -203,6 +203,8 @@ public class AxAction<T> implements Cloneable {
             ((Consumer<T>) phase).accept(input);
         } else if (phase instanceof ToBooleanFunction) {
             return ((ToBooleanFunction<T>) phase).applyAsBoolean(input);
+        } else if (phase instanceof Supplier) {
+            return ((Supplier) phase).get();
         }
         return true;
     }
