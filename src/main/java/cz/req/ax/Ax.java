@@ -157,6 +157,14 @@ public class Ax {
         return cssLayout(components).get();
     }
 
+    public static LinkBuilder link() {
+        return new LinkBuilder();
+    }
+
+    public static LinkBuilder link(String caption) {
+        return link().caption(caption);
+    }
+
     public static MenuBarBuilder menuBar() {
         return new MenuBarBuilder();
     }
