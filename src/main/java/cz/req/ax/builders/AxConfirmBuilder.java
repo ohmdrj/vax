@@ -41,6 +41,11 @@ public class AxConfirmBuilder {
         return this;
     }
 
+    public AxConfirmBuilder width(int width) {
+        windowBuilder.width(width);
+        return this;
+    }
+
     private AxWindowBuilder finish() {
         return windowBuilder
                 .closeButton(cancelCaption)
