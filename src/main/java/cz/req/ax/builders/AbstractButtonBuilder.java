@@ -43,10 +43,6 @@ public class AbstractButtonBuilder<C extends Button, B extends AbstractButtonBui
         return clickShortcut(ShortcutAction.KeyCode.ESCAPE);
     }
 
-    public B link() {
-        return style("link");
-    }
-
     public B primary() {
         return style("primary");
     }
@@ -55,16 +51,48 @@ public class AbstractButtonBuilder<C extends Button, B extends AbstractButtonBui
         return style("secondary");
     }
 
+    public B danger() {
+        return style("danger");
+    }
+
+    public B borderless() {
+        return style("borderless");
+    }
+
+    public B borderlessColored() {
+        return style("borderless-colored");
+    }
+
+    public B quiet() {
+        return style("quiet");
+    }
+
+    public B link() {
+        return style("link");
+    }
+
+    public B tiny() {
+        return style("tiny");
+    }
+
     public B small() {
         return style("small");
     }
 
-    public B alignRight() {
-        return style("right-aligned");
+    public B large() {
+        return style("large");
     }
 
-    public B alignLeft() {
-        return style("left-aligned");
+    public B huge() {
+        return style("huge");
+    }
+
+    public B iconAlignRight() {
+        return style("icon-align-right");
+    }
+
+    public B iconAlignTop() {
+        return style("icon-align-top");
     }
 
 }
