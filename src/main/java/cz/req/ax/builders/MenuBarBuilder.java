@@ -50,4 +50,12 @@ public class MenuBarBuilder extends ComponentBuilder<MenuBar, MenuBarBuilder> {
         return style("link");
     }
 
+    public MenuBarBuilder small() {
+        return style("small");
+    }
+
+    public MenuBarBuilder borderless() {
+        return style("borderless");
+    }
+
 }
