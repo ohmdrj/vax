@@ -48,13 +48,13 @@ public class AxMessageBuilder {
         return this;
     }
 
-    public AxMessageBuilder width(int width) {
-        windowBuilder.width(width);
+    public AxMessageBuilder closeCaption(String caption) {
+        windowBuilder.closeButton(caption);
         return this;
     }
 
-    public AxMessageBuilder widthUndefined() {
-        windowBuilder.widthUndefined();
+    public AxMessageBuilder width(int width) {
+        windowBuilder.width(width);
         return this;
     }
 
