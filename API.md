@@ -21,6 +21,7 @@ Vaadin Ax:
 | Ax.icon() | Builder pro `Label` s nastavenou ikonou |
 | Ax.caption() | Builder pro `Label` s nastaveným popiskem |
 | Ax.button() | Builder pro tlačítko `Button` |
+| Ax.link() | Builder pro odkaz `Link` |
 | Ax.menuBar() | Builder pro menu bar `MenuBar` |
 | Ax.menu() | Builder pro rozbalovací `MenuItem` |
 | Ax.menuItem() | Builder pro koncový `MenuItem` |
