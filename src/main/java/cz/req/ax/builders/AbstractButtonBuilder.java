@@ -51,6 +51,10 @@ public class AbstractButtonBuilder<C extends Button, B extends AbstractButtonBui
         return style("secondary");
     }
 
+    public B friendly() {
+        return style("friendly");
+    }
+
     public B danger() {
         return style("danger");
     }
