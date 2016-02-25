@@ -1,0 +1,49 @@
+@mixin ax-menubar {
+  .v-menubar-link {
+    @include valo-link-style;
+    background: none;
+    width: auto;
+    height: auto;
+    line-height: inherit;
+    > .v-menubar-menuitem {
+      background: none;
+      padding: 0;
+      &:not(:first-child) {
+        margin-left: 0.5em;
+      }
+      &:before {
+        display: none;
+      }
+      > .v-menubar-menuitem-caption {
+        &:hover {
+          text-decoration: $ax-link-text-decoration-hover;
+        }
+        &:after {
+          display: none;
+        }
+        > .v-icon {
+          margin-left: 0;
+        }
+      }
+      > .v-menubar-submenu-indicator {
+        display: inline-block;
+        float: right;
+        width: 1em;
+        color: transparent;
+        &:after {
+          position: relative;
+          right: 1.5em;
+          font-family: FontAwesome;
+          content: "\f078";
+          font-size: 0.7em;
+          margin: 0 -0.2em 0 0.5em;
+          color: $v-focus-color;
+          opacity: 0.5;
+        }
+      }
+    }
+    > .v-menubar-menuitem-selected {
+      color: inherit;
+    }
+  }
+}

@@ -1,0 +1,23 @@
+// https://github.com/vaadin/vaadin/blob/master/WebContent/VAADIN/themes/tests-valo-metro/_variables.scss
+$v-font-family: "Source Sans Pro", sans-serif !default;
+$v-app-background-color: #fff !default;
+$v-background-color: #eee !default;
+$v-focus-color: #0072C6 !default;
+$v-focus-style: 0 0 0 1px $v-focus-color !default;
+$valo-menu-background-color: darken($v-focus-color, 10%) !default;
+$v-border: 0 solid v-shade !default;
+$v-border-radius: 0px !default;
+$v-bevel: false !default;
+$v-gradient: false !default;
+$v-shadow: false !default;
+$v-textfield-bevel: false !default;
+$v-textfield-shadow: false !default;
+$v-textfield-border: 1px solid v-shade !default;
+$v-link-text-decoration: none !default;
+$v-overlay-shadow: 0 0 0 2px #000 !default;
+$v-overlay-border-width: 2px !default; // For IE8
+$v-window-shadow: $v-overlay-shadow !default;
+$v-selection-overlay-background-color: #fff !default;
+$v-selection-overlay-padding-horizontal: 0 !default;
+$v-selection-overlay-padding-vertical: 6px !default;
+$v-panel-border: 2px solid v-shade !default;

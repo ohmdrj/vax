@@ -46,7 +46,7 @@ public class AxWindowButton extends Button {
     }
 
     private String getAlignmentStyle() {
-        return alignment != null ? alignment.name().toLowerCase() + "-aligned" : "";
+        return alignment != null ? "align-" + alignment.name().toLowerCase() : "";
     }
 
     @Override

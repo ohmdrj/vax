@@ -1,0 +1,12 @@
+@mixin ax-button {
+  .v-button-secondary {
+    @include valo-button-style($background-color: $ax-secondary-color);
+  }
+  .v-button-link {
+    padding: 0;
+    height: auto;
+    &:hover {
+      text-decoration: $ax-link-text-decoration-hover;
+    }
+  }
+}

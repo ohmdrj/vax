@@ -1,0 +1,5 @@
+@mixin ax-global {
+  html {
+    font-size: $font-size; // 1rem
+  }
+}
