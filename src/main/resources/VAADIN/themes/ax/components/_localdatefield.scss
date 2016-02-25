@@ -1,0 +1,23 @@
+$ax-localdatefield-width: 11.5em;
+$ax-localdatefield-min-width: 8.5em;
+
+@mixin ax-localdatefield {
+  .ax-localdatefield {
+    width: $ax-localdatefield-width;
+    min-width: $ax-localdatefield-min-width;
+
+    > .v-datefield {
+      width: 100%;
+    }
+  }
+
+  .ax-localdatefield-error {
+    .v-datefield-textfield {
+      @include valo-textfield-error-style;
+    }
+    .v-datefield-button {
+      color: $v-error-indicator-color;
+      border-color: $v-error-indicator-color;
+    }
+  }
+}

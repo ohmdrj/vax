@@ -52,7 +52,7 @@ public class LocalDateField extends CustomField<LocalDate> {
         field.setDateOutOfRangeMessage("Datum je mimo povolený rozsah.");
 
         setDateFormat("dd.MM.yyyy");
-        addStyleName("local-date-field");
+        setPrimaryStyleName("ax-localdatefield");
         setSizeUndefined();
     }
 

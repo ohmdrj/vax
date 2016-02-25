@@ -581,13 +581,13 @@ $form-row-spacing: 0.4em;
   }
 
   // LocalDateField, LocalTimeField, LocalDateTimeField
-  $local-date-field-width: 11.5em;
-  $local-date-field-min-width: 8.5em;
-  $local-time-field-width: 6em;
-  $local-time-field-min-width: 6em;
+  $ax-localdatefield-width: 11.5em;
+  $ax-localdatefield-min-width: 8.5em;
+  $ax-localtimefield-width: 6em;
+  $ax-localtimefield-min-width: 6em;
 
-  .local-date-field.v-customcomponent-error,
-  .local-date-time-field.v-customcomponent-error {
+  .ax-localdatefield-error,
+  .ax-localdatetimefield-error {
     .v-datefield-textfield {
       @include valo-textfield-error-style;
     }
@@ -596,8 +596,8 @@ $form-row-spacing: 0.4em;
       border-color: $v-error-indicator-color;
     }
   }
-  .local-time-field.v-customcomponent-error,
-  .local-date-time-field.v-customcomponent-error {
+  .ax-localtimefield-error,
+  .ax-localdatetimefield-error {
     .v-filterselect-input {
       @include valo-textfield-error-style;
     }
@@ -606,27 +606,27 @@ $form-row-spacing: 0.4em;
       border-color: $v-error-indicator-color;
     }
   }
-  .local-date-field {
-    width: $local-date-field-width;
-    min-width: $local-date-field-min-width;
+  .ax-localdatefield {
+    width: $ax-localdatefield-width;
+    min-width: $ax-localdatefield-min-width;
     > .v-datefield {
       width: 100%;
     }
   }
-  .local-time-field {
-    width: $local-time-field-width;
-    min-width: $local-time-field-min-width;
+  .ax-localtimefield {
+    width: $ax-localtimefield-width;
+    min-width: $ax-localtimefield-min-width;
     > .v-filterselect {
       width: 100%;
     }
   }
-  .local-date-time-field {
+  .ax-localdatetimefield {
     &.time-hidden {
-      width: $local-date-field-width;
-      min-width: $local-date-field-min-width;
+      width: $ax-localdatefield-width;
+      min-width: $ax-localdatefield-min-width;
     }
     &.time-visible {
-      $fixed-width: $local-date-field-min-width + $local-time-field-min-width;
+      $fixed-width: $ax-localdatefield-min-width + $ax-localtimefield-min-width;
       width: $fixed-width;
       min-width: $fixed-width;
     }
@@ -636,11 +636,11 @@ $form-row-spacing: 0.4em;
       > * {
         display: table-cell;
       }
-      > .local-date-field {
+      > .ax-localdatefield {
         width: 100%;
       }
     }
-    .v-caption-local-time-field > .v-errorindicator {
+    .v-caption-ax-localtimefield > .v-errorindicator {
       display: none;
     }
   }

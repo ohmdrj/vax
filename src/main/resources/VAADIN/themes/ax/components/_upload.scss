@@ -1,6 +1,7 @@
 @mixin ax-upload {
   .v-upload-link .v-button {
     @extend .v-button-link;
+
     &:hover {
       text-decoration: $ax-link-text-decoration-hover;
     }

@@ -8,10 +8,11 @@
 @import "shared/layout";
 
 @import "components/button";
+@import "components/formlayout";
 @import "components/link";
-@import "components/local-date-field";
-@import "components/local-date-time-field";
-@import "components/local-time-field";
+@import "components/localdatefield";
+@import "components/localdatetimefield";
+@import "components/localtimefield";
 @import "components/menubar";
 @import "components/upload";
 @import "components/widget";
@@ -21,10 +22,11 @@
   @include font-awesome;
   @include ax-layout;
   @include ax-button;
+  @include ax-formlayout;
   @include ax-link;
-  @include ax-local-date-field;
-  @include ax-local-date-time-field;
-  @include ax-local-time-field;
+  @include ax-localdatefield;
+  @include ax-localdatetimefield;
+  @include ax-localtimefield;
   @include ax-menubar;
   @include ax-upload;
   @include ax-widget;
