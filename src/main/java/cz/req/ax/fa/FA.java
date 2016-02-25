@@ -597,7 +597,7 @@ public enum FA implements FontIcon {
 	YOUTUBE_PLAY("fa-youtube-play", 0xf16a),
 	YOUTUBE_SQUARE("fa-youtube-square", 0xf166);
 	
-	private static final String fontFamily = "FontAwesomeLabelAddon";
+	private static final String fontFamily = "FontAwesome";
     private int codepoint;
     protected String clazz;
 

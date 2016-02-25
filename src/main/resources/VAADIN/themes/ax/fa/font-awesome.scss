@@ -9,7 +9,7 @@
 
 	.fa, .FontAwesomeLabelAddon {
 	  display: inline-block;
-	  font: normal normal normal 14px/1 FontAwesomeLabelAddon;
+	  font: normal normal normal 14px/1 FontAwesome;
 	  font-size: inherit;
 	  text-rendering: auto;
 	  text-align: center;
@@ -1783,7 +1783,7 @@
 }
 
 @font-face {
-  font-family: 'FontAwesomeLabelAddon';
+  font-family: 'FontAwesome';
   src: url('fontawesome-webfont.eot?v=4.3.0');
   src: url('fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'), 
   	   url('fontawesome-webfont.woff2?v=4.3.0') format('woff2'), 

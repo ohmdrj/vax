@@ -1,0 +1,8 @@
+@mixin ax-layout {
+  &.v-app {
+    overflow: auto;
+  }
+  .v-ui {
+    min-height: 100%;
+  }
+}

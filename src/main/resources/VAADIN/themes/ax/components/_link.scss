@@ -1,0 +1,5 @@
+@mixin ax-link {
+  .v-link:hover {
+    text-decoration: $ax-link-text-decoration-hover;
+  }
+}

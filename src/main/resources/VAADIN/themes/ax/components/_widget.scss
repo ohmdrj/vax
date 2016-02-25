@@ -1,0 +1,10 @@
+@mixin ax-widget {
+  .v-widget {
+    &.align-left {
+      float: left;
+    }
+    &.align-right {
+      float: right;
+    }
+  }
+}
