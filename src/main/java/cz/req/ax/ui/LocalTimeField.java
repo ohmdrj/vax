@@ -35,7 +35,7 @@ public class LocalTimeField extends CustomField<LocalTime> {
         field.setNewItemsAllowed(true);
         field.addValueChangeListener(e -> fireValueChange(false));
 
-        addStyleName("local-time-field");
+        setPrimaryStyleName("ax-localtimefield");
         setSizeUndefined();
     }
 

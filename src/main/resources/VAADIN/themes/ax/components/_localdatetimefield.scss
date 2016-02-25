@@ -1,0 +1,42 @@
+@mixin ax-localdatetimefield {
+  .ax-localdatetimefield {
+    &.time-hidden {
+      width: $ax-localdatefield-width;
+      min-width: $ax-localdatefield-min-width;
+    }
+
+    &.time-visible {
+      $fixed-width: $ax-localdatefield-min-width + $ax-localtimefield-min-width;
+      width: $fixed-width;
+      min-width: $fixed-width;
+    }
+
+    > .v-layout {
+      display: table;
+      width: 100%;
+
+      > * {
+        display: table-cell;
+      }
+      > .ax-localdatefield {
+        width: 100%;
+      }
+    }
+
+    .v-caption-ax-localtimefield > .v-errorindicator {
+      display: none;
+    }
+  }
+
+  .ax-localdatetimefield-error {
+    .v-datefield-textfield,
+    .v-filterselect-input {
+      @include valo-textfield-error-style;
+    }
+    .v-datefield-button,
+    .v-filterselect-button {
+      color: $v-error-indicator-color;
+      border-color: $v-error-indicator-color;
+    }
+  }
+}

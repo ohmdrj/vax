@@ -27,8 +27,8 @@ public class LocalDateTimeField extends CustomField<LocalDateTime> {
         timeField = new LocalTimeField();
         timeField.addValueChangeListener(e -> fireValueChange(false));
 
-        addStyleName("local-date-time-field");
         updateTimeStyle();
+        setPrimaryStyleName("ax-localdatetimefield");
         setSizeUndefined();
     }
 

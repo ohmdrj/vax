@@ -1,0 +1,9 @@
+@mixin ax-formlayout {
+  .v-formlayout {
+    @include valo-formlayout-spacing(round($v-unit-size / 6));
+
+    &.light {
+      @include valo-formlayout-spacing(0);
+    }
+  }
+}

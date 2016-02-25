@@ -9,7 +9,7 @@ import com.vaadin.ui.CheckBox;
 public class CheckBoxBuilder extends FieldBuilder<Boolean, CheckBox, CheckBoxBuilder> {
 
     public CheckBoxBuilder() {
-        super(new CheckBox(), true);
+        this(new CheckBox(), true);
     }
 
     public CheckBoxBuilder(CheckBox target, boolean useDefaults) {
