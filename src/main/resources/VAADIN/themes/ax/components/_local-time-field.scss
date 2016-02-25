@@ -1,0 +1,21 @@
+$ax-local-time-field-width: 6em !default;
+$ax-local-time-field-min-width: 6em !default;
+
+@mixin ax-local-time-field {
+  .local-time-field {
+    width: $ax-local-time-field-width;
+    min-width: $ax-local-time-field-min-width;
+    &.v-customcomponent-error {
+      .v-filterselect-input {
+        @include valo-textfield-error-style;
+      }
+      .v-filterselect-button {
+        color: $v-error-indicator-color;
+        border-color: $v-error-indicator-color;
+      }
+    }
+    > .v-filterselect {
+      width: 100%;
+    }
+  }
+}
