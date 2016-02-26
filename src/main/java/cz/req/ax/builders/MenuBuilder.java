@@ -1,6 +1,7 @@
 package cz.req.ax.builders;
 
 import com.vaadin.ui.MenuBar;
+import cz.req.ax.Ax;
 import org.springframework.util.Assert;
 
 /**
@@ -39,6 +40,10 @@ public class MenuBuilder extends AbstractMenuItemBuilder<MenuBuilder> {
     @Override
     public MenuBuilder menu() {
         return new MenuBuilder(target);
+    }
+
+    public MenuBuilder hideSubmenuIndicator() {
+        return style(Ax.NO_SUBMENU_INDICATOR);
     }
 
     public MenuBuilder separator() {

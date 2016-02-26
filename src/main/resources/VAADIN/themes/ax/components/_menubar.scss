@@ -1,4 +1,11 @@
 @mixin ax-menubar {
+  .v-menubar-menuitem-no-submenu-indicator {
+    > .v-menubar-submenu-indicator,
+    > .v-menubar-menuitem-caption:after {
+      display: none;
+    }
+  }
+
   .v-menubar-link {
     @include valo-link-style;
     background: none;

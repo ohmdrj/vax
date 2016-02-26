@@ -1,6 +1,8 @@
 package cz.req.ax.builders;
 
+import com.vaadin.server.Resource;
 import com.vaadin.ui.MenuBar;
+import cz.req.ax.Ax;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
@@ -38,6 +40,10 @@ public class MenuBarBuilder extends ComponentBuilder<MenuBar, MenuBarBuilder> {
         return item().caption(caption);
     }
 
+    public MenuItemBuilder item(Resource icon) {
+        return item().icon(icon);
+    }
+
     public MenuBuilder menu() {
         return new MenuBuilder(target);
     }
@@ -46,16 +52,20 @@ public class MenuBarBuilder extends ComponentBuilder<MenuBar, MenuBarBuilder> {
         return menu().caption(caption);
     }
 
+    public MenuBuilder menu(Resource icon) {
+        return menu().icon(icon);
+    }
+
     public MenuBarBuilder link() {
-        return style("link");
+        return style(Ax.LINK);
     }
 
     public MenuBarBuilder small() {
-        return style("small");
+        return style(Ax.SMALL);
     }
 
     public MenuBarBuilder borderless() {
-        return style("borderless");
+        return style(Ax.BORDERLESS);
     }
 
 }

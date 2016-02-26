@@ -10,6 +10,7 @@
 @import "components/button";
 @import "components/link";
 @import "components/menubar";
+@import "components/table";
 @import "components/upload";
 @import "components/widget";
 
@@ -20,6 +21,7 @@
   @include ax-button;
   @include ax-link;
   @include ax-menubar;
+  @include ax-table;
   @include ax-upload;
   @include ax-widget;
 }
