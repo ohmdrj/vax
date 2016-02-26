@@ -69,8 +69,11 @@ public class AxDefaults {
         });
         define(Table.class, table -> {
             table.setColumnHeaderMode(Table.ColumnHeaderMode.EXPLICIT);
-            table.setWidth(100, Sizeable.Unit.PERCENTAGE);
             table.setPageLength(0);
+        });
+        define(AbstractOrderedLayout.class, layout -> {
+            layout.setMargin(false);
+            layout.setSizeUndefined();
         });
         define(Window.class, window -> {
             window.setModal(true);

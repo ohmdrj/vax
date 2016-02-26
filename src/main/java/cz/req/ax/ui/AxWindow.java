@@ -80,9 +80,9 @@ public class AxWindow extends Window {
 
     private void updateHeaderVisibility() {
         if (Strings.isNullOrEmpty(getCaption()) && !isClosable() && !isResizable() && !isDraggable()) {
-            addStyleName("headerless");
+            addStyleName(Ax.NO_HEADER);
         } else {
-            removeStyleName("headerless");
+            removeStyleName(Ax.NO_HEADER);
         }
     }
 

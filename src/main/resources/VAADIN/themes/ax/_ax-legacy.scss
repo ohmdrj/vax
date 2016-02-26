@@ -699,7 +699,8 @@ $form-row-spacing: 0.4em;
         }
       }
     }
-    &.headerless {
+    &.headerless,
+    &.no-header {
       .v-window-outerheader {
         display: none;
       }

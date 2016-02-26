@@ -1,0 +1,63 @@
+$ax-window-min-width: 10em !default;
+$ax-window-padding: 1em !default;
+$ax-window-header-font-size: $v-font-size--h2 !default;
+
+@mixin ax-window {
+  .ax-window {
+    $header-height: $ax-window-header-font-size + $ax-window-padding;
+    min-width: $ax-window-min-width;
+
+    .v-window-outerheader {
+      padding: $ax-window-padding;
+      padding-bottom: 0;
+
+      &:after {
+        display: none; // Hide window header border
+      }
+    }
+
+    .v-window-header {
+      font-size: $ax-window-header-font-size;
+      color: $ax-primary-color;
+      line-height: 1em;
+      padding: 0;
+      margin: 0;
+    }
+
+    .v-window-contents {
+      padding-top: $header-height;
+      margin-top: $header-height;
+    }
+
+    .ax-window-root {
+      display: block;
+      padding: $ax-window-padding;
+
+      > * {
+        display: block;
+      }
+
+      > .ax-window-footer {
+        > .v-button {
+          margin-top: $ax-window-padding;
+          &.align-left {
+            margin-right: $ax-window-padding / 2;
+          }
+          &.align-right {
+            margin-left: $ax-window-padding / 2;
+          }
+        }
+      }
+    }
+
+    &.no-header {
+      .v-window-outerheader {
+        display: none;
+      }
+      .v-window-contents {
+        margin-top: 0;
+        padding-top: 0;
+      }
+    }
+  }
+}

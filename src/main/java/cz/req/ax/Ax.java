@@ -126,6 +126,10 @@ public class Ax implements StyleNames {
         return new NotificationBuilder(message, Notification.Type.ERROR_MESSAGE).topCenter();
     }
 
+    public static FormLayoutBuilder formLayout(Component... components) {
+        return new FormLayoutBuilder().add(components);
+    }
+
     public static Label hr() {
         return label("<hr>").html().widthFull().get();
     }

@@ -1,11 +1,9 @@
 @import "shared/variables";
 @import "shared/metro";
-
 @import "../valo/valo";
-
 @import "fa/font-awesome";
+@import "shared/animations";
 @import "shared/global";
-@import "shared/layout";
 
 @import "components/button";
 @import "components/formlayout";
@@ -16,12 +14,13 @@
 @import "components/menubar";
 @import "components/table";
 @import "components/upload";
+@import "components/ui";
 @import "components/widget";
+@import "components/window";
 
 @mixin ax {
   @include valo;
   @include font-awesome;
-  @include ax-layout;
   @include ax-button;
   @include ax-formlayout;
   @include ax-link;
@@ -30,8 +29,10 @@
   @include ax-localtimefield;
   @include ax-menubar;
   @include ax-table;
+  @include ax-ui;
   @include ax-upload;
   @include ax-widget;
+  @include ax-window;
 }
 
 @include ax-global;
