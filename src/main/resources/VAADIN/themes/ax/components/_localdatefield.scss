@@ -1,5 +1,5 @@
-$ax-localdatefield-width: 11.5em;
-$ax-localdatefield-min-width: 8.5em;
+$ax-localdatefield-width: 11.5em !default;
+$ax-localdatefield-min-width: 8.5em !default;
 
 @mixin ax-localdatefield {
   .ax-localdatefield {

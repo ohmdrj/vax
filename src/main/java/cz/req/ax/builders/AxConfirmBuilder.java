@@ -11,7 +11,7 @@ public class AxConfirmBuilder {
 
     private String confirmCaption = "Potvrdit";
     private String cancelCaption = "Zrušit";
-    private Runnable callback;
+    private Runnable callback = () -> {};
 
     private AxWindowBuilder windowBuilder;
     private LabelBuilder labelBuilder;

@@ -12,6 +12,8 @@
 @import "components/localdatetimefield";
 @import "components/localtimefield";
 @import "components/menubar";
+@import "components/message";
+@import "components/panel";
 @import "components/table";
 @import "components/upload";
 @import "components/ui";
@@ -28,6 +30,8 @@
   @include ax-localdatetimefield;
   @include ax-localtimefield;
   @include ax-menubar;
+  @include ax-message;
+  @include ax-panel;
   @include ax-table;
   @include ax-ui;
   @include ax-upload;

@@ -37,3 +37,10 @@
     }
   }
 }
+
+@mixin table-fa-column {
+  font-family: FontAwesome;
+  > .v-table-cell-wrapper {
+    text-align: center;
+  }
+}
