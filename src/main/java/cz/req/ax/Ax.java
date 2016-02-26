@@ -10,12 +10,13 @@ import cz.req.ax.data.AxBinder;
 import cz.req.ax.util.AxDefaults;
 import cz.req.ax.util.AxNavigator;
 import cz.req.ax.util.AxPolling;
+import cz.req.ax.util.StyleNames;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
  *         Date: 13.2.2016
  */
-public class Ax {
+public class Ax implements StyleNames {
 
     public static AxActionBuilder<Object> action() {
         return new AxActionBuilder<>();
@@ -23,6 +24,10 @@ public class Ax {
 
     public static AxActionBuilder<Object> action(String caption) {
         return action().caption(caption);
+    }
+
+    public static AxActionBuilder<Object> action(Resource icon) {
+        return action().icon(icon);
     }
 
     public static <T> AxActionBuilder<T> action(T input) {

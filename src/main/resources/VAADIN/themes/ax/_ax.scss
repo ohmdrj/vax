@@ -14,6 +14,7 @@
 @import "components/localdatetimefield";
 @import "components/localtimefield";
 @import "components/menubar";
+@import "components/table";
 @import "components/upload";
 @import "components/widget";
 
@@ -28,6 +29,7 @@
   @include ax-localdatetimefield;
   @include ax-localtimefield;
   @include ax-menubar;
+  @include ax-table;
   @include ax-upload;
   @include ax-widget;
 }

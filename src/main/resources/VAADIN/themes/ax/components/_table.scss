@@ -1,0 +1,39 @@
+@mixin ax-table {
+  .v-table {
+    $background-color: $v-table-background-color or valo-table-background-color(); // Z valo theme
+
+    .v-table-header  {
+      $font-color: valo-font-color($ax-primary-color, 0.9);
+      background-color: $ax-primary-color;
+      color: $font-color;
+      td:not(:first-child) .v-table-caption-container {
+        border-left: 1px solid $font-color;
+      }
+    }
+
+    .v-table-body tr:hover {
+      background-color: darken($background-color, 10%);
+    }
+    &.clickable tr {
+      cursor: pointer;
+    }
+
+    // Tlačítka akcí v řádce tabulky
+    .v-table-cell-wrapper {
+      > .v-csslayout {
+        margin: 0;
+        > .v-button {
+          background: none;
+          padding: 0 0.5em;
+        }
+      }
+      > .v-menubar {
+        margin: 0;
+        background: none;
+        > .v-menubar-menuitem {
+          padding: 0 0.4em 0 0.8em;
+        }
+      }
+    }
+  }
+}

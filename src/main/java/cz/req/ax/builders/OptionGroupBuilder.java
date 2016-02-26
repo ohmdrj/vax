@@ -1,6 +1,7 @@
 package cz.req.ax.builders;
 
 import com.vaadin.ui.OptionGroup;
+import cz.req.ax.Ax;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
@@ -22,7 +23,7 @@ public class OptionGroupBuilder extends AbstractSelectBuilder<OptionGroup, Optio
     }
 
     public OptionGroupBuilder horizontal() {
-        target.addStyleName("horizontal");
+        target.addStyleName(Ax.HORIZONTAL);
         return this;
     }
 

@@ -1,10 +1,12 @@
 package cz.req.ax.builders;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.util.AbstractBeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.ui.Table;
+import cz.req.ax.Ax;
 import cz.req.ax.ui.SelectionColumn;
 
 import java.util.ArrayList;
@@ -18,27 +20,10 @@ import java.util.function.Consumer;
  */
 public class TableBuilder<ID, BEAN> extends AbstractSelectBuilder<Table, TableBuilder<ID, BEAN>> {
 
-    private static Table createTable() {
-        // TODO refactor css hack
-        Table table = new Table() {
-            @Override
-            public void setPageLength(int pageLength) {
-                super.setPageLength(pageLength);
-                if (pageLength > 0) {
-                    addStyleName("hack-allow-v-scroll");
-                } else {
-                    removeStyleName("hack-allow-v-scroll");
-                }
-            }
-        };
-        table.addStyleName("hack-noscroll");
-        return table;
-    }
-
     private List<Object> columnIds = new ArrayList<>();
     
     public TableBuilder() {
-        this(createTable(), true);
+        this(new Table(), true);
     }
 
     public TableBuilder(Table target, boolean useDefaults) {
@@ -56,7 +41,8 @@ public class TableBuilder<ID, BEAN> extends AbstractSelectBuilder<Table, TableBu
     }
 
     public TableBuilder<ID, BEAN> headerHidden() {
-        return headerMode(Table.RowHeaderMode.HIDDEN);
+        // Table.RowHeaderMode.HIDDEN nejak nezafunguje, tak pridame i valo styl
+        return headerMode(Table.RowHeaderMode.HIDDEN).style(Ax.NO_HEADER);
     }
 
     public TableBuilder<ID, BEAN> headerIconOnly() {
@@ -90,7 +76,7 @@ public class TableBuilder<ID, BEAN> extends AbstractSelectBuilder<Table, TableBu
     }
 
     public TableBuilder<ID, BEAN> selectable(boolean selectable) {
-        target.setEditable(selectable);
+        target.setSelectable(selectable);
         return this;
     }
 
@@ -156,7 +142,19 @@ public class TableBuilder<ID, BEAN> extends AbstractSelectBuilder<Table, TableBu
         return this;
     }
 
-    public TableBuilder<ID, BEAN> disablePaging() {
+    public TableBuilder<ID, BEAN> maxPageLength(int maxPageLength) {
+        target.setPageLength(computePageLength(target.getContainerDataSource(), maxPageLength));
+        target.addItemSetChangeListener(e -> {
+            target.setPageLength(computePageLength(e.getContainer(), maxPageLength));
+        });
+        return this;
+    }
+
+    private int computePageLength(Container container, int maxPageLength) {
+        return container.size() > maxPageLength ? maxPageLength : 0;
+    }
+
+    public TableBuilder<ID, BEAN> pagingDisabled() {
         return pageLength(0);
     }
 
@@ -186,12 +184,20 @@ public class TableBuilder<ID, BEAN> extends AbstractSelectBuilder<Table, TableBu
                 listener.accept((ID) e.getItemId(), ((BeanItem<BEAN>) e.getItem()).getBean());
             }
         });
-        target.addStyleName("has-item-click-listener");
+        target.addStyleName(Ax.CLICKABLE);
         return this;
     }
 
     public TableBuilder<ID, BEAN> onClick(Consumer<ID> listener) {
         return onClick((id, bean) -> listener.accept(id));
+    }
+
+    public TableBuilder<ID, BEAN> noStripes() {
+        return style(Ax.NO_STRIPES);
+    }
+
+    public TableBuilder<ID, BEAN> small() {
+        return style(Ax.SMALL);
     }
 
     public TableColumnBuilder<ID, BEAN> column(Object propertyId) {

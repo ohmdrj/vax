@@ -2,6 +2,7 @@ package cz.req.ax.builders;
 
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.Button;
+import cz.req.ax.Ax;
 import cz.req.ax.AxUtils;
 
 /**
@@ -44,59 +45,59 @@ public class AbstractButtonBuilder<C extends Button, B extends AbstractButtonBui
     }
 
     public B primary() {
-        return style("primary");
+        return style(Ax.PRIMARY);
     }
 
     public B secondary() {
-        return style("secondary");
+        return style(Ax.SECONDARY);
     }
 
     public B friendly() {
-        return style("friendly");
+        return style(Ax.FRIENDLY);
     }
 
     public B danger() {
-        return style("danger");
+        return style(Ax.DANGER);
     }
 
     public B borderless() {
-        return style("borderless");
+        return style(Ax.BORDERLESS);
     }
 
     public B borderlessColored() {
-        return style("borderless-colored");
+        return style(Ax.BORDERLESS_COLORED);
     }
 
     public B quiet() {
-        return style("quiet");
+        return style(Ax.QUIET);
     }
 
     public B link() {
-        return style("link");
+        return style(Ax.LINK);
     }
 
     public B tiny() {
-        return style("tiny");
+        return style(Ax.TINY);
     }
 
     public B small() {
-        return style("small");
+        return style(Ax.SMALL);
     }
 
     public B large() {
-        return style("large");
+        return style(Ax.LARGE);
     }
 
     public B huge() {
-        return style("huge");
+        return style(Ax.HUGE);
     }
 
     public B iconAlignRight() {
-        return style("icon-align-right");
+        return style(Ax.ICON_ALIGN_RIGHT);
     }
 
     public B iconAlignTop() {
-        return style("icon-align-top");
+        return style(Ax.ICON_ALIGN_TOP);
     }
 
 }
