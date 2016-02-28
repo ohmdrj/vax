@@ -1,0 +1,26 @@
+@mixin ax-label {
+  .v-csslayout {
+    > h1,
+    > h2,
+    > h3,
+    > h4,
+    > .v-label-h1,
+    > .v-label-h2,
+    > .v-label-h3,
+    > .v-label-h4 {
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+  }
+
+  .v-verticallayout > .v-slot:first-child,
+  .v-verticallayout > div > .v-slot:first-child {
+    h1, .v-label-h1,
+    h2, .v-label-h2,
+    h3, .v-label-h3,
+    h4, .v-label-h4 {
+      margin-top: 0;
+    }
+  }
+}
