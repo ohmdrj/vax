@@ -41,6 +41,7 @@ Vaadin Ax:
 | Ax.dateTimeField() | Builder pro datumové pole s časem  `DateTimeField` |
 | Ax.dateField() | Builder pro datumové pole `DateField` |
 | Ax.timeField() | Builder pro časové pole `TimeField` |
+| Ax.progressBar() | Builder pro progress bar `ProgressBar` |
 
 ## Tvorba akcí
 
@@ -61,6 +62,7 @@ Vaadin Ax:
 | Název | Popis |
 |-------| ------|
 | Ax.cssLayout() | Builder pro `CssLayout` |
+| Ax.formLayout() | Builder pro `FormLayout` |
 
 ## Tabulky
 
