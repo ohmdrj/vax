@@ -5,13 +5,11 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.*;
+import cz.req.ax.Ax;
 import cz.req.ax.AxUtils;
 import cz.req.ax.ObjectIdentity;
 import cz.req.ax.builders.*;
-import cz.req.ax.ui.AxComboBox;
-import cz.req.ax.ui.LocalDateField;
-import cz.req.ax.ui.LocalDateTimeField;
-import cz.req.ax.ui.LocalTimeField;
+import cz.req.ax.ui.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Arrays;
@@ -23,7 +21,7 @@ import java.util.Set;
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
  *         Date: 13.1.2016
  */
-public class AxBinder<T> extends BeanFieldGroup<T> {
+public class AxBinder<T> extends BeanFieldGroup<T> implements LayoutFiller {
 
     public AxBinder(Class<T> beanType) {
         this(AxUtils.newInstance(beanType));
@@ -226,13 +224,17 @@ public class AxBinder<T> extends BeanFieldGroup<T> {
         return new LocalDateTimeFieldBuilder(buildAndBind(null, propertyId, LocalDateTimeField.class), false);
     }
 
-    public <LAYOUT extends Layout> LAYOUT fillLayout(LAYOUT layout) {
+    @Override
+    public void fillLayout(Layout layout) {
         getFields().forEach(layout::addComponent);
-        return layout;
     }
 
-    public FormLayout createFormLayout() {
-        return fillLayout(new FormLayout());
+    public FormLayoutBuilder createFormLayout() {
+        return Ax.formLayout().fill(this);
+    }
+
+    public CssLayoutBuilder createCssLayout() {
+        return Ax.cssLayout().fill(this);
     }
 
     public static class CommitException extends RuntimeException {

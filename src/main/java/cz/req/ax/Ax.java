@@ -126,20 +126,24 @@ public class Ax implements StyleNames {
         return new NotificationBuilder(message, Notification.Type.ERROR_MESSAGE).topCenter();
     }
 
+    public static FormLayoutBuilder formLayout(Component... components) {
+        return new FormLayoutBuilder().add(components);
+    }
+
     public static Label hr() {
         return label("<hr>").html().widthFull().get();
     }
 
     public static Label h1(String caption) {
-        return label(caption).header(1).get();
+        return label(caption).header(1).widthFull().get();
     }
 
     public static Label h2(String caption) {
-        return label(caption).header(2).get();
+        return label(caption).header(2).widthFull().get();
     }
 
     public static Label h3(String caption) {
-        return label(caption).header(3).get();
+        return label(caption).header(3).widthFull().get();
     }
 
     public static LabelBuilder icon(Resource icon) {
@@ -228,6 +232,14 @@ public class Ax implements StyleNames {
 
     public static AxPolling polling() {
         return AxPolling.getCurrent();
+    }
+
+    public static ProgressBarBuilder progressBar() {
+        return new ProgressBarBuilder();
+    }
+
+    public static ProgressBarBuilder progressBar(String caption) {
+        return progressBar().caption(caption);
     }
 
     public static RichTextAreaBuilder richTextArea() {

@@ -1,0 +1,13 @@
+@mixin ax-ui {
+  &.v-app {
+    overflow: auto;
+  }
+  .v-ui {
+    min-height: 100%;
+  }
+  .page-root,
+  .page-body,
+  .main-panel {
+    width: 100%;
+  }
+}

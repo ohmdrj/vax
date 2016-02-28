@@ -1,0 +1,14 @@
+$ax-panel-padding: $v-unit-size / 3 !default;
+
+@mixin ax-panel {
+  .v-panel {
+    .v-panel-caption {
+      font-size: $v-font-size--h3;
+      padding: 0 $ax-panel-padding;
+      margin: 0;
+    }
+    .v-panel-content {
+      padding: $ax-panel-padding;
+    }
+  }
+}

@@ -72,6 +72,10 @@ public class AxDefaults {
             table.setWidth(100, Sizeable.Unit.PERCENTAGE);
             table.setPageLength(0);
         });
+        define(AbstractOrderedLayout.class, layout -> {
+            layout.setMargin(false);
+            layout.setSizeUndefined();
+        });
         define(Window.class, window -> {
             window.setModal(true);
             window.setDraggable(false);

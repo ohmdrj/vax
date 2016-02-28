@@ -15,7 +15,7 @@ public class AxWindow extends Window {
 
     private CssLayout rootLayout;
     private CssLayout footerLayout;
-    private Button closeButton;
+    private AxWindowButton closeButton;
     private AutoFocusMode autoFocusMode;
 
     public AxWindow() {
@@ -80,10 +80,14 @@ public class AxWindow extends Window {
 
     private void updateHeaderVisibility() {
         if (Strings.isNullOrEmpty(getCaption()) && !isClosable() && !isResizable() && !isDraggable()) {
-            addStyleName("headerless");
+            addStyleName(Ax.NO_HEADER);
         } else {
-            removeStyleName("headerless");
+            removeStyleName(Ax.NO_HEADER);
         }
+    }
+
+    public Layout getFooter() {
+        return footerLayout;
     }
 
     private AxWindowButtonBuilder addButton(AxWindowButtonBuilder builder, boolean asFirst) {
@@ -130,6 +134,10 @@ public class AxWindow extends Window {
             footerLayout.removeComponent(closeButton);
             closeButton = null;
         }
+    }
+
+    public AxWindowButton getCloseButton() {
+        return closeButton;
     }
 
     public void show(UI ui) {
