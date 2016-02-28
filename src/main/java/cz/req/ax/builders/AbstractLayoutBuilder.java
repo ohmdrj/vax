@@ -25,6 +25,10 @@ public class AbstractLayoutBuilder<L extends AbstractLayout, B extends AbstractL
         return (B) this;
     }
 
+    public B add(ComponentBuilder<?, ?> builder) {
+        return add(builder.get());
+    }
+
     public B fill(LayoutFiller filler) {
         filler.fillLayout(target);
         return (B) this;

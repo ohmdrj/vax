@@ -38,7 +38,7 @@ $ax-window-header-font-size: $v-font-size--h2 !default;
       }
 
       > .ax-window-footer {
-        > .v-button {
+        > .v-widget {
           margin-top: $ax-window-padding;
           &.align-left {
             margin-right: $ax-window-padding / 2;

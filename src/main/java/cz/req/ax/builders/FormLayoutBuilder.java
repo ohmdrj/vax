@@ -1,6 +1,7 @@
 package cz.req.ax.builders;
 
 import com.vaadin.ui.FormLayout;
+import cz.req.ax.Ax;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
@@ -14,6 +15,10 @@ public class FormLayoutBuilder extends AbstractLayoutBuilder<FormLayout, FormLay
 
     public FormLayoutBuilder(FormLayout target, boolean useDefaults) {
         super(target, useDefaults);
+    }
+
+    public FormLayoutBuilder light() {
+        return style(Ax.LIGHT);
     }
 
 }

@@ -12,6 +12,7 @@ public interface StyleNames {
     String FRIENDLY = "friendly";
     String DANGER = "danger";
     String QUIET = "quiet";
+    String LIGHT = "light";
     String LINK = "link";
 
     String BORDERLESS = "borderless";
@@ -24,6 +25,9 @@ public interface StyleNames {
 
     String CLICKABLE = "clickable";
     String HORIZONTAL = "horizontal";
+
+    String ALIGN_LEFT = "align-left";
+    String ALIGN_RIGHT = "align-right";
 
     String ICON_ALIGN_RIGHT = "icon-align-right";
     String ICON_ALIGN_TOP = "icon-align-top";

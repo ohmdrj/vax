@@ -15,7 +15,7 @@ public class AxWindow extends Window {
 
     private CssLayout rootLayout;
     private CssLayout footerLayout;
-    private Button closeButton;
+    private AxWindowButton closeButton;
     private AutoFocusMode autoFocusMode;
 
     public AxWindow() {
@@ -86,6 +86,10 @@ public class AxWindow extends Window {
         }
     }
 
+    public Layout getFooter() {
+        return footerLayout;
+    }
+
     private AxWindowButtonBuilder addButton(AxWindowButtonBuilder builder, boolean asFirst) {
         AxWindowButton button = builder.window(this).get();
         if (asFirst) {
@@ -130,6 +134,10 @@ public class AxWindow extends Window {
             footerLayout.removeComponent(closeButton);
             closeButton = null;
         }
+    }
+
+    public AxWindowButton getCloseButton() {
+        return closeButton;
     }
 
     public void show(UI ui) {
