@@ -6,6 +6,7 @@
 @import "shared/global";
 
 @import "components/button";
+@import "components/checkbox";
 @import "components/formlayout";
 @import "components/label";
 @import "components/link";
@@ -25,6 +26,7 @@
   @include valo;
   @include font-awesome;
   @include ax-button;
+  @include ax-checkbox;
   @include ax-formlayout;
   @include ax-label;
   @include ax-link;

@@ -4,6 +4,11 @@
 
     &.light {
       @include valo-formlayout-spacing(0);
+
+      .v-button-link {
+        white-space: normal;
+        text-align: left;
+      }
     }
   }
 }

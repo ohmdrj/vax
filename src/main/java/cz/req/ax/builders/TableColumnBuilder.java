@@ -128,10 +128,10 @@ public class TableColumnBuilder<ID, BEAN> {
         return generator((source, itemId, columnId) -> generator.apply((ID) itemId));
     }
 
-    public TableColumnBuilder<ID, BEAN> column(Object propertyId) {
-        return tableBuilder.column(propertyId);
+    public TableColumnBuilder<ID, BEAN> column(String propertyId, String... nestedPropertyIds) {
+        return tableBuilder.column(propertyId, nestedPropertyIds);
     }
-    
+
     public TableBuilder<ID, BEAN> table() {
         return tableBuilder;
     }
