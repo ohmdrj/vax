@@ -1,6 +1,9 @@
 package cz.req.ax;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.persistence.Id;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
@@ -13,6 +16,7 @@ import java.util.*;
  */
 public class ObjectIdentity {
 
+    private static final Logger logger = LoggerFactory.getLogger(ObjectIdentity.class);
     static final Map<Class, Method> map = new LinkedHashMap<>();
 
     public static Integer id(Object object) {
@@ -49,18 +53,17 @@ public class ObjectIdentity {
     }
 
     public static PropertyDescriptor property(Class clazz) {
-        PropertyDescriptor descriptor = null;
-
         for (Field field : fields(new LinkedList<>(), clazz)) {
             try {
                 Id annotation = field.getDeclaredAnnotation(Id.class);
-                if (annotation == null) continue;
-                descriptor = new PropertyDescriptor(field.getName(), clazz);
-            } catch (Exception ex) {
-                //Preskocime
+                if (annotation != null) {
+                    return new PropertyDescriptor(field.getName(), clazz);
+                }
+            } catch (Exception e) {
+                logger.warn("Failed to create PropertyDescriptor for {}: {}", field.getName(), e.getMessage());
             }
         }
-        return descriptor;
+        return null;
     }
 
     static List<Field> fields(List<Field> fields, Class<?> type) {
