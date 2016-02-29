@@ -1,0 +1,12 @@
+@mixin ax-checkbox {
+  // Radio button style
+  .v-checkbox.radio > input ~ label {
+    &:before {
+      border-radius: 50%;
+    }
+    &:after {
+      content: "\f111";
+      font-size: 0.55em;
+    }
+  }
+}

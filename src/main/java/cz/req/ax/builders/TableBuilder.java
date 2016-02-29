@@ -1,5 +1,6 @@
 package cz.req.ax.builders;
 
+import com.google.common.base.Joiner;
 import com.vaadin.data.Container;
 import com.vaadin.data.util.AbstractBeanContainer;
 import com.vaadin.data.util.BeanItem;
@@ -200,7 +201,13 @@ public class TableBuilder<ID, BEAN> extends AbstractSelectBuilder<Table, TableBu
         return style(Ax.SMALL);
     }
 
-    public TableColumnBuilder<ID, BEAN> column(Object propertyId) {
+    public TableColumnBuilder<ID, BEAN> column(String propertyId, String... nestedPropertyIds) {
+        if (nestedPropertyIds.length > 0) {
+            propertyId += "." +  Joiner.on(".").join(nestedPropertyIds);
+        }
+        if (propertyId.contains(".")) {
+            ((AbstractBeanContainer<ID, BEAN>) target.getContainerDataSource()).addNestedContainerProperty(propertyId);
+        }
         columnIds.add(propertyId);
         return new TableColumnBuilder<>(this, propertyId);
     }
