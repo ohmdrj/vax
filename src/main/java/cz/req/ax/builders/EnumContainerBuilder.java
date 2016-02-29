@@ -18,4 +18,8 @@ public class EnumContainerBuilder<E extends Enum<E>> extends AxBeanItemContainer
         return of(EnumSet.allOf(beanType));
     }
 
+    public AxBeanItemContainer<E> ofAllExcept(E first, E... others) {
+        return of(EnumSet.complementOf(EnumSet.of(first, others)));
+    }
+
 }
