@@ -135,15 +135,15 @@ public class Ax implements StyleNames {
     }
 
     public static Label h1(String caption) {
-        return label(caption).header(1).widthFull().get();
+        return label(caption).header(1).get();
     }
 
     public static Label h2(String caption) {
-        return label(caption).header(2).widthFull().get();
+        return label(caption).header(2).get();
     }
 
     public static Label h3(String caption) {
-        return label(caption).header(3).widthFull().get();
+        return label(caption).header(3).get();
     }
 
     public static LabelBuilder icon(Resource icon) {
@@ -248,6 +248,10 @@ public class Ax implements StyleNames {
 
     public static RichTextAreaBuilder richTextArea(String caption) {
         return richTextArea().caption(caption);
+    }
+
+    public static Label spinner() {
+        return label().style(Ax.SPINNER).get();
     }
 
     public static <ID, BEAN> TableBuilder<ID, BEAN> table(AbstractBeanContainer<ID, BEAN> container) {

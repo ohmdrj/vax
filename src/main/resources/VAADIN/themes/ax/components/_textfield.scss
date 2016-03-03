@@ -1,0 +1,12 @@
+@mixin ax-textfield {
+  .v-textfield-warning {
+    @include ax-textfield-warning-style;
+  }
+}
+
+@mixin ax-textfield-warning-style {
+  border-color: $ax-warning-indicator-color;
+  $bg: scale-color($ax-warning-indicator-color, $lightness: 98%);
+  background: $bg;
+  color: valo-font-color($bg);
+}
