@@ -5,10 +5,8 @@ import com.vaadin.data.util.converter.Converter;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Table;
 import cz.req.ax.StringToConverter;
-import cz.req.ax.ui.SelectionColumn;
 
 import java.util.Locale;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -113,6 +111,17 @@ public class TableColumnBuilder<ID, BEAN> {
             }
         });
     }
+
+//    public <V> TableColumnBuilder<ID, BEAN> icon(Function<V, FontIcon> formatter) {
+//        // TODO potrebujeme style generator pro sloupce
+//        return converter(new StringToConverter() {
+//            @Override
+//            public String convertToPresentation(Object value, Class<? extends String> targetType, Locale locale) throws ConversionException {
+//                FontIcon icon = formatter.apply((V) value);
+//                return icon != null ? new String(Character.toChars(icon.getCodepoint())) : null;
+//            }
+//        });
+//    }
 
     public TableColumnBuilder<ID, BEAN> generator(Table.ColumnGenerator generator) {
         table.addGeneratedColumn(propertyId, generator);
