@@ -112,3 +112,4 @@ Vaadin Ax:
 | Ax.h2() | Nadpis úrovně 2 |
 | Ax.h3() | Nadpis úrovně 3 |
 | Ax.hr() | Oddělovací čára `<hr>` |
+| Ax.spinner() | Ukazatel probíhající akce. |
