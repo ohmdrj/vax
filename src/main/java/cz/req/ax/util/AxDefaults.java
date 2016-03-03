@@ -40,9 +40,6 @@ public class AxDefaults {
         define(Label.class, label -> {
             label.setSizeUndefined();
         });
-        define(CssLayout.class, layout -> {
-            layout.setSizeUndefined();
-        });
         define(Field.class, field -> {
             field.setRequiredError(requiredError);
         });
@@ -50,16 +47,10 @@ public class AxDefaults {
             field.setConversionError(invalidValueError);
         });
         define(AbstractTextField.class, field -> {
-            field.setNullSettingAllowed(false);
             field.setNullRepresentation("");
         });
         define(RichTextArea.class, area -> {
-            area.setNullSettingAllowed(false);
             area.setNullRepresentation("");
-        });
-        define(AbstractSelect.class, select -> {
-            select.setNullSelectionAllowed(true);
-            select.setNewItemsAllowed(false);
         });
         define(AbstractSelect.Filtering.class, select -> {
             select.setFilteringMode(FilteringMode.CONTAINS);

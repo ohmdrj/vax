@@ -17,9 +17,9 @@
 @import "components/message";
 @import "components/panel";
 @import "components/table";
+@import "components/textfield";
 @import "components/upload";
 @import "components/ui";
-@import "components/widget";
 @import "components/window";
 
 @mixin ax {
@@ -37,9 +37,9 @@
   @include ax-message;
   @include ax-panel;
   @include ax-table;
+  @include ax-textfield;
   @include ax-ui;
   @include ax-upload;
-  @include ax-widget;
   @include ax-window;
 }
 

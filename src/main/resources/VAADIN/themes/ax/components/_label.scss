@@ -1,13 +1,25 @@
 @mixin ax-label {
+  .v-label-undef-w {
+    white-space: normal;
+  }
+
+  .v-label-no-data {
+    display: block;
+    font-style: italic;
+  }
+
+  h1, .v-label-h1,
+  h2, .v-label-h2,
+  h3, .v-label-h3,
+  h4, .v-label-h4 {
+    display: block;
+  }
+
   .v-csslayout {
-    > h1,
-    > h2,
-    > h3,
-    > h4,
-    > .v-label-h1,
-    > .v-label-h2,
-    > .v-label-h3,
-    > .v-label-h4 {
+    > h1, > .v-label-h1,
+    > h2, > .v-label-h2,
+    > h3, > .v-label-h3,
+    > h4, > .v-label-h4 {
       &:first-child {
         margin-top: 0;
       }

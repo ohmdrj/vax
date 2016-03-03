@@ -1,4 +1,12 @@
 @mixin ax-button {
+  .v-button-align-left {
+    float: left;
+  }
+
+  .v-button-align-right {
+    float: right;
+  }
+
   .v-button-secondary {
     @include valo-button-style($background-color: $ax-secondary-color);
   }
