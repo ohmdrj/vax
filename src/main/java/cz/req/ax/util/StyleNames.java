@@ -33,6 +33,7 @@ public interface StyleNames {
     String ICON_ALIGN_RIGHT = "icon-align-right";
     String ICON_ALIGN_TOP = "icon-align-top";
 
+    String NO_CAPTION = "no-caption";
     String NO_DATA = "no-data";
     String NO_HEADER = "no-header";
     String NO_STRIPES = "no-stripes";

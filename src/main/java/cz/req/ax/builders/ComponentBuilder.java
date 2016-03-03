@@ -36,6 +36,23 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
         return (B) this;
     }
 
+    public B captionVisible(boolean visible) {
+        if (visible) {
+            target.removeStyleName(Ax.NO_CAPTION);
+        } else {
+            target.addStyleName(Ax.NO_CAPTION);
+        }
+        return (B) this;
+    }
+
+    public B captionVisible() {
+        return captionVisible(true);
+    }
+
+    public B captionHidden() {
+        return captionVisible(false);
+    }
+
     public B icon(Resource icon) {
         target.setIcon(icon);
         return (B) this;
