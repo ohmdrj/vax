@@ -8,19 +8,23 @@
 
   .v-menubar-link {
     @include valo-link-style;
+
     background: none;
     width: auto;
     height: auto;
     line-height: inherit;
+
     > .v-menubar-menuitem {
       background: none;
       padding: 0;
+
       &:not(:first-child) {
         margin-left: 0.5em;
       }
       &:before {
         display: none;
       }
+
       > .v-menubar-menuitem-caption {
         &:hover {
           text-decoration: $ax-link-text-decoration-hover;
@@ -37,6 +41,7 @@
         float: right;
         width: 1em;
         color: transparent;
+
         &:after {
           position: relative;
           right: 1.5em;
@@ -49,6 +54,7 @@
         }
       }
     }
+
     > .v-menubar-menuitem-selected {
       color: inherit;
     }
