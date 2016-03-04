@@ -114,4 +114,9 @@ public class LocalDateTimeField extends CustomField<LocalDateTime> {
         }
     }
 
+    @Override
+    public void focus() {
+        dateField.focus();
+    }
+
 }

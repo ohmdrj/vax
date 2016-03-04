@@ -1,6 +1,7 @@
 package cz.req.ax;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.primitives.Ints;
 import com.vaadin.data.util.converter.StringToIntegerConverter;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -15,7 +16,7 @@ import java.util.stream.Stream;
 public abstract class AxView extends RootLayout implements View, Navigation, Components, Push {
 
     TabSheet tabSheet;
-    String parameters;
+    String[] parameters;
 
     protected AxView() {
         String name = getClass().getSimpleName();
@@ -24,28 +25,16 @@ public abstract class AxView extends RootLayout implements View, Navigation, Com
         addStyleName(name.replaceAll("View", "-view").toLowerCase()); // Pouze zpetna kompatibilita
     }
 
-    public String getParameters() {
+    public String[] getParameters() {
         return parameters;
     }
 
-    public Integer getParameterInteger() {
-        try {
-            return new StringToIntegerConverter().convertToModel(parameters, Integer.class, Locale.getDefault());
-        } catch (Exception ex) {
-            return null;
-        }
+    public String getParameter(int index) {
+        return index >= 0 && index < parameters.length ? parameters[index] : null;
     }
 
-    public Integer[] getParameterIntegers() {
-        try {
-            return Stream.of(getParameterStrings()).map(Integer::parseInt).toArray(size -> new Integer[size]);
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
-    public String[] getParameterStrings() {
-        return parameters.split("/");
+    public Integer getIntegerParameter(int index) {
+        return Ints.tryParse(getParameter(index));
     }
 
     public void setParameters(Object... parameters) {
@@ -58,7 +47,7 @@ public abstract class AxView extends RootLayout implements View, Navigation, Com
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        parameters = event.getParameters();
+        parameters = event.getParameters().split("/");
     }
 
     //TODO Refactorize

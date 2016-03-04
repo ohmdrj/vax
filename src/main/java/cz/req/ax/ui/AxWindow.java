@@ -141,6 +141,10 @@ public class AxWindow extends Window {
     }
 
     public void show(UI ui) {
+        if (!beforeShow()) {
+            return;
+        }
+
         if (ui == null) {
             ui = UI.getCurrent();
         }
@@ -155,16 +159,40 @@ public class AxWindow extends Window {
         } else if (autoFocusMode == AutoFocusMode.WINDOW) {
             focus();
         }
+
+        afterShow();
     }
 
     public void show() {
         show(null);
     }
 
+    protected boolean beforeShow() {
+        return true;
+    }
+
+    protected void afterShow() {
+    }
+
+    @Override
+    public void close() {
+        if (beforeClose()) {
+            super.close();
+            afterClose();
+        }
+    }
+
+    protected boolean beforeClose() {
+        return true;
+    }
+
+    protected void afterClose() {
+    }
+
     public enum AutoFocusMode {
         FIRST_FIELD_OR_WINDOW,
         WINDOW,
-        DISABLED
+        DISABLED;
     }
 
 }

@@ -31,6 +31,7 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator {
     private boolean rowClickSelection;
     private Map<ID, CheckBox> checkBoxMap = new HashMap<>();
     private Set<SelectionChangeListener<ID>> listeners = new LinkedHashSet<>();
+    private Set<ID> preselectedItemIds = new HashSet<>();
 
     public SelectionColumn() {
         this(ID);
@@ -76,7 +77,8 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator {
         if (!multiselect && !nullSelectionAllowed) {
             checkBox.addStyleName(RADIO_STYLE);
         }
-        if (!nullSelectionAllowed && checkBoxMap.isEmpty()) {
+        if (preselectedItemIds.remove(itemId) || (!nullSelectionAllowed && checkBoxMap.isEmpty()
+                && Collections.disjoint(table.getContainerDataSource().getItemIds(), preselectedItemIds))) {
             checkBox.setInternalValue(true);
         }
         checkBoxMap.put((ID) itemId, checkBox);
@@ -221,9 +223,13 @@ public class SelectionColumn<ID> implements Table.ColumnGenerator {
     }
 
     public void setItemSelected(ID itemId, boolean selected) {
-        CheckBox checkBox = checkBoxMap.get(itemId);
-        if(checkBox != null) {
-            checkBox.setValue(selected);
+        if (table != null) {
+            CheckBox checkBox = checkBoxMap.get(itemId);
+            if(checkBox != null) {
+                checkBox.setValue(selected);
+            }
+        } else if (selected) {
+            preselectedItemIds.add(itemId);
         }
     }
 
