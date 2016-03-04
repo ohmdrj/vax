@@ -97,4 +97,9 @@ public class LocalDateField extends CustomField<LocalDate> {
         super.setEnabled(enabled);
     }
 
+    @Override
+    public void focus() {
+        field.focus();
+    }
+
 }
