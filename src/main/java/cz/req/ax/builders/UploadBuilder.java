@@ -58,6 +58,10 @@ public class UploadBuilder extends ComponentBuilder<Upload, UploadBuilder> {
         return this;
     }
 
+    public UploadBuilder primary() {
+        return style(Ax.PRIMARY);
+    }
+
     public UploadBuilder link() {
         return style(Ax.LINK);
     }
