@@ -20,7 +20,7 @@ import java.io.StringWriter;
 
 @Component
 @Scope("prototype")
-@VaadinView("Exception")
+@VaadinView("exception")
 public class ExceptionView extends AxView {
 
     private Logger logger = LoggerFactory.getLogger(getClass());

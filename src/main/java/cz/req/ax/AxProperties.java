@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("vax")
 public class AxProperties {
 
-    private String viewMain = "Main";
+    private String viewMain = "main";
     private String viewUser;
     private String viewError;
     private String test;

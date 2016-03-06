@@ -1,19 +1,34 @@
 @mixin ax-table {
   .v-table {
-    $background-color: $v-table-background-color or valo-table-background-color(); // Z valo theme
+    $header-bg-color: $ax-primary-color;
+    $header-font-color: valo-font-color($header-bg-color, 0.9);
+    $body-bg-color: $v-table-background-color or valo-table-background-color(); // Z valo theme
+    $body-select-color: rgba($ax-primary-color, 0.8);
 
     .v-table-header  {
-      $font-color: valo-font-color($ax-primary-color, 0.9);
-      background-color: $ax-primary-color;
-      color: $font-color;
+      background: $header-bg-color;
+      color: $header-font-color;
+
       td:not(:first-child) .v-table-caption-container {
-        border-left: 1px solid $font-color;
+        border-left: 1px solid $header-font-color;
       }
     }
 
-    .v-table-body tr:hover {
-      background-color: darken($background-color, 10%);
+    .v-table-body tr {
+      &:hover {
+        background: darken($body-bg-color, 10%);
+      }
+
+      &.v-selected {
+        background: $body-select-color;
+        border-color: $body-select-color;
+
+        &:hover {
+          background: darken($body-select-color, 10%);
+        }
+      }
     }
+
     &.clickable tr {
       cursor: pointer;
     }
@@ -40,6 +55,7 @@
 
 @mixin table-fa-column {
   font-family: FontAwesome;
+
   > .v-table-cell-wrapper {
     text-align: center;
   }
