@@ -1,4 +1,8 @@
 @mixin ax-upload {
+  .v-upload-primary .v-button {
+    @extend .v-button-primary;
+  }
+
   .v-upload-link .v-button {
     @extend .v-button-link;
 
