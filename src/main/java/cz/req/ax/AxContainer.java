@@ -53,8 +53,11 @@ public class AxContainer<T> extends AxBeanContainer<T> implements Refresh {
     }
 
     public BeanItem<T> update(T bean) {
-        T item = repository.save(bean);
-        return getItem(ObjectIdentity.id(bean));
+        Integer itemId = ObjectIdentity.id(bean);
+        T updatedBean = repository.save(bean);
+        int index = indexOfId(itemId);
+        removeItem(itemId);
+        return addBeanAt(index, updatedBean);
     }
 
     public Integer delete(Object object) {
