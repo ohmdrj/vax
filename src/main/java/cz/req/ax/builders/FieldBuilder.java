@@ -51,12 +51,16 @@ public class FieldBuilder<V, F extends Field<V>, B extends FieldBuilder<V, F, B>
         return (B) this;
     }
 
-    public B validate(ToBooleanFunction<V> validator) {
+    public B validate(String errorMessage, ToBooleanFunction<V> validator) {
         return validator(value -> {
             if (value != null && !validator.applyAsBoolean((V) value)) {
-                throw new Validator.InvalidValueException(invalidError);
+                throw new Validator.InvalidValueException(errorMessage);
             }
         });
+    }
+
+    public B validate(ToBooleanFunction<V> validator) {
+        return validate(invalidError, validator);
     }
 
     public B invalidError(String invalidError) {
