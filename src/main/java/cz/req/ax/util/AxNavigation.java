@@ -12,15 +12,15 @@ import ru.xpoft.vaadin.VaadinView;
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
  *         Date: 18.2.2016
  */
-public class AxNavigator {
+public class AxNavigation {
 
-    public static AxNavigator getCurrent() {
-        return new AxNavigator(UI.getCurrent().getNavigator());
+    public static AxNavigation getCurrent() {
+        return new AxNavigation(UI.getCurrent().getNavigator());
     }
 
     private Navigator navigator;
 
-    public AxNavigator(Navigator navigator) {
+    public AxNavigation(Navigator navigator) {
         this.navigator = navigator;
     }
 

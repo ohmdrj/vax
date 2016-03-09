@@ -93,7 +93,9 @@ public class AxErrorHandler implements ErrorHandler {
 
     protected void handleUnknownError(Throwable throwable) {
         logger.error("Vaadin error: ", throwable);
-        if (Strings.isNullOrEmpty(errorView)) {
+        if (AxUtils.isUnknownViewError(throwable)) {
+            UI.getCurrent().setContent(Ax.h1("Stránka s daným URL neexistuje."));
+        } else  if (Strings.isNullOrEmpty(errorView)) {
             Ax.message("Nastala chyba při vykonávání operace.").error(throwable).show();
         } else {
             UI ui = UI.getCurrent();

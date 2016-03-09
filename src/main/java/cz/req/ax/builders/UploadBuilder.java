@@ -17,10 +17,25 @@ public class UploadBuilder extends ComponentBuilder<Upload, UploadBuilder> {
         super(target, useDefaults);
     }
 
-    @Override
-    public UploadBuilder caption(String caption) {
+    public UploadBuilder submitCaption(String caption) {
         target.setButtonCaption(caption);
         return this;
+    }
+
+    public UploadBuilder submitHidden() {
+        return submitCaption(null);
+    }
+
+    public UploadBuilder chooserVisible(boolean visible) {
+        return immediate(!visible); // Alias
+    }
+
+    public UploadBuilder chooserVisible() {
+        return chooserVisible(true);
+    }
+
+    public UploadBuilder chooserHidden() {
+        return chooserVisible(false);
     }
 
     public UploadBuilder receiver(Upload.Receiver receiver) {
