@@ -97,4 +97,9 @@ public class AxUtils {
         }
     }
 
+    public static boolean isUnknownViewError(Throwable throwable) {
+        String message = throwable.getMessage();
+        return message != null && message.startsWith("Trying to navigate to an unknown state");
+    }
+
 }

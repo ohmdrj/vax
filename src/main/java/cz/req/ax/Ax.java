@@ -8,7 +8,7 @@ import com.vaadin.ui.*;
 import cz.req.ax.builders.*;
 import cz.req.ax.data.AxBinder;
 import cz.req.ax.util.AxDefaults;
-import cz.req.ax.util.AxNavigator;
+import cz.req.ax.util.AxNavigation;
 import cz.req.ax.util.AxPolling;
 import cz.req.ax.util.StyleNames;
 
@@ -198,8 +198,8 @@ public class Ax implements StyleNames {
         return new AxMessageBuilder(message);
     }
 
-    public static AxNavigator navigate() {
-        return AxNavigator.getCurrent();
+    public static AxNavigation navigate() {
+        return AxNavigation.getCurrent();
     }
 
     public static void navigate(Class<? extends View> viewClass, Object... params) {
@@ -230,8 +230,12 @@ public class Ax implements StyleNames {
         return passwordField().caption(caption);
     }
 
+    public static AxPolling polling(int intervalMsec) {
+        return new AxPolling(intervalMsec);
+    }
+
     public static AxPolling polling() {
-        return AxPolling.getCurrent();
+        return polling(500);
     }
 
     public static ProgressBarBuilder progressBar() {
@@ -291,7 +295,7 @@ public class Ax implements StyleNames {
     }
 
     public static UploadBuilder upload(String caption) {
-        return upload().caption(caption);
+        return upload().submitCaption(caption);
     }
 
     public static NotificationBuilder warning(String message) {
