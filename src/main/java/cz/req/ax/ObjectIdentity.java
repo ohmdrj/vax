@@ -1,11 +1,10 @@
 package cz.req.ax;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.data.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.Id;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -16,8 +15,7 @@ import java.util.*;
  */
 public class ObjectIdentity {
 
-    private static final Logger logger = LoggerFactory.getLogger(ObjectIdentity.class);
-    static final Map<Class, Method> map = new LinkedHashMap<>();
+    static final Map<Class, Method> idGetters = new LinkedHashMap<>();
 
     public static Integer id(Object object) {
         //TODO Burianek support Number?
@@ -27,51 +25,37 @@ public class ObjectIdentity {
     public static Integer idInteger(Object object) {
         if (object == null) return null;
         try {
-            return (Integer) method(object.getClass()).invoke(object);
+            return (Integer) getIdGetter(object.getClass()).invoke(object);
         } catch (Exception e) {
-            throw new RuntimeException("Identity exception", e);
+            throw new RuntimeException("Unable to resolve object ID", e);
         }
     }
 
-    private static Method method(Class clazz) {
-        Method method = map.get(clazz);
-        if (method != null) return method;
-        /*try {
-            for (PropertyDescriptor descriptor : Introspector.getBeanInfo(clazz).getPropertyDescriptors()) {
-                if (descriptor.get  )
-            }
-        } catch (IntrospectionException e) {
-            throw new RuntimeException(e);
-        }*/
-        PropertyDescriptor descriptor = property(clazz);
-        //TODO Burianek Id annotation on getter?
-        if (descriptor == null)
-            throw new IllegalArgumentException("Missing Id annotation at class " + clazz.getCanonicalName());
-        method = descriptor.getReadMethod();
-        map.put(clazz, method);
-        return method;
-    }
-
-    public static PropertyDescriptor property(Class clazz) {
-        for (Field field : fields(new LinkedList<>(), clazz)) {
+    private static Method getIdGetter(Class clazz) {
+        Method getter = idGetters.get(clazz);
+        if (getter == null) {
+            Field field = getIdField(clazz);
             try {
-                Id annotation = field.getDeclaredAnnotation(Id.class);
-                if (annotation != null) {
-                    return new PropertyDescriptor(field.getName(), clazz);
-                }
+                getter = clazz.getMethod("get" + StringUtils.capitalize(field.getName()));
             } catch (Exception e) {
-                logger.warn("Failed to create PropertyDescriptor for {}: {}", field.getName(), e.getMessage());
+                throw new IllegalArgumentException("Unable to access getter method for ID field "
+                        + field + " on class " + clazz, e);
             }
+            idGetters.put(clazz, getter);
         }
-        return null;
+        return getter;
     }
 
-    static List<Field> fields(List<Field> fields, Class<?> type) {
-        fields.addAll(Arrays.asList(type.getDeclaredFields()));
-        if (type.getSuperclass() != null) {
-            fields = fields(fields, type.getSuperclass());
+    public static Field getIdField(Class clazz) {
+        Field field = findIdField(clazz);
+        if (field == null) {
+            throw new IllegalArgumentException("Missing field with " + Id.class + " annotation on class " + clazz);
         }
-        return fields;
+        return field;
+    }
+
+    public static Field findIdField(Class clazz) {
+        return ReflectionUtils.findField(clazz, f -> f.getDeclaredAnnotation(Id.class) != null);
     }
 
 }

@@ -5,6 +5,7 @@ import cz.req.ax.ObjectIdentity;
 import cz.req.ax.data.AxBeanContainer;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.util.Objects;
 
 /**
@@ -22,9 +23,9 @@ public class AxBeanContainerBuilder<ID, BEAN> extends AxContainerBuilder<ID, BEA
     }
 
     public void autodetectIdProperty() {
-        PropertyDescriptor descriptor = ObjectIdentity.property(beanType);
-        if (descriptor != null && idType.equals(descriptor.getPropertyType())) {
-            idProperty(descriptor.getName());
+        Field field = ObjectIdentity.findIdField(beanType);
+        if (field != null && idType.equals(field.getType())) {
+            idProperty(field.getName());
         }
     }
 
