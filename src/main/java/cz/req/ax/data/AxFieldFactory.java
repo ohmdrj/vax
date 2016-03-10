@@ -37,7 +37,7 @@ public class AxFieldFactory extends DefaultFieldGroupFieldFactory implements Bea
     public <T extends Field> T createField(Class<?> propertyType, Class<T> fieldType) {
         if (AxComboBox.class.equals(fieldType)) {
             AxComboBox<Object> comboBox = new AxComboBox<>();
-            if (Enum.class.isAssignableFrom(fieldType)) {
+            if (Enum.class.isAssignableFrom(propertyType)) {
                 populateWithEnumData(comboBox, (Class<? extends Enum>) propertyType);
             }
             return (T) comboBox;
