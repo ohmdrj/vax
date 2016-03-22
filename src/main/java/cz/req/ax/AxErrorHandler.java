@@ -93,7 +93,7 @@ public class AxErrorHandler implements ErrorHandler {
 
     protected void handleUnknownError(Throwable throwable) {
         logger.error("Vaadin error: ", throwable);
-        if (AxUtils.isUnknownViewError(throwable)) {
+        if (isUnknownViewError(throwable)) {
             UI.getCurrent().setContent(Ax.h1("Stránka s daným URL neexistuje."));
         } else  if (Strings.isNullOrEmpty(errorView)) {
             Ax.message("Nastala chyba při vykonávání operace.").error(throwable).show();
@@ -102,6 +102,11 @@ public class AxErrorHandler implements ErrorHandler {
             ui.getSession().setAttribute(Throwable.class, throwable);
             ui.getNavigator().navigateTo(errorView);
         }
+    }
+
+    private boolean isUnknownViewError(Throwable throwable) {
+        String message = throwable.getMessage();
+        return message != null && message.startsWith("Trying to navigate to an unknown state");
     }
 
 }

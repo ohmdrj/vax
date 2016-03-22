@@ -38,13 +38,16 @@ $ax-window-header-font-size: $v-font-size--h2 !default;
       }
 
       > .ax-window-footer {
-        > .v-widget {
-          margin-top: $ax-window-padding;
-          &.align-left {
-            margin-right: $ax-window-padding / 2;
+        > .ax-window-footer-left {
+          float: left;
+          > .v-widget {
+            margin: $ax-window-padding ($ax-window-padding / 2) 0 0;
           }
-          &.align-right {
-            margin-left: $ax-window-padding / 2;
+        }
+        > .ax-window-footer-right {
+          float: right;
+          > .v-widget {
+            margin: $ax-window-padding 0 0 ($ax-window-padding / 2);
           }
         }
       }

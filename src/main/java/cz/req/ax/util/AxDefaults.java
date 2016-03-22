@@ -75,13 +75,6 @@ public class AxDefaults {
             window.setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
             window.center();
         });
-        define(AxWindow.class, window -> {
-            window.setAutoFocusMode(AxWindow.AutoFocusMode.FIRST_FIELD_OR_WINDOW);
-            window.addCloseButton();
-        });
-        define(AxWindowButton.class, button -> {
-            button.setAlignment(AxWindowButton.Align.RIGHT);
-        });
     }
 
     public String getRequiredError() {

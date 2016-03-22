@@ -62,6 +62,11 @@ public class ComponentBuilder<C extends Component, B extends ComponentBuilder<C,
         return (B) this;
     }
 
+    public B primaryStyle(String style) {
+        target.setPrimaryStyleName(style);
+        return (B) this;
+    }
+
     public B width(int width) {
         target.setWidth(width, Sizeable.Unit.PIXELS);
         return (B) this;

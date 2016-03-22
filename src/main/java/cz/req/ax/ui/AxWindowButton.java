@@ -5,9 +5,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
 import com.vaadin.util.ReflectTools;
+import cz.req.ax.Ax;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
@@ -17,7 +19,12 @@ public class AxWindowButton extends Button {
 
     private AxWindow window;
     private boolean closeAfterClick;
-    private Align alignment;
+    private AxWindow.Align alignment = AxWindow.Align.RIGHT;
+    private int order = 0;
+
+    public AxWindowButton() {
+        Ax.defaults(this);
+    }
 
     public AxWindow getWindow() {
         return window;
@@ -35,18 +42,30 @@ public class AxWindowButton extends Button {
         closeAfterClick = close;
     }
 
-    public Align getAlignment() {
+    public AxWindow.Align getAlignment() {
         return alignment;
     }
 
-    public void setAlignment(Align newAlignment) {
-        removeStyleName(getAlignmentStyle());
-        alignment = newAlignment;
-        addStyleName(getAlignmentStyle());
+    public void setAlignment(AxWindow.Align newAlignment) {
+        if (alignment != newAlignment) {
+            alignment = Objects.requireNonNull(newAlignment);
+            if (window != null) {
+                window.setFooterComponentAlignment(this, alignment);
+            }
+        }
     }
 
-    private String getAlignmentStyle() {
-        return alignment != null ? "align-" + alignment.name().toLowerCase() : "";
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int newOrder) {
+        if (order != newOrder) {
+            order = newOrder;
+            if (window != null) {
+                window.setFooterComponentOrder(this, order);
+            }
+        }
     }
 
     @Override
@@ -99,10 +118,6 @@ public class AxWindowButton extends Button {
 
         void windowButtonClick(ClickEvent event);
 
-    }
-
-    public enum Align {
-        LEFT, RIGHT
     }
 
 }
