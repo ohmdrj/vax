@@ -7,7 +7,6 @@ import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
 import cz.req.ax.Ax;
 import cz.req.ax.AxUtils;
-import cz.req.ax.util.AxDefaults;
 
 import java.util.function.Consumer;
 

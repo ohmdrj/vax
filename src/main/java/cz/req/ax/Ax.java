@@ -7,6 +7,7 @@ import com.vaadin.server.Resource;
 import com.vaadin.ui.*;
 import cz.req.ax.builders.*;
 import cz.req.ax.data.AxBinder;
+import cz.req.ax.navigator.AxNavigator;
 import cz.req.ax.util.AxDefaults;
 import cz.req.ax.util.AxNavigation;
 import cz.req.ax.util.AxPolling;
@@ -199,7 +200,7 @@ public class Ax implements StyleNames {
     }
 
     public static AxNavigation navigate() {
-        return AxNavigation.getCurrent();
+        return new AxNavigation(AxNavigator.getCurrent());
     }
 
     public static void navigate(Class<? extends View> viewClass, Object... params) {

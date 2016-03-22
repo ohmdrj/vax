@@ -1,4 +1,4 @@
-package cz.req.ax;
+package cz.req.ax.server;
 
 import com.google.common.base.Strings;
 import com.vaadin.data.Validator;
@@ -7,42 +7,32 @@ import com.vaadin.server.ErrorEvent;
 import com.vaadin.server.ErrorHandler;
 import com.vaadin.server.ServerRpcManager;
 import com.vaadin.ui.UI;
+import cz.req.ax.Ax;
+import cz.req.ax.navigator.AxNavigator;
+import cz.req.ax.ui.AxUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * @deprecated use {@link cz.req.ax.server.AxErrorHandler}
+ * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
+ *         Date: 16.2.2016
  */
-@Deprecated
 public class AxErrorHandler implements ErrorHandler {
+
+    public static AxErrorHandler getCurrent() {
+        return AxUI.getCurrent().getErrorHandler();
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(AxErrorHandler.class);
 
-    private String errorView;
-
-    public void setErrorView(String errorView) {
-        this.errorView = errorView;
-    }
-
     @Override
     public void error(ErrorEvent event) {
-        Throwable throwable = findRelevantThrowable(event.getThrowable());
-        try {
-            Validator.InvalidValueException invalidValueCause = findInvalidValueCause(throwable);
-            if (invalidValueCause != null) {
-                handleInvalidValue(invalidValueCause);
-            } else {
-                handleUnknownError(throwable);
-            }
-        } catch (Throwable handlerThrowable) {
-            logger.error("Vaadin error: ", throwable);
-            logger.error("Ax error handler failed",  handlerThrowable);
-        }
+        handleThrowable(findRelevantThrowable(event.getThrowable()));
     }
 
-    protected static Throwable findRelevantThrowable(Throwable t) {
+    protected Throwable findRelevantThrowable(Throwable t) {
         // From DefaultErrorHandler
         try {
             if ((t instanceof ServerRpcManager.RpcInvocationException)
@@ -66,7 +56,23 @@ public class AxErrorHandler implements ErrorHandler {
         return t;
     }
 
-    public static Validator.InvalidValueException findInvalidValueCause(Throwable throwable) {
+    public void handleThrowable(Throwable throwable) {
+        try {
+            Validator.InvalidValueException invalidValueCause = findInvalidValueCause(throwable);
+            if (invalidValueCause != null) {
+                handleInvalidValueException(invalidValueCause);
+            } else if (isUnknownViewException(throwable)) {
+                handleUnknownViewException(throwable);
+            } else {
+                handleGenericException(throwable);
+            }
+        } catch (Throwable handlerThrowable) {
+            logger.error("Vaadin error: ", throwable);
+            logger.error("Ax error handler failed",  handlerThrowable);
+        }
+    }
+
+    protected Validator.InvalidValueException findInvalidValueCause(Throwable throwable) {
         while (throwable != null) {
             if (throwable instanceof Validator.InvalidValueException) {
                 return (Validator.InvalidValueException) throwable;
@@ -76,7 +82,7 @@ public class AxErrorHandler implements ErrorHandler {
         return null;
     }
 
-    protected void handleInvalidValue(Validator.InvalidValueException exception) {
+    protected void handleInvalidValueException(Validator.InvalidValueException exception) {
         String message = getInvalidValueMessage(exception);
         logger.debug("InvalidValueException: {}", message);
         Ax.notify(message).show();
@@ -91,16 +97,20 @@ public class AxErrorHandler implements ErrorHandler {
         return exception.getMessage();
     }
 
-    protected void handleUnknownError(Throwable throwable) {
-        logger.error("Vaadin error: ", throwable);
-        if (AxUtils.isUnknownViewError(throwable)) {
-            UI.getCurrent().setContent(Ax.h1("Stránka s daným URL neexistuje."));
-        } else  if (Strings.isNullOrEmpty(errorView)) {
+    protected boolean isUnknownViewException(Throwable throwable) {
+        String message = throwable.getMessage();
+        return message != null && message.startsWith("Trying to navigate to an unknown state");
+    }
+
+    protected void handleUnknownViewException(Throwable throwable) {
+        String message = "Stránka s daným URL neexistuje.";
+        logger.debug("{}: {}", message, throwable.getMessage());
+        UI.getCurrent().setContent(Ax.h1(message));
+    }
+
+    protected void handleGenericException(Throwable throwable) {
+        if (!AxNavigator.getCurrent().navigateToErrorView(throwable)) {
             Ax.message("Nastala chyba při vykonávání operace.").error(throwable).show();
-        } else {
-            UI ui = UI.getCurrent();
-            ui.getSession().setAttribute(Throwable.class, throwable);
-            ui.getNavigator().navigateTo(errorView);
         }
     }
 
