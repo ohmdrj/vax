@@ -17,6 +17,10 @@ import ru.xpoft.vaadin.DiscoveryNavigator;
 
 import java.lang.reflect.Field;
 
+/**
+ * @deprecated use {@link cz.req.ax.ui.AxUI}
+ */
+@Deprecated
 public abstract class AxUI extends UI implements ViewChangeListener {
 
     private static final Logger logger = LoggerFactory.getLogger(AxUI.class);

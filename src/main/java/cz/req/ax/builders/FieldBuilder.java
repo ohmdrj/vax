@@ -5,8 +5,6 @@ import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Field;
 import cz.req.ax.Ax;
-import cz.req.ax.AxUtils;
-import cz.req.ax.util.AxDefaults;
 import cz.req.ax.util.ToBooleanFunction;
 
 import java.util.function.Consumer;

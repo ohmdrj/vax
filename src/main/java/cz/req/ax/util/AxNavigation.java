@@ -1,12 +1,7 @@
 package cz.req.ax.util;
 
-import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
-import com.vaadin.ui.JavaScript;
-import com.vaadin.ui.UI;
-import cz.req.ax.AxUtils;
-import org.springframework.util.Assert;
-import ru.xpoft.vaadin.VaadinView;
+import cz.req.ax.navigator.AxNavigator;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
@@ -14,32 +9,30 @@ import ru.xpoft.vaadin.VaadinView;
  */
 public class AxNavigation {
 
-    public static AxNavigation getCurrent() {
-        return new AxNavigation(UI.getCurrent().getNavigator());
-    }
+    private AxNavigator navigator;
 
-    private Navigator navigator;
-
-    public AxNavigation(Navigator navigator) {
+    public AxNavigation(AxNavigator navigator) {
         this.navigator = navigator;
     }
 
     public void to(Class<? extends View> viewClass, Object... params) {
-        VaadinView annotation = viewClass.getAnnotation(VaadinView.class);
-        Assert.notNull(annotation, "No VaadinView annotation on class " + viewClass);
-        to(annotation.value(), params);
+        navigator.navigateTo(viewClass, params);
     }
 
     public void to(String viewName, Object... params) {
-        navigator.navigateTo(AxUtils.makeURL(viewName, params));
+        navigator.navigateTo(viewName, params);
+    }
+
+    public void main() {
+        navigator.navigateToMainView();
     }
 
     public void forward() {
-        JavaScript.eval("window.forward.back();");
+        navigator.navigateForward();
     }
 
     public void back() {
-        JavaScript.eval("window.history.back();");
+        navigator.navigateBack();
     }
 
 }
