@@ -12,7 +12,7 @@ import cz.req.ax.ui.AxWindowButton;
 public class AxWindowBuilder extends WindowBuilder<AxWindow, AxWindowBuilder> {
 
     public AxWindowBuilder() {
-        super(new AxWindow(), true);
+        super(new AxWindow(), false);
     }
 
     public AxWindowBuilder(AxWindow target, boolean useDefaults) {

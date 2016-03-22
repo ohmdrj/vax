@@ -62,19 +62,6 @@ public abstract class AxUI extends UI implements ViewChangeListener {
         initNavigation();
     }
 
-    @Override
-    public void doInit(VaadinRequest request, int uiId, String embedId) {
-        try {
-            super.doInit(request, uiId, embedId);
-        } catch (RuntimeException e) {
-            if (AxUtils.isUnknownViewError(e)) {
-                setContent(Ax.h1("Stránka s daným URL neexistuje."));
-            } else {
-                throw e;
-            }
-        }
-    }
-
     private void initErrorHandler() {
         ErrorHandler errorHandler = findCustomErrorHandler();
         if (errorHandler == null) {

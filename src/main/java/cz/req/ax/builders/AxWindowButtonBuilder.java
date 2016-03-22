@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 public class AxWindowButtonBuilder extends AbstractButtonBuilder<AxWindowButton, AxWindowButtonBuilder> {
 
     public AxWindowButtonBuilder() {
-        this(new AxWindowButton(), true);
+        this(new AxWindowButton(), false);
     }
 
     public AxWindowButtonBuilder(AxWindowButton target, boolean useDefaults) {
@@ -55,12 +55,17 @@ public class AxWindowButtonBuilder extends AbstractButtonBuilder<AxWindowButton,
     }
 
     public AxWindowButtonBuilder alignLeft() {
-        target.setAlignment(AxWindowButton.Align.LEFT);
+        target.setAlignment(AxWindow.Align.LEFT);
         return this;
     }
 
     public AxWindowButtonBuilder alignRight() {
-        target.setAlignment(AxWindowButton.Align.RIGHT);
+        target.setAlignment(AxWindow.Align.RIGHT);
+        return this;
+    }
+
+    public AxWindowButtonBuilder order(int order) {
+        target.setOrder(order);
         return this;
     }
 
