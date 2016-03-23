@@ -8,6 +8,7 @@ import com.vaadin.server.ErrorHandler;
 import com.vaadin.server.ServerRpcManager;
 import com.vaadin.ui.UI;
 import cz.req.ax.Ax;
+import cz.req.ax.AxUtils;
 import cz.req.ax.navigator.AxNavigator;
 import cz.req.ax.ui.AxUI;
 import org.slf4j.Logger;
@@ -83,18 +84,9 @@ public class AxErrorHandler implements ErrorHandler {
     }
 
     protected void handleInvalidValueException(Validator.InvalidValueException exception) {
-        String message = getInvalidValueMessage(exception);
+        String message = AxUtils.getInvalidValueMessage(exception);
         logger.debug("InvalidValueException: {}", message);
         Ax.notify(message).show();
-    }
-
-    protected String getInvalidValueMessage(Validator.InvalidValueException exception) {
-        if (Strings.isNullOrEmpty(exception.getMessage())) {
-            return exception instanceof Validator.EmptyValueException
-                    ? Ax.defaults().getRequiredError()
-                    : Ax.defaults().getInvalidValueError();
-        }
-        return exception.getMessage();
     }
 
     protected boolean isUnknownViewException(Throwable throwable) {
