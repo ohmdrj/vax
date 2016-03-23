@@ -1,5 +1,7 @@
 package cz.req.ax;
 
+import com.google.common.base.Strings;
+import com.vaadin.data.Validator;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.*;
 
@@ -95,6 +97,26 @@ public class AxUtils {
         if (caption != null && suffix != null && caption.endsWith(suffix)) {
             component.setCaption(caption.substring(0, caption.length() - suffix.length()));
         }
+    }
+
+    public static String getValidationError(Field<?> field) {
+        try {
+            field.validate();
+            return null;
+        } catch (Validator.InvalidValueException e) {
+            return getInvalidValueMessage(e);
+        }
+    }
+
+    public static String getInvalidValueMessage(Validator.InvalidValueException e) {
+        String message = e.getLocalizedMessage();
+        if (!Strings.isNullOrEmpty(message)) {
+            if (e instanceof Validator.EmptyValueException) {
+                return Ax.defaults().getRequiredError();
+            }
+            return Ax.defaults().getInvalidValueError();
+        }
+        return message;
     }
 
 }

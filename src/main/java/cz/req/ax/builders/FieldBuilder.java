@@ -49,16 +49,30 @@ public class FieldBuilder<V, F extends Field<V>, B extends FieldBuilder<V, F, B>
         return (B) this;
     }
 
-    public B validate(String errorMessage, ToBooleanFunction<V> validator) {
-        return validator(value -> {
-            if (value != null && !validator.applyAsBoolean((V) value)) {
-                throw new Validator.InvalidValueException(errorMessage);
-            }
-        });
+    public B validate(ToBooleanFunction<V> validator) {
+        return validate(invalidError, target.getType(), validator);
     }
 
-    public B validate(ToBooleanFunction<V> validator) {
-        return validate(invalidError, validator);
+    public B validate(String errorMessage, ToBooleanFunction<V> validator) {
+        return validate(errorMessage, target.getType(), validator);
+    }
+
+    public <T> B validate(Class<? extends T> valueType, ToBooleanFunction<T> validator) {
+        return validate(invalidError, valueType, validator);
+    }
+
+    public <T> B validate(String errorMessage, Class<? extends T> valueType, ToBooleanFunction<T> validator) {
+        return validator(value -> {
+            if (value != null) {
+                if (valueType.isInstance(value)) {
+                    if (!validator.applyAsBoolean((T) value)) {
+                        throw new Validator.InvalidValueException(errorMessage);
+                    }
+                } else {
+                    throw new RuntimeException("Validator input must be of type " + value.getClass());
+                }
+            }
+        });
     }
 
     public B invalidError(String invalidError) {

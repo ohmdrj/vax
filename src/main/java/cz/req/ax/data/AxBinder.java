@@ -12,10 +12,7 @@ import cz.req.ax.builders.*;
 import cz.req.ax.ui.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author <a href="mailto:jan.pikl@marbes.cz">Jan Pikl</a>
@@ -108,6 +105,19 @@ public class AxBinder<T> extends BeanFieldGroup<T> implements LayoutFiller {
             Object propertyId = getPropertyId(field);
             ((BeanFieldConfigurer) getFieldFactory()).configureField(getBean(), propertyType, propertyId, field);
         }
+    }
+
+    public List<FieldError> validate() {
+        List<FieldError> errors = new ArrayList<>();
+        for (Field field: getFields()) {
+            if (field.getPropertyDataSource() != null && !field.getPropertyDataSource().isReadOnly()) {
+                String error = Ax.validate(field);
+                if (error != null) {
+                    errors.add(new FieldError(field, error));
+                }
+            }
+        }
+        return errors;
     }
 
     @Override

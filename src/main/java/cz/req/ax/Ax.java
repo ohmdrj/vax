@@ -1,5 +1,6 @@
 package cz.req.ax;
 
+import com.vaadin.data.Validator;
 import com.vaadin.data.util.AbstractBeanContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.navigator.View;
@@ -297,6 +298,10 @@ public class Ax implements StyleNames {
 
     public static UploadBuilder upload(String caption) {
         return upload().submitCaption(caption);
+    }
+
+    public static String validate(Field<?> field) {
+        return AxUtils.getValidationError(field);
     }
 
     public static NotificationBuilder warning(String message) {
