@@ -102,6 +102,7 @@ Vaadin Ax:
 | Ax.defaults() | Konfigurace výchozího stavu komponent |
 | Ax.navigate() | Navigace mezi view |
 | Ax.polling() | Zapnutí/vypnutí pollingu UI |
+| Ax.validate() | Zvaliduje field a vrátí jeho chybu nebo `null` |
 
 ## Zkratky
 
