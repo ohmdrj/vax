@@ -188,6 +188,9 @@
                     <value>true</value>
                 </property>
             </activation>
+            <properties>
+                <gpg.skip>true</gpg.skip>
+            </properties>
             <repositories>
                 <repository>
                     <id>releases</id>
