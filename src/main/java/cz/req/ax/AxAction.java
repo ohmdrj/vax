@@ -10,6 +10,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
+import cz.req.ax.ui.AxButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -321,7 +322,7 @@ public class AxAction<T> implements Cloneable {
         //TODO New factory AxButton
         //TODO Caption/Icon by factory method
         //TODO Review lazy??
-        Button button = new Button(caption, icon);
+        AxButton button = new AxButton(caption, icon);
         if (description != null) button.setDescription(description);
         if (!styles.isEmpty()) styles.forEach(button::addStyleName);
         if (right) button.addStyleName("right");
