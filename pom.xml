@@ -181,16 +181,20 @@
 
     <profiles>
         <profile>
-            <id>marbes</id>
-            <activation>
-                <property>
-                    <name>release</name>
-                    <value>true</value>
-                </property>
-            </activation>
+            <id>release</id>
             <properties>
                 <gpg.skip>true</gpg.skip>
             </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
             <repositories>
                 <repository>
                     <id>releases</id>
